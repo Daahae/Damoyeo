@@ -1,6 +1,6 @@
 package com.daahae.damoyeo.model;
 
-public class Person {
+public class Person{
     private int id;
     private String name;
     private String address;

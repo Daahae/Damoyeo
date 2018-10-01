@@ -1,7 +1,7 @@
 package com.daahae.damoyeo.model;
 
-public class MidInfo {
-    /*
+public class MidInfo{
+
     private Position pos;
     private String address;
 
@@ -25,5 +25,5 @@ public class MidInfo {
     public void setAddress(String address) {
         this.address = address;
     }
-    */
+
 }

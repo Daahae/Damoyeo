@@ -2,7 +2,7 @@ package com.daahae.damoyeo.model;
 
 import java.util.ArrayList;
 
-public class TransportInfoList {
+public class TransportInfoList{
     private ArrayList<Transport> transportInfo;
     private int totalTime;
 

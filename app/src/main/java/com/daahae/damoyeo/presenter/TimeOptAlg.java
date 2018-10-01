@@ -5,6 +5,7 @@ import com.daahae.damoyeo.model.Person;
 
 import java.util.ArrayList;
 
+
 public class TimeOptAlg {
     public MidInfo getTimeOptAlgResult(ArrayList<Person> people) {
         // 시간가중치 최적화 알고리즘 돌리기~~

@@ -1,18 +1,19 @@
 package com.daahae.damoyeo.model;
 
-public class RecommandedBuilding {
-    /*
+public class RecommandedBuilding extends MidInfo{
+
     private int type;
-    private Position pos;
+    private Position buildingPos;
     private String name;
-    private String address;
+    private String buildingAddress;
     private String tel;
 
-    public RecommandedBuilding(int type, Position pos, String name, String address, String tel) {
+    public RecommandedBuilding(Position pos, String address, int type, Position buildingPos, String name, String buildingAddress, String tel) {
+        super(pos, address);
         this.type = type;
-        this.pos = pos;
+        this.buildingPos = buildingPos;
         this.name = name;
-        this.address = address;
+        this.buildingAddress = buildingAddress;
         this.tel = tel;
     }
 
@@ -24,12 +25,12 @@ public class RecommandedBuilding {
         this.type = type;
     }
 
-    public Position getPos() {
-        return pos;
+    public Position getBuildingPos() {
+        return buildingPos;
     }
 
-    public void setPos(Position pos) {
-        this.pos = pos;
+    public void setBuildingPos(Position buildingPos) {
+        this.buildingPos = buildingPos;
     }
 
     public String getName() {
@@ -40,12 +41,12 @@ public class RecommandedBuilding {
         this.name = name;
     }
 
-    public String getAddress() {
-        return address;
+    public String getBuildingAddress() {
+        return buildingAddress;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public void setBuildingAddress(String buildingAddress) {
+        this.buildingAddress = buildingAddress;
     }
 
     public String getTel() {
@@ -55,5 +56,4 @@ public class RecommandedBuilding {
     public void setTel(String tel) {
         this.tel = tel;
     }
-    */
 }

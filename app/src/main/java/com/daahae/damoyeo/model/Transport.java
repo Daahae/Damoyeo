@@ -1,6 +1,6 @@
 package com.daahae.damoyeo.model;
 
-public class Transport {
+public class Transport{
     private int type;
     private int time;
 

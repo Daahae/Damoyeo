@@ -1,12 +1,13 @@
 package com.daahae.damoyeo.model;
 
-public class Landmark {
-    /*
+public class Landmark extends MidInfo{//MidInfo의 'sectorNmae' 을 받아 검색하기 위함
+
     private Position landmarkPos;
     private String sectorName;
 
 
-    public Landmark(Position landmarkPos, String sectorName) {
+    public Landmark(Position pos, String address, Position landmarkPos, String sectorName) {
+        super(pos, address);
         this.landmarkPos = landmarkPos;
         this.sectorName = sectorName;
     }
@@ -26,5 +27,5 @@ public class Landmark {
     public void setSectorName(String sectorName) {
         this.sectorName = sectorName;
     }
-    */
+
 }

@@ -1,6 +1,6 @@
 package com.daahae.damoyeo.model;
 
-public class Position {
+public class Position{
     private double x;
     private double y;
 
