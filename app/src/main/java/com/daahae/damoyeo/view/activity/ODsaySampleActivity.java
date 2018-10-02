@@ -7,6 +7,7 @@ import android.content.Context;
 import android.support.annotation.IdRes;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -14,6 +15,9 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
+
+import com.daahae.damoyeo.model.Transport;
+import com.daahae.damoyeo.model.TransportInfoList;
 import com.odsay.odsayandroidsdk.API;
 import com.odsay.odsayandroidsdk.ODsayData;
 import com.odsay.odsayandroidsdk.ODsayService;
@@ -21,6 +25,8 @@ import com.odsay.odsayandroidsdk.OnResultCallbackListener;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
 import java.util.Map;
 
 
@@ -87,26 +93,50 @@ public class ODsaySampleActivity extends AppCompatActivity {
     private OnResultCallbackListener onResultCallbackListener = new OnResultCallbackListener() {
             @Override
             public void onSuccess(ODsayData oDsayData, API api) {
+                ArrayList<Transport> transportInfoList = new ArrayList<>();
                 jsonObject = oDsayData.getJson();
                 mapObject = oDsayData.getMap();// 임시변수는 다 수정
 
                 try {
+
                     jsonObject = jsonObject.getJSONObject("result");
-                    JSONArray tmpJa = jsonObject.getJSONArray("path");
-
-                    StringBuffer sb = new StringBuffer();
+                    JSONArray pathJa = jsonObject.getJSONArray("path");
+                    StringBuffer sb = new StringBuffer();// 샘플 확인을 위함
                     if (rg_object_type.getCheckedRadioButtonId() == rb_json.getId()) {
-                        for (int i = 0; i < tmpJa.length(); i++) {
-                            JSONObject jo = tmpJa.getJSONObject(i);
-                            int pathType = jo.getInt("pathType");
+                        for (int i = 0; i < pathJa.length(); i++) {
+                            JSONObject jo = pathJa.getJSONObject(i);
+                            JSONArray subPathJa = jo.getJSONArray("subPath");
+                            sb.append(i+"번째 경로 --------\n+");
+                            int totalTime = 0;// 총 걸린시간 계산
 
-                            sb.append("pathType : " + pathType+
-                                            "\n\n"
+                            for(int j=0;j<subPathJa.length();j++) {
+                                JSONObject tmpJo = subPathJa.getJSONObject(j);
 
-                                    );
+                                int trafficType = tmpJo.getInt("trafficType");
+                                int sectionTime = tmpJo.getInt("sectionTime");
+                                String startName;
+                                String endName;
+                                if(trafficType ==3){
+                                    startName = null;
+                                    endName = null;
+                                }else {
+                                    startName = tmpJo.getString("startName");
+                                    endName = tmpJo.getString("endName");
+                                }
+
+                                sb.append(
+
+                                                      "trafficType : " + trafficType + "\n" +
+                                                      "sectionTime : " + sectionTime + "\n" +
+                                                      "startStation : " + startName + "\n" +
+                                                      "endStation : " + endName + "\n" +
+                                        "\n"
+                                );
+                                totalTime += sectionTime;
+                            }
+                            sb.append("totalTime : "+ totalTime+"분"+"\n\n");
                         }
-
-                        tv_data.setText(sb);
+                       tv_data.setText(sb);
                     } else if (rg_object_type.getCheckedRadioButtonId() == rb_map.getId()) {
                         tv_data.setText(mapObject.toString());
                     }

@@ -1,1 +1,1 @@
-include ':app', ':ODsayAndroidSDK'
+include ':app', ':ODsayAndroidSDK', ':SDK_release_v1.0'
