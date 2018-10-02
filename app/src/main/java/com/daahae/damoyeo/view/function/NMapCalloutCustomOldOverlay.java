@@ -1,4 +1,4 @@
-package com.daahae.damoyeo.view.activity;
+package com.daahae.damoyeo.view.function;
 
 import android.graphics.Canvas;
 import android.graphics.PointF;

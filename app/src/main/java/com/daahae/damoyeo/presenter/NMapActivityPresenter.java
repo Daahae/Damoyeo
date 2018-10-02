@@ -6,7 +6,7 @@ import android.support.v4.app.FragmentTransaction;
 
 import com.daahae.damoyeo.R;
 import com.daahae.damoyeo.view.activity.NMapActivity;
-import com.daahae.damoyeo.view.activity.NMapFragment;
+import com.daahae.damoyeo.view.fragment.NMapFragment;
 
 public class NMapActivityPresenter {
     private NMapActivity view;// 뷰

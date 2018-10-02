@@ -10,12 +10,13 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.daahae.damoyeo.R;
-import com.daahae.damoyeo.view.activity.NMapClass;
-import com.daahae.damoyeo.view.activity.NMapFragment;
-import com.daahae.damoyeo.view.activity.NMapPOIflagType;
-import com.daahae.damoyeo.view.activity.NMapViewerResourceProvider;
+import com.daahae.damoyeo.view.fragment.NMapFragment;
+import com.daahae.damoyeo.view.function.NMapPOIflagType;
+import com.daahae.damoyeo.view.function.NMapViewerResourceProvider;
 import com.nhn.android.maps.NMapActivity;
 import com.nhn.android.maps.NMapCompassManager;
+import com.nhn.android.maps.NMapContext;
+import com.nhn.android.maps.NMapController;
 import com.nhn.android.maps.NMapLocationManager;
 import com.nhn.android.maps.NMapOverlay;
 import com.nhn.android.maps.NMapOverlayItem;
@@ -29,65 +30,81 @@ import com.nhn.android.maps.overlay.NMapPathData;
 import com.nhn.android.maps.overlay.NMapPathLineStyle;
 import com.nhn.android.mapviewer.overlay.NMapCalloutCustomOverlay;
 import com.nhn.android.mapviewer.overlay.NMapCalloutOverlay;
+import com.nhn.android.mapviewer.overlay.NMapMyLocationOverlay;
 import com.nhn.android.mapviewer.overlay.NMapOverlayManager;
 import com.nhn.android.mapviewer.overlay.NMapPOIdataOverlay;
 import com.nhn.android.mapviewer.overlay.NMapPathDataOverlay;
+import com.nhn.android.mapviewer.overlay.NMapResourceProvider;
 
 public class NMapFragmentPresenter {
     private final String TAG = "NMapViewer";
     private NMapFragment view;
-    private NMapClass mapClass;
+    private NMapContext mapContext;
 
-    public NMapFragmentPresenter(NMapFragment view, NMapClass nMapClass) {
+    private NMapController mapController;
+    private NMapView mapView;
+
+    private NMapResourceProvider mapResourceProvider;
+    private NMapOverlayManager mapOverlayManager;
+
+    private NMapLocationManager mapLocationManager;
+    private NMapCompassManager mapCompassManager;
+    private NMapMyLocationOverlay myLocationOverlay;
+
+    private NMapPOIitem floatingPOIitem;
+    private NMapPOIdataOverlay floatingPOIdataOverlay;
+
+
+    public NMapFragmentPresenter(NMapFragment view, NMapContext context) {
         this.view = view;
-        this.mapClass = nMapClass;
+        this.mapContext = context;
     }
 
     public void init(){
         // Fragment에 포함된 NMapView 객체 찾기
-        mapClass.setMapView(findMapView(view.getView()));
-        if (mapClass.getMapView() == null) {
+        mapView = findMapView(view.getView());
+        if (mapView == null) {
             throw new IllegalArgumentException("NMapFragment dose not have an instance of NMapView.");
         }
 
         // NMapView mapView = (NMapView)getView().findViewById(R.id.mapView);
-        mapClass.getMapView().setClientId(view.getResources().getString(R.string.NAVER_API_KEY));// 클라이언트 아이디 설정
+        mapView.setClientId(view.getResources().getString(R.string.NAVER_API_KEY));// 클라이언트 아이디 설정
 
         // initialize map view
-        mapClass.getMapView().setClickable(true);
+        mapView.setClickable(true);
 
         // use built in zoom controls
-        //nMapClass.getmMapView().setBuiltInZoomControls(true, null);
+        //mapView.setBuiltInZoomControls(true, null);
 
         // register listener for map state changes
-        //nMapClass.getmMapView().setOnMapStateChangeListener(onMapViewStateChangeListener);
-        //nMapClass.getmMapView().setOnMapViewTouchEventListener(onMapViewTouchEventListener);
+        //mapView.setOnMapStateChangeListener(onMapViewStateChangeListener);
+        //mapView.setOnMapViewTouchEventListener(onMapViewTouchEventListener);
 
         // NMapActivity를 상속하지 않는 경우에는 NMapView 객체 생성후 반드시 setupMapView()를 호출해야함.
-        mapClass.getMapContext().setupMapView(mapClass.getMapView());
+        mapContext.setupMapView(mapView);
 
         // use map controller to zoom in/out, pan and set map center, zoom level etc.
-        mapClass.setMapController(mapClass.getMapView().getMapController());
-        mapClass.getMapController().setMapCenter(new NGeoPoint(126.978371, 37.5666091), 11);     //Default Data
+        mapController = mapView.getMapController();
+        mapController.setMapCenter(new NGeoPoint(126.978371, 37.5666091), 11);     //Default Data
 
-        mapClass.setMapResourceProvider(new NMapViewerResourceProvider(view.getContext()));
-        mapClass.setMapOverlayManager(new NMapOverlayManager(view.getContext(), mapClass.getMapView(), mapClass.getMapResourceProvider()));
+        mapResourceProvider = new NMapViewerResourceProvider(view.getContext());
+        mapOverlayManager = new NMapOverlayManager(view.getContext(), mapView, mapResourceProvider);
 
         // set data provider listener
-        mapClass.getMapContext().setMapDataProviderListener(onDataProviderListener);
+        mapContext.setMapDataProviderListener(onDataProviderListener);
 
         // register callout overlay listener to customize it.
-        mapClass.getMapOverlayManager().setOnCalloutOverlayListener(onCalloutOverlayListener);
+        mapOverlayManager.setOnCalloutOverlayListener(onCalloutOverlayListener);
 
         // location manager
-        mapClass.setMapLocationManager(new NMapLocationManager(view.getContext()));;
-        mapClass.getMapLocationManager().setOnLocationChangeListener(onMyLocationChangeListener);
+        mapLocationManager = new NMapLocationManager(view.getContext());;
+        mapLocationManager.setOnLocationChangeListener(onMyLocationChangeListener);
 
         // compass manager
-        mapClass.setMapCompassManager(new NMapCompassManager(view.getActivity()));
+        mapCompassManager = new NMapCompassManager(view.getActivity());
 
         // create my location overlay
-        mapClass.setMyLocationOverlay(mapClass.getMapOverlayManager().createMyLocationOverlay(mapClass.getMapLocationManager(), mapClass.getMapCompassManager()));;
+        myLocationOverlay = mapOverlayManager.createMyLocationOverlay(mapLocationManager, mapCompassManager);;
     }
 
     /**
@@ -118,28 +135,28 @@ public class NMapFragmentPresenter {
 
     /* Test Functions */
     public void startMyLocation() {
-        if (mapClass.getMyLocationOverlay() != null) {
-            if (!mapClass.getMapOverlayManager().hasOverlay(mapClass.getMyLocationOverlay())) {
-                mapClass.getMapOverlayManager().addOverlay(mapClass.getMyLocationOverlay());
+        if (myLocationOverlay != null) {
+            if (!mapOverlayManager.hasOverlay(myLocationOverlay)) {
+                mapOverlayManager.addOverlay(myLocationOverlay);
             }
 
-            if (mapClass.getMapLocationManager().isMyLocationEnabled()) {
+            if (mapLocationManager.isMyLocationEnabled()) {
 
-                if (!mapClass.getMapView().isAutoRotateEnabled()) {
-                    mapClass.getMyLocationOverlay().setCompassHeadingVisible(true);
+                if (!mapView.isAutoRotateEnabled()) {
+                    myLocationOverlay.setCompassHeadingVisible(true);
 
-                    mapClass.getMapCompassManager().enableCompass();
+                    mapCompassManager.enableCompass();
 
-                    mapClass.getMapView().setAutoRotateEnabled(true, false);
+                    mapView.setAutoRotateEnabled(true, false);
 
                     //mMapContainerView.requestLayout();
                 } else {
                     stopMyLocation();
                 }
 
-                mapClass.getMapView().postInvalidate();
+                mapView.postInvalidate();
             } else {
-                boolean isMyLocationEnabled = mapClass.getMapLocationManager().enableMyLocation(true);
+                boolean isMyLocationEnabled = mapLocationManager.enableMyLocation(true);
                 if (!isMyLocationEnabled) {
                     Toast.makeText(view.getContext(), "Please enable a My Location source in system settings",
                             Toast.LENGTH_LONG).show();
@@ -154,15 +171,15 @@ public class NMapFragmentPresenter {
     }
 
     public void stopMyLocation() {
-        if (mapClass.getMyLocationOverlay() != null) {
-            mapClass.getMapLocationManager().disableMyLocation();
+        if (myLocationOverlay != null) {
+            mapLocationManager.disableMyLocation();
 
-            if (mapClass.getMapView().isAutoRotateEnabled()) {
-                mapClass.getMyLocationOverlay().setCompassHeadingVisible(false);
+            if (mapView.isAutoRotateEnabled()) {
+                myLocationOverlay.setCompassHeadingVisible(false);
 
-                mapClass.getMapCompassManager().disableCompass();
+                mapCompassManager.disableCompass();
 
-                mapClass.getMapView().setAutoRotateEnabled(false, false);
+                mapView.setAutoRotateEnabled(false, false);
 
                 //mMapContainerView.requestLayout();
             }
@@ -171,14 +188,14 @@ public class NMapFragmentPresenter {
 
     public void initLocation() {
         // 초기화
-        if (mapClass.getMyLocationOverlay() != null) {
+        if (myLocationOverlay != null) {
             stopMyLocation();
-            mapClass.getMapOverlayManager().removeOverlay(mapClass.getMyLocationOverlay());
+            mapOverlayManager.removeOverlay(myLocationOverlay);
         }
 
-        mapClass.getMapController().setMapViewMode(NMapView.VIEW_MODE_VECTOR);
+        mapController.setMapViewMode(NMapView.VIEW_MODE_VECTOR);
 
-        mapClass.getMapOverlayManager().clearOverlays();
+        mapOverlayManager.clearOverlays();
 
         testPOIdataOverlay();
     }
@@ -187,14 +204,14 @@ public class NMapFragmentPresenter {
         int markerId = NMapPOIflagType.PIN;
 
         // set POI data
-        NMapPOIdata poiData = new NMapPOIdata(2, mapClass.getMapResourceProvider());
+        NMapPOIdata poiData = new NMapPOIdata(2, mapResourceProvider);
         poiData.beginPOIdata(2);
         poiData.addPOIitem(127.108099, 37.366034, "출발", markerId, 0).setRightAccessory(true, NMapPOIflagType.CLICKABLE_ARROW);
         poiData.addPOIitem(127.106279, 37.366380, "도착", markerId, 0);
         poiData.endPOIdata();
 
         // create POI data overlay
-        NMapPOIdataOverlay poiDataOverlay = mapClass.getMapOverlayManager().createPOIdataOverlay(poiData, null);
+        NMapPOIdataOverlay poiDataOverlay = mapOverlayManager.createPOIdataOverlay(poiData, null);
         // 해당 오버레이 객체에 포함된 전체 아이템이 화면에 표시되도록 지도 중심 및 축적 레벨을 변경하려면 아래와 같이 구현합니다.
         poiDataOverlay.showAllPOIdata(0);
         // 아이템의 선택 상태가 변경되거나 말풍선이 선택되는 경우를 처리하기 위하여 이벤트 리스너를 등록합니다.
@@ -220,7 +237,7 @@ public class NMapFragmentPresenter {
         pathData.addPathPoint(127.106279, 37.366380, 0);
         pathData.endPathData();
 
-        NMapPathDataOverlay pathDataOverlay = mapClass.getMapOverlayManager().createPathDataOverlay(pathData);
+        NMapPathDataOverlay pathDataOverlay = mapOverlayManager.createPathDataOverlay(pathData);
 
         // show all path data
         // 경로 전체보기
@@ -230,7 +247,7 @@ public class NMapFragmentPresenter {
     public void testPathPOIdataOverlay() {
 
         // set POI data
-        NMapPOIdata poiData = new NMapPOIdata(4, mapClass.getMapResourceProvider(), true);
+        NMapPOIdata poiData = new NMapPOIdata(4, mapResourceProvider, true);
         poiData.beginPOIdata(4);
         poiData.addPOIitem(349652983, 149297368, "Pizza 124-456", NMapPOIflagType.FROM, null);
         poiData.addPOIitem(349652966, 149296906, null, NMapPOIflagType.NUMBER_BASE + 1, null);
@@ -239,7 +256,7 @@ public class NMapFragmentPresenter {
         poiData.endPOIdata();
 
         // create POI data overlay
-        NMapPOIdataOverlay poiDataOverlay = mapClass.getMapOverlayManager().createPOIdataOverlay(poiData, null);
+        NMapPOIdataOverlay poiDataOverlay = mapOverlayManager.createPOIdataOverlay(poiData, null);
 
         // set event listener to the overlay
         poiDataOverlay.setOnStateChangeListener(onPOIdataStateChangeListener);
@@ -252,24 +269,24 @@ public class NMapFragmentPresenter {
         int marker1 = NMapPOIflagType.PIN;
 
         // set POI data
-        NMapPOIdata poiData = new NMapPOIdata(1, mapClass.getMapResourceProvider());
+        NMapPOIdata poiData = new NMapPOIdata(1, mapResourceProvider);
         poiData.beginPOIdata(1);
         NMapPOIitem item = poiData.addPOIitem(null, "Touch & Drag to Move", marker1, 0);
         if (item != null) {
             // initialize location to the center of the map view.
-            item.setPoint(mapClass.getMapController().getMapCenter());
+            item.setPoint(mapController.getMapCenter());
             // set floating mode
             item.setFloatingMode(NMapPOIitem.FLOATING_TOUCH | NMapPOIitem.FLOATING_DRAG);
             // show right button on callout
             item.setRightButton(true);
 
-            mapClass.setFloatingPOIitem(item);
+            floatingPOIitem = item;
         }
         poiData.endPOIdata();
 
 
         // create POI data overlay
-        NMapPOIdataOverlay poiDataOverlay = mapClass.getMapOverlayManager().createPOIdataOverlay(poiData, null);
+        NMapPOIdataOverlay poiDataOverlay = mapOverlayManager.createPOIdataOverlay(poiData, null);
         if (poiDataOverlay != null) {
             poiDataOverlay.setOnFloatingItemChangeListener(onPOIdataFloatingItemChangeListener);
 
@@ -278,7 +295,7 @@ public class NMapFragmentPresenter {
 
             poiDataOverlay.selectPOIitem(0, false);
 
-            mapClass.setFloatingPOIdataOverlay(poiDataOverlay);
+            floatingPOIdataOverlay = poiDataOverlay;
         }
     }
 
@@ -299,13 +316,13 @@ public class NMapFragmentPresenter {
                 return;
             }
 
-            if (mapClass.getFloatingPOIitem() != null && mapClass.getFloatingPOIdataOverlay() != null) {
-                mapClass.getFloatingPOIdataOverlay().deselectFocusedPOIitem();
+            if (floatingPOIitem != null && floatingPOIdataOverlay != null) {
+                floatingPOIdataOverlay.deselectFocusedPOIitem();
 
                 if (placeMark != null) {
-                    mapClass.getFloatingPOIitem().setTitle(placeMark.toString());
+                    floatingPOIitem.setTitle(placeMark.toString());
                 }
-                mapClass.getFloatingPOIdataOverlay().selectPOIitemBy(mapClass.getFloatingPOIitem().getId(), false);
+                floatingPOIdataOverlay.selectPOIitemBy(floatingPOIitem.getId(), false);
             }
         }
     };
@@ -315,8 +332,8 @@ public class NMapFragmentPresenter {
 
         @Override
         public boolean onLocationChanged(NMapLocationManager locationManager, NGeoPoint myLocation) {
-            if (mapClass.getMapController() != null) {
-                mapClass.getMapController().animateTo(myLocation);
+            if (mapController != null) {
+                mapController.animateTo(myLocation);
             }
 
             return true;
@@ -369,7 +386,7 @@ public class NMapFragmentPresenter {
             Log.i(TAG, "onPointChanged: point=" + point.toString());
             //}
 
-            mapClass.getMapContext().findPlacemarkAtLocation(point.longitude, point.latitude);
+            mapContext.findPlacemarkAtLocation(point.longitude, point.latitude);
 
             item.setTitle(null);
 
@@ -381,7 +398,7 @@ public class NMapFragmentPresenter {
         public void onMapInitHandler(NMapView nMapView, NMapError nMapError) {
             Log.e(TAG, "OnMapStateChangeListener onMapInitHandler : ");
             if (nMapError == null) { // success
-                mapClass.getMapController().setMapCenter(new NGeoPoint(126.978371, 37.5666091), 11);
+                mapController.setMapCenter(new NGeoPoint(126.978371, 37.5666091), 11);
             } else { // fail
                 Log.e(TAG, "onMapInitHandler: error=" + nMapError.toString());
             }
@@ -445,7 +462,7 @@ public class NMapFragmentPresenter {
         @Override
         public NMapCalloutOverlay onCreateCalloutOverlay(NMapOverlay nMapOverlay, NMapOverlayItem nMapOverlayItem, Rect rect) {
             // use custom callout overlay
-            return new NMapCalloutCustomOverlay(nMapOverlay, nMapOverlayItem, rect, mapClass.getMapResourceProvider());
+            return new NMapCalloutCustomOverlay(nMapOverlay, nMapOverlayItem, rect, mapResourceProvider);
 
             // set basic callout overlay
             //return new NMapCalloutBasicOverlay(nMapOverlay, nMapOverlayItem, rect);

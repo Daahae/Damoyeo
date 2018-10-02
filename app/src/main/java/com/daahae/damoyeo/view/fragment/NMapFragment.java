@@ -1,7 +1,6 @@
-package com.daahae.damoyeo.view.activity;
+package com.daahae.damoyeo.view.fragment;
 
 import android.Manifest;
-import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -13,6 +12,7 @@ import android.widget.Button;
 
 import com.daahae.damoyeo.R;
 import com.daahae.damoyeo.presenter.NMapFragmentPresenter;
+import com.daahae.damoyeo.view.data.FloatingActionBtn;
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
 import com.nhn.android.maps.NMapContext;
@@ -24,9 +24,8 @@ import java.util.ArrayList;
  * NMapView 사용시 필요한 초기화 및 리스너 등록은 NMapActivity 사용시와 동일함.
  */
 public class NMapFragment extends Fragment {
-    private NMapClass mapClass;
+    private NMapContext mapContext;
     private NMapFragmentPresenter presenter;
-    private Context context;
 
     private FloatingActionBtn fabtn;
 
@@ -34,11 +33,9 @@ public class NMapFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mapClass = new NMapClass();
-        mapClass.setMapContext(new NMapContext(super.getActivity()));;
-        mapClass.getMapContext().onCreate();
-        presenter = new NMapFragmentPresenter(this, mapClass);
-        this.context = getActivity();
+        mapContext = new NMapContext(super.getActivity());;
+        mapContext.onCreate();
+        presenter = new NMapFragmentPresenter(this, mapContext);
     }
 
     @Override
@@ -89,8 +86,9 @@ public class NMapFragment extends Fragment {
     @Override
     public void onStart(){
         super.onStart();
+
         presenter.init();
-        mapClass.getMapContext().onStart();
+        mapContext.onStart();
 
         PermissionListener permissionListener = new PermissionListener() {
             @Override
@@ -105,7 +103,7 @@ public class NMapFragment extends Fragment {
         };
 
         // GPS 위치정보를 받기위해 권한을 설정
-        TedPermission.with(context)
+        TedPermission.with(getActivity())
                 .setPermissionListener(permissionListener)
                 .setRationaleMessage("지도 서비스를 사용하기 위해서는 위치 접근 권한이 필요해요")
                 .setDeniedMessage("왜 거부하셨어요...\n하지만 [설정] > [권한] 에서 권한을 허용할 수 있어요.")
@@ -116,16 +114,16 @@ public class NMapFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        mapClass.getMapContext().onResume();
+        mapContext.onResume();
     }
     @Override
     public void onPause() {
         super.onPause();
-        mapClass.getMapContext().onPause();
+        mapContext.onPause();
     }
     @Override
     public void onStop() {
-        mapClass.getMapContext().onStop();
+        mapContext.onStop();
         super.onStop();
     }
     @Override
@@ -134,7 +132,7 @@ public class NMapFragment extends Fragment {
     }
     @Override
     public void onDestroy() {
-        mapClass.getMapContext().onDestroy();
+        mapContext.onDestroy();
         super.onDestroy();
     }
 }

@@ -1,4 +1,4 @@
-package com.daahae.damoyeo.view.activity;
+package com.daahae.damoyeo.view.function;
 
 public class NMapPOIflagType {
     public static final int UNKNOWN = 0x0000;

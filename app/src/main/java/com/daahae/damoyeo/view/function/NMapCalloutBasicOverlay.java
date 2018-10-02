@@ -1,4 +1,4 @@
-package com.daahae.damoyeo.view.activity;
+package com.daahae.damoyeo.view.function;
 
 /*
  * Copyright 2016 NAVER Corp.
