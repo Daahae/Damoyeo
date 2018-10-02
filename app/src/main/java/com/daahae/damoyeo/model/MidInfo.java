@@ -1,9 +1,9 @@
 package com.daahae.damoyeo.model;
 
 public class MidInfo{
-
     private Position pos;
     private String address;
+    // 구이름(Zone) 찾아내라!
 
     public MidInfo(Position pos, String address) {
         this.pos = pos;
