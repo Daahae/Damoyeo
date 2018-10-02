@@ -1,17 +1,15 @@
 package com.daahae.damoyeo.model;
 
-public class Building{
-    private Position pos;
-    private String address;
+public class RecommandedBuilding extends MidInfo{
+
     private int type;
     private Position buildingPos;
     private String name;
     private String buildingAddress;
     private String tel;
 
-    public Building(Position pos, String address, int type, Position buildingPos, String name, String buildingAddress, String tel) {
-        this.pos = pos;
-        this.address = address;
+    public RecommandedBuilding(Position pos, String address, int type, Position buildingPos, String name, String buildingAddress, String tel) {
+        super(pos, address);
         this.type = type;
         this.buildingPos = buildingPos;
         this.name = name;
