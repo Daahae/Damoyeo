@@ -16,8 +16,10 @@ import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.daahae.damoyeo.model.Position;
 import com.daahae.damoyeo.model.Transport;
 import com.daahae.damoyeo.model.TransportInfoList;
+import com.daahae.damoyeo.presenter.Presenter;
 import com.odsay.odsayandroidsdk.API;
 import com.odsay.odsayandroidsdk.ODsayData;
 import com.odsay.odsayandroidsdk.ODsayService;
@@ -36,7 +38,7 @@ public class ODsaySampleActivity extends AppCompatActivity {
     private RadioGroup rg_object_type;
     private RadioButton rb_json, rb_map;
     private Button bt_api_call;
-    private TextView tv_data;
+    public TextView tv_data;
     private Context context;
     private String spinnerSelectedName;
     private ODsayService odsayService;
@@ -93,63 +95,11 @@ public class ODsaySampleActivity extends AppCompatActivity {
     private OnResultCallbackListener onResultCallbackListener = new OnResultCallbackListener() {
             @Override
             public void onSuccess(ODsayData oDsayData, API api) {
-                ArrayList<Transport> transportInfoList = new ArrayList<>();
-                jsonObject = oDsayData.getJson();
-                mapObject = oDsayData.getMap();// 임시변수는 다 수정
-
-                try {
-                    jsonObject = jsonObject.getJSONObject("result");
-                    JSONArray pathJa = jsonObject.getJSONArray("path");
-                    StringBuffer sb = new StringBuffer();// 샘플 확인을 위함
-                    if (rg_object_type.getCheckedRadioButtonId() == rb_json.getId()) {
-                        JSONObject jo = pathJa.getJSONObject(0);// 제일 빠른 경로만
-                        JSONArray subPathJa = jo.getJSONArray("subPath");
-                        sb.append("제일 빠른 경로 --------\n+");
-                        int totalTime = 0;// 총 걸린시간 계산
-
-                        for(int i=0;i<subPathJa.length();i++) {
-                            JSONObject tmpJo = subPathJa.getJSONObject(i);
-                            int trafficType = tmpJo.getInt("trafficType");
-                            int sectionTime = tmpJo.getInt("sectionTime");
-                            String startName = null;
-                            String endName = null;
-                            String transportNumber = null;
-
-                            if(!isTypeWalk(trafficType)){// 도보가 아닐시, lane과 출발지 목적지 존재
-                                startName = tmpJo.getString("startName");
-                                endName = tmpJo.getString("endName");
-                                JSONArray laneJa = tmpJo.getJSONArray("lane");
-                                JSONObject laneJo = laneJa.getJSONObject(0);
-
-                                if(isTypeSubway(trafficType)) {//지하철일시
-                                    transportNumber = laneJo.getString("name");
-                                }
-                                else{//버스일시
-                                    transportNumber = laneJo.getString("busNo");
-                                }
-                            }
-                            sb.append(
-
-                                                  "trafficType : " + trafficType + "\n" +
-                                                  "sectionTime : " + sectionTime + "분\n" +
-                                                  "transportNumber : "+ transportNumber+"\n"+
-                                                  "startStation : " + startName + "\n" +
-                                                  "endStation : " + endName + "\n" +
-                                                          "\n"
-                            );
-
-
-                            totalTime += sectionTime;
-                        }
-                        sb.append("totalTime : "+ totalTime+"분"+"\n\n");
-                       tv_data.setText(sb);
-                    } else if (rg_object_type.getCheckedRadioButtonId() == rb_map.getId()) {
-                        tv_data.setText(mapObject.toString());
-                    }
-
-                } catch (Exception E) {
-                    E.printStackTrace();
-                }
+                Presenter presenter = new Presenter(ODsaySampleActivity.this);
+                TransportInfoList transportInfoList;
+                Position start = new Position(127.073139,37.5502596);
+                Position end = new Position(127.0771595,37.5407625);
+                presenter.getTransportInfoList(start,end);
             }
         @Override
         public void onError(int i, String errorMessage, API api) {
@@ -157,21 +107,6 @@ public class ODsaySampleActivity extends AppCompatActivity {
         }
     };
 
-    private boolean isTypeSubway(int trafficType){
-        if(trafficType == 1)
-            return true;
-        return false;
-    }
-    private boolean isTypeBus(int trafficType){
-        if(trafficType == 2)
-            return true;
-        return false;
-    }
-    private boolean isTypeWalk(int trafficType){
-        if(trafficType == 3)
-            return true;
-        return false;
-    }
 
 
     private View.OnClickListener onClickListener = new View.OnClickListener() {
