@@ -6,8 +6,9 @@ public class TransportInfoList{
     private ArrayList<Transport> transportInfo;
     private int totalTime;
 
-    public TransportInfoList(ArrayList<Transport> transportInfo) {
+    public TransportInfoList(ArrayList<Transport> transportInfo, int totalTime) {
         this.transportInfo = transportInfo;
+        this.totalTime = totalTime;
     }
 
     public ArrayList<Transport> getTransportInfo() {

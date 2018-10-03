@@ -3,42 +3,40 @@ package com.daahae.damoyeo.model;
 public class Transport{
     private int type;
     private int time;
-    private String start;
-    private String end;
-    private int transportNumber;
+    private String startStation;
+    private String endStation;
+    private String transportNumber;
 
-    public Transport(int type, int time, String start, String end, int transportNumber) {
+    public Transport(int type, int time, String startStation, String endStation, String transportNumber) {
         this.type = type;
         this.time = time;
-        this.start = start;
-        this.end = end;
+        this.startStation = startStation;
+        this.endStation = endStation;
         this.transportNumber = transportNumber;
     }
 
 
-    public Transport(int type, int time, String start, String end) {
+    public Transport(int type, int time, String startStation, String endStation) {
         this.type = type;
         this.time = time;
-        this.start = start;
-        this.end = end;
+        this.startStation = startStation;
+        this.endStation = endStation;
     }
 
-    public String getStart() {
-        return start;
+    public String getStartStation() {
+        return startStation;
     }
 
-    public void setStart(String start) {
-        this.start = start;
+    public void setStartStation(String startStation) {
+        this.startStation = startStation;
     }
 
-    public String getEnd() {
-        return end;
+    public String getEndStation() {
+        return endStation;
     }
 
-
-
-    public void setEnd(String end) {
-        this.end = end;
+    public void setEndStation(String endStation) {
+        this.endStation = endStation;
     }
 
     public int getType() {
@@ -57,11 +55,11 @@ public class Transport{
         this.time = time;
     }
 
-    public int getTransportNumber() {
+    public String getTransportNumber() {
         return transportNumber;
     }
 
-    public void setTransportNumber(int transportNumber) {
+    public void setTransportNumber(String transportNumber) {
         this.transportNumber = transportNumber;
     }
 }
