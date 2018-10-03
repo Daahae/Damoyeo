@@ -4,6 +4,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import com.daahae.damoyeo.R;
+import com.daahae.damoyeo.model.Position;
+
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
