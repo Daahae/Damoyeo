@@ -1,16 +1,22 @@
 package com.daahae.damoyeo.presenter;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Rect;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.daahae.damoyeo.R;
+import com.daahae.damoyeo.model.Person;
+import com.daahae.damoyeo.model.Position;
 import com.daahae.damoyeo.view.fragment.NMapFragment;
+import com.daahae.damoyeo.view.function.GPSInfo;
 import com.daahae.damoyeo.view.function.NMapPOIflagType;
 import com.daahae.damoyeo.view.function.NMapViewerResourceProvider;
 import com.nhn.android.maps.NMapActivity;
@@ -36,8 +42,11 @@ import com.nhn.android.mapviewer.overlay.NMapPOIdataOverlay;
 import com.nhn.android.mapviewer.overlay.NMapPathDataOverlay;
 import com.nhn.android.mapviewer.overlay.NMapResourceProvider;
 
+import java.util.ArrayList;
+
 public class NMapFragmentPresenter {
     private final String TAG = "NMapViewer";
+
     private NMapFragment view;
     private NMapContext mapContext;
 
@@ -48,63 +57,47 @@ public class NMapFragmentPresenter {
     private NMapOverlayManager mapOverlayManager;
 
     private NMapLocationManager mapLocationManager;
-    private NMapCompassManager mapCompassManager;
     private NMapMyLocationOverlay myLocationOverlay;
 
     private NMapPOIitem floatingPOIitem;
-    private NMapPOIdataOverlay floatingPOIdataOverlay;
 
+    private TextView tvAddress;
+    private LinearLayout layoutAddress, layoutAddMarker;
+
+    private NMapPlacemark mapPlacemark;
+
+    private ArrayList<Person> personList;
+
+    private boolean isFixedMarker = false;
+    private Person targetPerson;
+
+    private GPSInfo gps;
 
     public NMapFragmentPresenter(NMapFragment view, NMapContext context) {
         this.view = view;
         this.mapContext = context;
+        this.personList = new ArrayList<Person>();
     }
 
-    public void init(){
-        // Fragment에 포함된 NMapView 객체 찾기
-        mapView = findMapView(view.getView());
-        if (mapView == null) {
-            throw new IllegalArgumentException("NMapFragment dose not have an instance of NMapView.");
+    public void setTvAddress(TextView tvAddress) {
+        this.tvAddress = tvAddress;
+    }
+
+    public void setLayoutAddress(LinearLayout layoutAddress) {
+        this.layoutAddress = layoutAddress;
+    }
+
+    public void setVisibleAddress(boolean isPickLocation) {
+        if(isPickLocation)
+            layoutAddress.setVisibility(View.VISIBLE);
+        else {
+            layoutAddress.setVisibility(View.GONE);
+            tvAddress.setText("마커를 움직이세요");
         }
+    }
 
-        // NMapView mapView = (NMapView)getView().findViewById(R.id.mapView);
-        mapView.setClientId(view.getResources().getString(R.string.NAVER_API_KEY));// 클라이언트 아이디 설정
-
-        // initialize map view
-        mapView.setClickable(true);
-
-        // use built in zoom controls
-        //mapView.setBuiltInZoomControls(true, null);
-
-        // register listener for map state changes
-        //mapView.setOnMapStateChangeListener(onMapViewStateChangeListener);
-        //mapView.setOnMapViewTouchEventListener(onMapViewTouchEventListener);
-
-        // NMapActivity를 상속하지 않는 경우에는 NMapView 객체 생성후 반드시 setupMapView()를 호출해야함.
-        mapContext.setupMapView(mapView);
-
-        // use map controller to zoom in/out, pan and set map center, zoom level etc.
-        mapController = mapView.getMapController();
-        mapController.setMapCenter(new NGeoPoint(126.978371, 37.5666091), 11);     //Default Data
-
-        mapResourceProvider = new NMapViewerResourceProvider(view.getContext());
-        mapOverlayManager = new NMapOverlayManager(view.getContext(), mapView, mapResourceProvider);
-
-        // set data provider listener
-        mapContext.setMapDataProviderListener(onDataProviderListener);
-
-        // register callout overlay listener to customize it.
-        mapOverlayManager.setOnCalloutOverlayListener(onCalloutOverlayListener);
-
-        // location manager
-        mapLocationManager = new NMapLocationManager(view.getContext());;
-        mapLocationManager.setOnLocationChangeListener(onMyLocationChangeListener);
-
-        // compass manager
-        mapCompassManager = new NMapCompassManager(view.getActivity());
-
-        // create my location overlay
-        myLocationOverlay = mapOverlayManager.createMyLocationOverlay(mapLocationManager, mapCompassManager);;
+    public void setLayoutAddMarker(LinearLayout layoutAddMarker) {
+        this.layoutAddMarker = layoutAddMarker;
     }
 
     /**
@@ -133,27 +126,55 @@ public class NMapFragmentPresenter {
         return null;
     }
 
-    /* Test Functions */
-    public void startMyLocation() {
+    public void init(){
+        // Fragment에 포함된 NMapView 객체 찾기
+        mapView = findMapView(view.getView());
+        if (mapView == null) {
+            throw new IllegalArgumentException("NMapFragment dose not have an instance of NMapView.");
+        }
+
+        mapView.setClientId(view.getResources().getString(R.string.NAVER_API_KEY));// 클라이언트 아이디 설정
+
+        // initialize map view
+        mapView.setClickable(true);
+
+        // NMapActivity를 상속하지 않는 경우에는 NMapView 객체 생성후 반드시 setupMapView()를 호출해야함.
+        mapContext.setupMapView(mapView);
+
+        mapView.setScalingFactor(4.0F, true);
+
+        // use map controller to zoom in/out, pan and set map center, zoom level etc.
+        mapController = mapView.getMapController();
+        mapController.setMapCenter(new NGeoPoint(126.978371, 37.5666091), 11);     //Default Data
+
+        mapResourceProvider = new NMapViewerResourceProvider(view.getContext());
+        mapOverlayManager = new NMapOverlayManager(view.getContext(), mapView, mapResourceProvider);
+
+        // set data provider listener
+        mapContext.setMapDataProviderListener(onDataProviderListener);
+
+        // location manager
+        mapLocationManager = new NMapLocationManager(view.getContext());;
+        mapLocationManager.setOnLocationChangeListener(onMyLocationChangeListener);
+
+        // create my location overlay
+        myLocationOverlay = mapOverlayManager.createMyLocationOverlay(mapLocationManager, null);;
+    }
+
+    public void getGPSLocation() {
         if (myLocationOverlay != null) {
             if (!mapOverlayManager.hasOverlay(myLocationOverlay)) {
                 mapOverlayManager.addOverlay(myLocationOverlay);
             }
 
             if (mapLocationManager.isMyLocationEnabled()) {
-
                 if (!mapView.isAutoRotateEnabled()) {
                     myLocationOverlay.setCompassHeadingVisible(true);
 
-                    mapCompassManager.enableCompass();
-
                     mapView.setAutoRotateEnabled(true, false);
-
-                    //mMapContainerView.requestLayout();
                 } else {
-                    stopMyLocation();
+                    stopGPSLocation();
                 }
-
                 mapView.postInvalidate();
             } else {
                 boolean isMyLocationEnabled = mapLocationManager.enableMyLocation(true);
@@ -166,137 +187,164 @@ public class NMapFragmentPresenter {
 
                     return;
                 }
+
+                setVisibleAddress(true);
+
+                gps = new GPSInfo(view.getContext());
+                // GPS 사용유무 가져오기
+                if (gps.isGetLocation()) {
+                    instantFloatingPOIdataOverlay();
+                } else {
+                    // GPS 를 사용할수 없으므로
+                    gps.showSettingsAlert();
+                }
             }
         }
     }
 
-    public void stopMyLocation() {
+    public void stopGPSLocation() {
         if (myLocationOverlay != null) {
             mapLocationManager.disableMyLocation();
 
             if (mapView.isAutoRotateEnabled()) {
                 myLocationOverlay.setCompassHeadingVisible(false);
 
-                mapCompassManager.disableCompass();
-
                 mapView.setAutoRotateEnabled(false, false);
-
-                //mMapContainerView.requestLayout();
             }
         }
     }
 
+    public void pickLocation() {
+        instantFloatingPOIdataOverlay();
+    }
+
     public void initLocation() {
-        // 초기화
+        setVisibleAddress(false);
+        isFixedMarker = false;
+        layoutAddMarker.setBackground(view.getResources().getDrawable(R.drawable.btn_plus));
+        targetPerson = null;
+        personList.clear();
         if (myLocationOverlay != null) {
-            stopMyLocation();
+            stopGPSLocation();
             mapOverlayManager.removeOverlay(myLocationOverlay);
         }
 
         mapController.setMapViewMode(NMapView.VIEW_MODE_VECTOR);
 
         mapOverlayManager.clearOverlays();
-
-        testPOIdataOverlay();
+        mapController.setMapCenter(new NGeoPoint(126.978371, 37.5666091), 11);
     }
 
-    public void testPOIdataOverlay(){
-        int markerId = NMapPOIflagType.PIN;
-
-        // set POI data
-        NMapPOIdata poiData = new NMapPOIdata(2, mapResourceProvider);
-        poiData.beginPOIdata(2);
-        poiData.addPOIitem(127.108099, 37.366034, "출발", markerId, 0).setRightAccessory(true, NMapPOIflagType.CLICKABLE_ARROW);
-        poiData.addPOIitem(127.106279, 37.366380, "도착", markerId, 0);
-        poiData.endPOIdata();
-
-        // create POI data overlay
-        NMapPOIdataOverlay poiDataOverlay = mapOverlayManager.createPOIdataOverlay(poiData, null);
-        // 해당 오버레이 객체에 포함된 전체 아이템이 화면에 표시되도록 지도 중심 및 축적 레벨을 변경하려면 아래와 같이 구현합니다.
-        poiDataOverlay.showAllPOIdata(0);
-        // 아이템의 선택 상태가 변경되거나 말풍선이 선택되는 경우를 처리하기 위하여 이벤트 리스너를 등록합니다.
-        poiDataOverlay.setOnStateChangeListener(onPOIdataStateChangeListener);
-
-        poiDataOverlay.selectPOIitem(0, true);
+    public void clickMarker() {
+        if(isFixedMarker)
+            removeMarker();
+        else
+            fixMarker();
     }
 
-    // 경로 표시
-    public void testPathDataOverlay() {
-        // set path data points
-        NMapPathData pathData = new NMapPathData(9);
+    public void fixMarker() {
+        if(mapPlacemark != null) {
+            setVisibleAddress(false);
+            mapOverlayManager.clearOverlays();
 
-        pathData.initPathData();
-        pathData.addPathPoint(127.108099, 37.366034, NMapPathLineStyle.TYPE_SOLID);
-        pathData.addPathPoint(127.108088, 37.366043, 0);
-        pathData.addPathPoint(127.108079, 37.365619, 0);
-        pathData.addPathPoint(127.107458, 37.365608, 0);
-        pathData.addPathPoint(127.107232, 37.365608, 0);
-        pathData.addPathPoint(127.106904, 37.365624, 0);
-        pathData.addPathPoint(127.105933, 37.365621, NMapPathLineStyle.TYPE_DASH);
-        pathData.addPathPoint(127.105929, 37.366378, 0);
-        pathData.addPathPoint(127.106279, 37.366380, 0);
-        pathData.endPathData();
+            int markerId = NMapPOIflagType.PIN;
+            int id = personList.size()+1;
+            String address = mapPlacemark.toString();
+            Position position = new Position(mapPlacemark.longitude, mapPlacemark.latitude);
 
-        NMapPathDataOverlay pathDataOverlay = mapOverlayManager.createPathDataOverlay(pathData);
+            Person person = new Person("guest"+id, address, position);
+            person.setId(id);
+            personList.add(person);
 
-        // show all path data
-        // 경로 전체보기
-        pathDataOverlay.showAllPathData(0);
+            // set POI data
+            NMapPOIdata poiData = new NMapPOIdata(id, mapResourceProvider);
+            poiData.beginPOIdata(id);
+            for (Person index:personList) {
+                poiData.addPOIitem(index.getAddressPosition().getX(), index.getAddressPosition().getY(), null, markerId, index.getId());
+            }
+
+            poiData.endPOIdata();
+
+            // create POI data overlay
+            NMapPOIdataOverlay poiDataOverlay = mapOverlayManager.createPOIdataOverlay(poiData, null);
+            // 해당 오버레이 객체에 포함된 전체 아이템이 화면에 표시되도록 지도 중심 및 축적 레벨을 변경하려면 아래와 같이 구현합니다.
+            poiDataOverlay.showAllPOIdata(0);
+            // 아이템의 선택 상태가 변경되거나 말풍선이 선택되는 경우를 처리하기 위하여 이벤트 리스너를 등록합니다.
+            poiDataOverlay.setOnStateChangeListener(onPOIdataStateChangeListener);
+
+            poiDataOverlay.selectPOIitem(0, true);
+            Toast.makeText(view.getContext(), "추가되었습니다.", Toast.LENGTH_SHORT).show();
+        } else
+            Toast.makeText(view.getContext(), "마커를 움직이세요", Toast.LENGTH_SHORT).show();
     }
 
-    public void testPathPOIdataOverlay() {
-
-        // set POI data
-        NMapPOIdata poiData = new NMapPOIdata(4, mapResourceProvider, true);
-        poiData.beginPOIdata(4);
-        poiData.addPOIitem(349652983, 149297368, "Pizza 124-456", NMapPOIflagType.FROM, null);
-        poiData.addPOIitem(349652966, 149296906, null, NMapPOIflagType.NUMBER_BASE + 1, null);
-        poiData.addPOIitem(349651062, 149296913, null, NMapPOIflagType.NUMBER_BASE + 999, null);
-        poiData.addPOIitem(349651376, 149297750, "Pizza 000-999", NMapPOIflagType.TO, null);
-        poiData.endPOIdata();
-
-        // create POI data overlay
-        NMapPOIdataOverlay poiDataOverlay = mapOverlayManager.createPOIdataOverlay(poiData, null);
-
-        // set event listener to the overlay
-        poiDataOverlay.setOnStateChangeListener(onPOIdataStateChangeListener);
-
+    public void removeMarker() {
+        if(targetPerson != null){
+            if(personList.size() != 0)
+                if(personList.contains(targetPerson)) {
+                    personList.remove(targetPerson);
+                    Toast.makeText(view.getContext(), targetPerson.getName()+"님의 마커가 삭제되었습니다.", Toast.LENGTH_SHORT).show();
+                    if(personList.size()>0)
+                        viewAllMarkerFull();
+                    else
+                        initLocation();
+                    targetPerson = null;
+                }
+        } else {
+            Toast.makeText(view.getContext(), "선택한 마커를 확인해주세요", Toast.LENGTH_SHORT).show();
+        }
     }
 
     // 지도 위 오버레이(마커) 아이템 위치 이동
-    public void testFloatingPOIdataOverlay() {
-        // Markers for POI item
-        int marker1 = NMapPOIflagType.PIN;
+    public void instantFloatingPOIdataOverlay() {
+        int marker = NMapPOIflagType.PIN;
 
-        // set POI data
         NMapPOIdata poiData = new NMapPOIdata(1, mapResourceProvider);
         poiData.beginPOIdata(1);
-        NMapPOIitem item = poiData.addPOIitem(null, "Touch & Drag to Move", marker1, 0);
+        NMapPOIitem item = poiData.addPOIitem(null, null, marker, 0);
         if (item != null) {
-            // initialize location to the center of the map view.
             item.setPoint(mapController.getMapCenter());
-            // set floating mode
             item.setFloatingMode(NMapPOIitem.FLOATING_TOUCH | NMapPOIitem.FLOATING_DRAG);
-            // show right button on callout
-            item.setRightButton(true);
 
             floatingPOIitem = item;
         }
         poiData.endPOIdata();
 
-
-        // create POI data overlay
         NMapPOIdataOverlay poiDataOverlay = mapOverlayManager.createPOIdataOverlay(poiData, null);
         if (poiDataOverlay != null) {
             poiDataOverlay.setOnFloatingItemChangeListener(onPOIdataFloatingItemChangeListener);
-
-            // set event listener to the overlay
             poiDataOverlay.setOnStateChangeListener(onPOIdataStateChangeListener);
 
             poiDataOverlay.selectPOIitem(0, false);
-
-            floatingPOIdataOverlay = poiDataOverlay;
         }
+    }
+
+    public void viewAllMarkerFull() {
+        if(personList.size() != 0) {
+            setVisibleAddress(true);
+
+            mapOverlayManager.clearOverlays();
+            int markerId = NMapPOIflagType.PIN;
+            int id = personList.size()+1;
+
+            // set POI data
+            NMapPOIdata poiData = new NMapPOIdata(id, mapResourceProvider);
+            poiData.beginPOIdata(id);
+            for (Person index:personList) {
+                poiData.addPOIitem(index.getAddressPosition().getX(), index.getAddressPosition().getY(), null, markerId, index.getId());
+            }
+
+            poiData.endPOIdata();
+
+            NMapPOIdataOverlay poiDataOverlay = mapOverlayManager.createPOIdataOverlay(poiData, null);
+            // 해당 오버레이 객체에 포함된 전체 아이템이 화면에 표시되도록 지도 중심 및 축적 레벨을 변경하려면 아래와 같이 구현합니다.
+            poiDataOverlay.showAllPOIdata(0);
+            // 아이템의 선택 상태가 변경되거나 말풍선이 선택되는 경우를 처리하기 위하여 이벤트 리스너를 등록합니다.
+            poiDataOverlay.setOnStateChangeListener(onPOIdataStateChangeListener);
+
+            poiDataOverlay.selectPOIitem(0, true);
+        } else
+            Toast.makeText(view.getContext(), "인원을 추가하세요", Toast.LENGTH_SHORT).show();
     }
 
     /* NMapDataProvider Listener */
@@ -307,7 +355,13 @@ public class NMapFragmentPresenter {
             //if (DEBUG) {
             Log.i(TAG, "onReverseGeocoderResponse: placeMark="
                     + ((placeMark != null) ? placeMark.toString() : null));
+            Log.i(TAG, "onReverseGeocoderResponse: placeMark="
+                    + ((placeMark != null) ? placeMark.latitude : null));
+            Log.i(TAG, "onReverseGeocoderResponse: placeMark="
+                    + ((placeMark != null) ? placeMark.longitude : null));
             //}
+
+            mapPlacemark = placeMark;
 
             if (errInfo != null) {
                 Log.e(TAG, "Failed to findPlacemarkAtLocation: error=" + errInfo.toString());
@@ -316,13 +370,12 @@ public class NMapFragmentPresenter {
                 return;
             }
 
-            if (floatingPOIitem != null && floatingPOIdataOverlay != null) {
-                floatingPOIdataOverlay.deselectFocusedPOIitem();
-
+            if (floatingPOIitem != null) {
                 if (placeMark != null) {
                     floatingPOIitem.setTitle(placeMark.toString());
+                    if(tvAddress!=null)
+                        tvAddress.setText(placeMark.toString());
                 }
-                floatingPOIdataOverlay.selectPOIitemBy(floatingPOIitem.getId(), false);
             }
         }
     };
@@ -341,21 +394,13 @@ public class NMapFragmentPresenter {
 
         @Override
         public void onLocationUpdateTimeout(NMapLocationManager locationManager) {
-            // stop location updating
-            //			Runnable runnable = new Runnable() {
-            //				public void run() {
-            //					stopMyLocation();
-            //				}
-            //			};
-            //			runnable.run();
-
             Toast.makeText(view.getContext(), "Your current location is temporarily unavailable.", Toast.LENGTH_LONG).show();
         }
 
         @Override
         public void onLocationUnavailableArea(NMapLocationManager locationManager, NGeoPoint myLocation) {
             Toast.makeText(view.getContext(), "Your current location is unavailable area.", Toast.LENGTH_LONG).show();
-            stopMyLocation();
+            stopGPSLocation();
         }
     };
 
@@ -363,8 +408,30 @@ public class NMapFragmentPresenter {
         @Override
         public void onFocusChanged(NMapPOIdataOverlay nMapPOIdataOverlay, NMapPOIitem nMapPOIitem) {
             if (nMapPOIitem != null) {
+                setVisibleAddress(true);
                 Log.i(TAG, "onFocusChanged: " + nMapPOIitem.toString());
+                if(personList.size()!=0)
+                    if(nMapPOIitem.getId()!=0) {
+                        for (Person index:personList) {
+                            if(index.getId() == nMapPOIitem.getId()) {
+                                targetPerson = index;
+                                tvAddress.setText(targetPerson.getAddress());
+                                isFixedMarker = true;
+                                layoutAddMarker.setBackground(view.getResources().getDrawable(R.drawable.btn_minus));
+                                break;
+                            }
+                        }
+                        if(targetPerson == null) {
+                            isFixedMarker = false;
+                            layoutAddMarker.setBackground(view.getResources().getDrawable(R.drawable.btn_plus));
+                            Toast.makeText(view.getContext(), "올바르지 않은 마커가 선택되었습니다.", Toast.LENGTH_SHORT).show();
+                        }
+                    } else {
+                        isFixedMarker = false;
+                        layoutAddMarker.setBackground(view.getResources().getDrawable(R.drawable.btn_plus));
+                    }
             } else {
+                setVisibleAddress(true);
                 Log.i(TAG, "onFocusChanged: ");
             }
         }
@@ -389,83 +456,6 @@ public class NMapFragmentPresenter {
             mapContext.findPlacemarkAtLocation(point.longitude, point.latitude);
 
             item.setTitle(null);
-
-        }
-    };
-
-    private final NMapView.OnMapStateChangeListener onMapViewStateChangeListener = new NMapView.OnMapStateChangeListener() {
-        @Override
-        public void onMapInitHandler(NMapView nMapView, NMapError nMapError) {
-            Log.e(TAG, "OnMapStateChangeListener onMapInitHandler : ");
-            if (nMapError == null) { // success
-                mapController.setMapCenter(new NGeoPoint(126.978371, 37.5666091), 11);
-            } else { // fail
-                Log.e(TAG, "onMapInitHandler: error=" + nMapError.toString());
-            }
-        }
-
-        @Override
-        public void onMapCenterChange(NMapView nMapView, NGeoPoint nGeoPoint) {
-            Log.e(TAG, "OnMapStateChangeListener onMapCenterChange : " + nGeoPoint.getLatitude() + " ㅡ  " + nGeoPoint.getLongitude());
-        }
-
-        @Override
-        public void onMapCenterChangeFine(NMapView nMapView) {
-            Log.e(TAG, "OnMapStateChangeListener onMapCenterChangeFine : ");
-        }
-
-        @Override
-        public void onZoomLevelChange(NMapView nMapView, int i) {
-            Log.e(TAG, "OnMapStateChangeListener onZoomLevelChange : " + i);
-        }
-
-        @Override
-        public void onAnimationStateChange(NMapView nMapView, int i, int i1) {
-            Log.e(TAG, "OnMapStateChangeListener onAnimationStateChange : ");
-        }
-    };
-
-    private final NMapView.OnMapViewTouchEventListener onMapViewTouchEventListener = new NMapView.OnMapViewTouchEventListener() {
-        @Override
-        public void onLongPress(NMapView nMapView, MotionEvent motionEvent) {
-            Log.e(TAG, "OnMapViewTouchEventListener onLongPress : ");
-        }
-
-        @Override
-        public void onLongPressCanceled(NMapView nMapView) {
-            Log.e(TAG, "OnMapViewTouchEventListener onLongPressCanceled : ");
-        }
-
-        @Override
-        public void onTouchDown(NMapView nMapView, MotionEvent motionEvent) {
-            Log.e(TAG, "OnMapViewTouchEventListener onTouchDown : ");
-        }
-
-        @Override
-        public void onTouchUp(NMapView nMapView, MotionEvent motionEvent) {
-            Log.e(TAG, "OnMapViewTouchEventListener onTouchUp : ");
-        }
-
-        @Override
-        public void onScroll(NMapView nMapView, MotionEvent motionEvent, MotionEvent motionEvent1) {
-            Log.e(TAG, "OnMapViewTouchEventListener onScroll : ");
-        }
-
-        @Override
-        public void onSingleTapUp(NMapView nMapView, MotionEvent motionEvent) {
-            Log.e(TAG, "OnMapViewTouchEventListener onSingleTapUp : ");
-        }
-    };
-
-    // 말풍선 모양
-    private NMapOverlayManager.OnCalloutOverlayListener onCalloutOverlayListener = new NMapOverlayManager.OnCalloutOverlayListener() {
-        @Override
-        public NMapCalloutOverlay onCreateCalloutOverlay(NMapOverlay nMapOverlay, NMapOverlayItem nMapOverlayItem, Rect rect) {
-            // use custom callout overlay
-            return new NMapCalloutCustomOverlay(nMapOverlay, nMapOverlayItem, rect, mapResourceProvider);
-
-            // set basic callout overlay
-            //return new NMapCalloutBasicOverlay(nMapOverlay, nMapOverlayItem, rect);
         }
     };
 }

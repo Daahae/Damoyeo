@@ -16,7 +16,7 @@ public class NMapActivityPresenter {
         this.view = view;
         NMapFragment NMapFragment = new NMapFragment();
         NMapFragment.setArguments(new Bundle());
-        FragmentManager fm = this.view.getSupportFragmentManager();
+        FragmentManager fm = view.getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fm.beginTransaction();
         fragmentTransaction.add(R.id.fragmentHere, NMapFragment);
         fragmentTransaction.commit();

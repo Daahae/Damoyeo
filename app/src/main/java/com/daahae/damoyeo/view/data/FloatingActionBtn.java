@@ -6,64 +6,76 @@ import android.view.animation.Animation;
 public class FloatingActionBtn {
     private Animation fabOpen, fabClose;
     private Boolean isFabOpen = false;
-    private FloatingActionButton fab, fab1, fab2;
+    private FloatingActionButton fabMenu, fabGPS, fabPick, fabClear, fabFull;
 
-    public Animation getFabOpen() {
-        return fabOpen;
-    }
-
-    public void setFabOpen(Boolean fabOpen) {
-        isFabOpen = fabOpen;
-    }
-
-    public FloatingActionButton getFab() {
-        return fab;
-    }
-
-    public void setFab(FloatingActionButton fab) {
-        this.fab = fab;
-    }
-
-    public FloatingActionButton getFab1() {
-        return fab1;
-    }
-
-    public void setFab1(FloatingActionButton fab1) {
-        this.fab1 = fab1;
-    }
-
-    public FloatingActionButton getFab2() {
-        return fab2;
-    }
-
-    public void setFab2(FloatingActionButton fab2) {
-        this.fab2 = fab2;
+    public FloatingActionButton getFabMenu() {
+        return fabMenu;
     }
 
     public void setFabOpen(Animation fabOpen) {
         this.fabOpen = fabOpen;
     }
 
-    public Animation getFabClose() {
-        return fabClose;
-    }
-
     public void setFabClose(Animation fabClose) {
         this.fabClose = fabClose;
     }
 
+    public void setFabMenu(FloatingActionButton fab) {
+        this.fabMenu = fab;
+    }
+
+    public FloatingActionButton getFabGPS() {
+        return fabGPS;
+    }
+
+    public void setFabGPS(FloatingActionButton fabGPS) {
+        this.fabGPS = fabGPS;
+    }
+
+    public FloatingActionButton getFabPick() {
+        return fabPick;
+    }
+
+    public void setFabPick(FloatingActionButton fabPick) {
+        this.fabPick = fabPick;
+    }
+
+    public FloatingActionButton getFabClear() {
+        return fabClear;
+    }
+
+    public void setFabClear(FloatingActionButton fabClear) {
+        this.fabClear = fabClear;
+    }
+
+    public FloatingActionButton getFabFull() {
+        return fabFull;
+    }
+
+    public void setFabFull(FloatingActionButton fabFull) {
+        this.fabFull = fabFull;
+    }
+
     public void anim() {
         if (isFabOpen) {
-            fab1.startAnimation(fabClose);
-            fab2.startAnimation(fabClose);
-            fab1.setClickable(false);
-            fab2.setClickable(false);
+            fabGPS.startAnimation(fabClose);
+            fabPick.startAnimation(fabClose);
+            fabClear.startAnimation(fabClose);
+            fabFull.startAnimation(fabClose);
+            fabGPS.setClickable(false);
+            fabPick.setClickable(false);
+            fabClear.setClickable(false);
+            fabFull.setClickable(false);
             isFabOpen = false;
         } else {
-            fab1.startAnimation(fabOpen);
-            fab2.startAnimation(fabOpen);
-            fab1.setClickable(true);
-            fab2.setClickable(true);
+            fabGPS.startAnimation(fabOpen);
+            fabPick.startAnimation(fabOpen);
+            fabClear.startAnimation(fabOpen);
+            fabFull.startAnimation(fabOpen);
+            fabGPS.setClickable(true);
+            fabPick.setClickable(true);
+            fabClear.setClickable(true);
+            fabFull.setClickable(true);
             isFabOpen = true;
         }
     }

@@ -2,4 +2,6 @@
     <string name="app_name">다모여</string>
     <string name="NAVER_API_KEY">7U_JXot2fhHzfndW5kB7</string>
     <string name="str_done">right</string>
+    <string name="init_tv_address">마커를 움직이세요</string>
+    <string name="tv_search">중간지점 탐색</string>
 </resources>

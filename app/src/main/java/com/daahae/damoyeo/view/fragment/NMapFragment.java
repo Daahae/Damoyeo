@@ -9,6 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.daahae.damoyeo.R;
 import com.daahae.damoyeo.presenter.NMapFragmentPresenter;
@@ -40,40 +42,69 @@ public class NMapFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        //throw new IllegalArgumentException("onCreateView should be implemented in the subclass of NMapFragment.");
         View rootView = (View) inflater.inflate(R.layout.fragment_nmap, container, false);
-        //mMapView = (NMapView) rootView.findViewById(R.id.mapView);
 
         fabtn = new FloatingActionBtn();
         fabtn.setFabOpen(AnimationUtils.loadAnimation(getActivity(), R.anim.fab_open));
         fabtn.setFabClose(AnimationUtils.loadAnimation(getActivity(), R.anim.fab_close));
 
+        TextView tvAddress = rootView.findViewById(R.id.tv_address);
+        presenter.setTvAddress(tvAddress);
+
+        LinearLayout layoutAddress = rootView.findViewById(R.id.layout_address);
+        presenter.setLayoutAddress(layoutAddress);
+
+        LinearLayout layoutAddMarker = rootView.findViewById(R.id.layout_addmarker);
+        presenter.setLayoutAddMarker(layoutAddMarker);
+        layoutAddMarker.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                presenter.clickMarker();
+            }
+        });
+
         Button.OnClickListener onClickListener = new Button.OnClickListener() {
             @Override
             public void onClick(View view) {
                 switch (view.getId()) {
-                    case R.id.fab:
+                    case R.id.fab_menu:
                         fabtn.anim();
                         break;
-                    case R.id.fab1:
+                    case R.id.fab_gps:
+                        // GPS
+                        presenter.getGPSLocation();
+                        fabtn.anim();
+                        break;
+                    case R.id.fab_pick:
+                        // 직접 마커 지정
+                        presenter.pickLocation();
+                        fabtn.anim();
+                        break;
+                    case R.id.fab_clear:
+                        // 초기화
                         presenter.initLocation();
                         fabtn.anim();
                         break;
-                    case R.id.fab2:
-                        // GPS
-                        presenter.startMyLocation();
+                    case R.id.fab_full:
+                        // 전체보기
+                        presenter.viewAllMarkerFull();
                         fabtn.anim();
                         break;
                 }
             }
         };
 
-        fabtn.setFab((FloatingActionButton)rootView.findViewById(R.id.fab));
-        fabtn.setFab1((FloatingActionButton) rootView.findViewById(R.id.fab1));
-        fabtn.setFab2((FloatingActionButton) rootView.findViewById(R.id.fab2));
-        fabtn.getFab().setOnClickListener(onClickListener);
-        fabtn.getFab1().setOnClickListener(onClickListener);
-        fabtn.getFab2().setOnClickListener(onClickListener);
+        fabtn.setFabMenu((FloatingActionButton) rootView.findViewById(R.id.fab_menu));
+        fabtn.setFabGPS((FloatingActionButton) rootView.findViewById(R.id.fab_gps));
+        fabtn.setFabPick((FloatingActionButton) rootView.findViewById(R.id.fab_pick));
+        fabtn.setFabClear((FloatingActionButton) rootView.findViewById(R.id.fab_clear));
+        fabtn.setFabFull((FloatingActionButton) rootView.findViewById(R.id.fab_full));
+
+        fabtn.getFabMenu().setOnClickListener(onClickListener);
+        fabtn.getFabGPS().setOnClickListener(onClickListener);
+        fabtn.getFabPick().setOnClickListener(onClickListener);
+        fabtn.getFabClear().setOnClickListener(onClickListener);
+        fabtn.getFabFull().setOnClickListener(onClickListener);
 
         return rootView;
     }

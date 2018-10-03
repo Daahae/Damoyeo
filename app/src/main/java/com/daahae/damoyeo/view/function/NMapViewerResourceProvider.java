@@ -18,7 +18,7 @@ import com.nhn.android.maps.NMapOverlayItem;
 import com.nhn.android.maps.overlay.NMapPOIitem;
 import com.nhn.android.mapviewer.overlay.NMapResourceProvider;
 
-public class NMapViewerResourceProvider extends NMapResourceProvider implements NMapCalloutCustomOldOverlay.ResourceProvider{
+public class NMapViewerResourceProvider extends NMapResourceProvider{
     private static final String LOG_TAG = "NMapViewerResourceProv";
     private static final boolean DEBUG = false;
 

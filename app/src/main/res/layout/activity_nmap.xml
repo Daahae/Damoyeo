@@ -6,7 +6,7 @@
     <LinearLayout
         android:id="@+id/fragmentHere"
         android:orientation="vertical"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="0dip"
         android:layout_weight="1">
     </LinearLayout>
