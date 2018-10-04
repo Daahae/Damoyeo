@@ -42,8 +42,8 @@ public class Presenter {
         public void onSuccess(ODsayData oDsayData, API api) {
             ArrayList<Transport> transportArrayList = new ArrayList<>();
             JSONObject jsonObject;
-            int totalTime = 0;
             jsonObject = oDsayData.getJson();
+            int totalTime = 0;
 
             try {
                 jsonObject = jsonObject.getJSONObject("result");
@@ -80,7 +80,7 @@ public class Presenter {
                 transportInfoList = new TransportInfoList(transportArrayList, totalTime);
                 Log.e("err",transportInfoList.getTransportInfo().get(0).getType()+"");
                 totalTime = transportInfoList.getTotalTime();
-                transportArrayList = transportInfoList.getTransportInfo();++++
+                transportArrayList = transportInfoList.getTransportInfo();
 
 
                 StringBuffer sb = new StringBuffer();
@@ -94,10 +94,8 @@ public class Presenter {
                             "endStation : " + transport.getEndStation() + "\n" +
                             "\n"
                     );
-
                 }
                 sb.append("총 소요시간"+totalTime);
-
                 view.tv_data.setText(sb);
             } catch (Exception E) {
                 E.printStackTrace();
