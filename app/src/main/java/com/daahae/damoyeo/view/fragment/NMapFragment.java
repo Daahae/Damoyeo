@@ -1,6 +1,7 @@
 package com.daahae.damoyeo.view.fragment;
 
 import android.Manifest;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -9,11 +10,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.daahae.damoyeo.R;
 import com.daahae.damoyeo.presenter.NMapFragmentPresenter;
+import com.daahae.damoyeo.view.activity.NMapSearchActivity;
 import com.daahae.damoyeo.view.data.FloatingActionBtn;
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
@@ -42,11 +46,25 @@ public class NMapFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = (View) inflater.inflate(R.layout.fragment_nmap, container, false);
+        final View rootView = (View) inflater.inflate(R.layout.fragment_nmap, container, false);
 
-        fabtn = new FloatingActionBtn();
-        fabtn.setFabOpen(AnimationUtils.loadAnimation(getActivity(), R.anim.fab_open));
-        fabtn.setFabClose(AnimationUtils.loadAnimation(getActivity(), R.anim.fab_close));
+        TextView.OnClickListener tvOnClickListener = new TextView.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                switch (v.getId()) {
+                    case R.id.tv_searchbar:
+                        Intent intent = new Intent(getActivity(), NMapSearchActivity.class);
+                        startActivity(intent);
+                        getActivity().overridePendingTransition(R.anim.anim_slide_in_right, R.anim.anim_slide_out_left);
+                        break;
+                }
+            }
+        };
+
+        TextView tvSearchbar = rootView.findViewById(R.id.tv_searchbar);
+        tvSearchbar.setOnClickListener(tvOnClickListener);
+
+        //presenter.setEdSearchbar(tvSearchbar);
 
         TextView tvAddress = rootView.findViewById(R.id.tv_address);
         presenter.setTvAddress(tvAddress);
@@ -54,19 +72,29 @@ public class NMapFragment extends Fragment {
         LinearLayout layoutAddress = rootView.findViewById(R.id.layout_address);
         presenter.setLayoutAddress(layoutAddress);
 
-        LinearLayout layoutAddMarker = rootView.findViewById(R.id.layout_addmarker);
-        presenter.setLayoutAddMarker(layoutAddMarker);
-        layoutAddMarker.setOnClickListener(new View.OnClickListener() {
+        LinearLayout.OnClickListener layoutOnClickListener = new LinearLayout.OnClickListener() {
             @Override
             public void onClick(View v) {
-                presenter.clickMarker();
+                switch (v.getId()) {
+                    case R.id.layout_addmarker:
+                        presenter.clickMarker();
+                        break;
+                }
             }
-        });
+        };
 
-        Button.OnClickListener onClickListener = new Button.OnClickListener() {
+        LinearLayout layoutAddMarker = rootView.findViewById(R.id.layout_addmarker);
+        presenter.setLayoutAddMarker(layoutAddMarker);
+        layoutAddMarker.setOnClickListener(layoutOnClickListener);
+
+        fabtn = new FloatingActionBtn();
+        fabtn.setFabOpen(AnimationUtils.loadAnimation(getActivity(), R.anim.fab_open));
+        fabtn.setFabClose(AnimationUtils.loadAnimation(getActivity(), R.anim.fab_close));
+
+        Button.OnClickListener btnOnClickListener = new Button.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                switch (view.getId()) {
+            public void onClick(View v) {
+                switch (v.getId()) {
                     case R.id.fab_menu:
                         fabtn.anim();
                         break;
@@ -100,11 +128,11 @@ public class NMapFragment extends Fragment {
         fabtn.setFabClear((FloatingActionButton) rootView.findViewById(R.id.fab_clear));
         fabtn.setFabFull((FloatingActionButton) rootView.findViewById(R.id.fab_full));
 
-        fabtn.getFabMenu().setOnClickListener(onClickListener);
-        fabtn.getFabGPS().setOnClickListener(onClickListener);
-        fabtn.getFabPick().setOnClickListener(onClickListener);
-        fabtn.getFabClear().setOnClickListener(onClickListener);
-        fabtn.getFabFull().setOnClickListener(onClickListener);
+        fabtn.getFabMenu().setOnClickListener(btnOnClickListener);
+        fabtn.getFabGPS().setOnClickListener(btnOnClickListener);
+        fabtn.getFabPick().setOnClickListener(btnOnClickListener);
+        fabtn.getFabClear().setOnClickListener(btnOnClickListener);
+        fabtn.getFabFull().setOnClickListener(btnOnClickListener);
 
         return rootView;
     }

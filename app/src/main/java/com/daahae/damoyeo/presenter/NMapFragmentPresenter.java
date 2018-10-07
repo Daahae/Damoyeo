@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -16,6 +17,7 @@ import com.daahae.damoyeo.R;
 import com.daahae.damoyeo.model.Person;
 import com.daahae.damoyeo.model.Position;
 import com.daahae.damoyeo.view.fragment.NMapFragment;
+import com.daahae.damoyeo.view.function.APISearchMap;
 import com.daahae.damoyeo.view.function.GPSInfo;
 import com.daahae.damoyeo.view.function.NMapPOIflagType;
 import com.daahae.damoyeo.view.function.NMapViewerResourceProvider;
@@ -73,10 +75,14 @@ public class NMapFragmentPresenter {
 
     private GPSInfo gps;
 
+    private APISearchMap searchMap;
+    private EditText edSearchbar;
+
     public NMapFragmentPresenter(NMapFragment view, NMapContext context) {
         this.view = view;
         this.mapContext = context;
         this.personList = new ArrayList<Person>();
+        this.searchMap = new APISearchMap(view);
     }
 
     public void setTvAddress(TextView tvAddress) {
@@ -98,6 +104,10 @@ public class NMapFragmentPresenter {
 
     public void setLayoutAddMarker(LinearLayout layoutAddMarker) {
         this.layoutAddMarker = layoutAddMarker;
+    }
+
+    public void setEdSearchbar(EditText edSearchbar) {
+        this.edSearchbar = edSearchbar;
     }
 
     /**
@@ -159,6 +169,20 @@ public class NMapFragmentPresenter {
 
         // create my location overlay
         myLocationOverlay = mapOverlayManager.createMyLocationOverlay(mapLocationManager, null);;
+    }
+
+    public void getSearchbar() {
+        if(edSearchbar.getText().toString().equals(""))
+            Toast.makeText(view.getContext(), "주소를 입력하세요", Toast.LENGTH_SHORT).show();
+        else {
+            // Thread로 웹서버에 접속
+            new Thread() {
+                public void run() {
+                    searchMap.getMap(edSearchbar.getText().toString());
+                }
+            }.start();
+        }
+
     }
 
     public void getGPSLocation() {
