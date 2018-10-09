@@ -49,6 +49,7 @@
             android:orientation="horizontal">
 
             <ListView
+                android:id="@+id/list_marker_time"
                 android:layout_width="100dp"
                 android:layout_height="match_parent"
                 android:layout_gravity="right" />

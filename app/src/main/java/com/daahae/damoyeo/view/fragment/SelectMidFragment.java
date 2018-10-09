@@ -10,11 +10,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ListView;
 
 import com.daahae.damoyeo.R;
 import com.daahae.damoyeo.presenter.NMapActivityPresenter;
 import com.daahae.damoyeo.presenter.NMapFragmentPresenter;
 import com.daahae.damoyeo.presenter.SelectMidFragmentPresenter;
+import com.daahae.damoyeo.view.adapter.BuildingAdapter;
+import com.daahae.damoyeo.view.adapter.MarkerTimeAdapter;
 import com.nhn.android.maps.NMapContext;
 
 @SuppressLint("ValidFragment")
@@ -28,6 +31,9 @@ public class SelectMidFragment extends Fragment implements View.OnClickListener{
 
     private ImageButton btnSelectMidAlgorithm, btnSelectLandmark;
 
+    private MarkerTimeAdapter markerTimeAdapter;
+    private ListView listMarkerTime;
+
 
     public SelectMidFragment(NMapActivityPresenter parentPresenter) {
         this.parentPresenter = parentPresenter;
@@ -37,6 +43,7 @@ public class SelectMidFragment extends Fragment implements View.OnClickListener{
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         presenter = new SelectMidFragmentPresenter(this);
+        markerTimeAdapter = new MarkerTimeAdapter();
     }
 
     @Nullable
@@ -55,6 +62,11 @@ public class SelectMidFragment extends Fragment implements View.OnClickListener{
 
         btnSelectLandmark = rootView.findViewById(R.id.btn_select_landmark);
         btnSelectLandmark.setOnClickListener(this);
+
+        listMarkerTime = rootView.findViewById(R.id.list_marker_time);
+        presenter.setMarkerTimeList(markerTimeAdapter);
+
+        listMarkerTime.setAdapter(markerTimeAdapter);
 
         return rootView;
     }

@@ -45,7 +45,7 @@
 
     </LinearLayout>
 
-    <com.daahae.damoyeo.presenter.ClickableSlidingDrawerPresenter
+    <SlidingDrawer
         android:id="@+id/slide"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -65,46 +65,57 @@
             android:orientation="horizontal"
             android:background="@color/colorWhite">
 
-            <ImageButton
-                android:id="@+id/btn_category_play"
-                android:layout_width="0dp"
-                android:layout_height="60dp"
-                android:layout_margin="10dp"
-                android:layout_weight="1"
-                android:background="@null"
-                android:scaleType="centerInside"
-                android:src="@drawable/btn_category_play_orange" />
+            <LinearLayout
+                android:id="@+id/linear_handle_menu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/colorWhite"
+                android:orientation="horizontal">
 
-            <ImageButton
-                android:id="@+id/btn_category_food"
-                android:layout_width="0dp"
-                android:layout_height="60dp"
-                android:layout_margin="10dp"
-                android:layout_weight="1"
-                android:background="@null"
-                android:scaleType="centerInside"
-                android:src="@drawable/btn_category_food_gray" />
 
-            <ImageButton
-                android:id="@+id/btn_category_cafe"
-                android:layout_width="0dp"
-                android:layout_height="60dp"
-                android:layout_margin="10dp"
-                android:layout_weight="1"
-                android:background="@null"
-                android:scaleType="centerInside"
-                android:src="@drawable/btn_category_cafe_gray" />
+                <ImageButton
+                    android:id="@+id/btn_category_play_dummy"
+                    android:layout_width="0dp"
+                    android:layout_height="60dp"
+                    android:layout_margin="10dp"
+                    android:layout_weight="1"
+                    android:background="@null"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/btn_category_play_orange" />
 
-            <ImageButton
-                android:id="@+id/btn_category_drink"
-                android:layout_width="0dp"
-                android:layout_height="60dp"
-                android:layout_margin="10dp"
-                android:layout_weight="1"
-                android:background="@null"
-                android:scaleType="centerInside"
-                android:src="@drawable/btn_category_drink_gray" />
+                <ImageButton
+                    android:id="@+id/btn_category_food_dummy"
+                    android:layout_width="0dp"
+                    android:layout_height="60dp"
+                    android:layout_margin="10dp"
+                    android:layout_weight="1"
+                    android:background="@null"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/btn_category_food_gray" />
+
+                <ImageButton
+                    android:id="@+id/btn_category_cafe_dummy"
+                    android:layout_width="0dp"
+                    android:layout_height="60dp"
+                    android:layout_margin="10dp"
+                    android:layout_weight="1"
+                    android:background="@null"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/btn_category_cafe_gray" />
+
+                <ImageButton
+                    android:id="@+id/btn_category_drink_dummy"
+                    android:layout_width="0dp"
+                    android:layout_height="60dp"
+                    android:layout_margin="10dp"
+                    android:layout_weight="1"
+                    android:background="@null"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/btn_category_drink_gray" />
+
+            </LinearLayout>
         </LinearLayout>
+
 
         <LinearLayout
             android:id="@+id/content"
@@ -113,6 +124,55 @@
             android:background="#FFFFFFFF"
             android:orientation="vertical"
             >
+
+            <LinearLayout
+                android:visibility="gone"
+                android:id="@+id/linear_category_menu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:background="@color/colorWhite">
+
+                <ImageButton
+                    android:id="@+id/btn_category_play"
+                    android:layout_width="0dp"
+                    android:layout_height="60dp"
+                    android:layout_margin="10dp"
+                    android:layout_weight="1"
+                    android:background="@null"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/btn_category_play_orange" />
+
+                <ImageButton
+                    android:id="@+id/btn_category_food"
+                    android:layout_width="0dp"
+                    android:layout_height="60dp"
+                    android:layout_margin="10dp"
+                    android:layout_weight="1"
+                    android:background="@null"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/btn_category_food_gray" />
+
+                <ImageButton
+                    android:id="@+id/btn_category_cafe"
+                    android:layout_width="0dp"
+                    android:layout_height="60dp"
+                    android:layout_margin="10dp"
+                    android:layout_weight="1"
+                    android:background="@null"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/btn_category_cafe_gray" />
+
+                <ImageButton
+                    android:id="@+id/btn_category_drink"
+                    android:layout_width="0dp"
+                    android:layout_height="60dp"
+                    android:layout_margin="10dp"
+                    android:layout_weight="1"
+                    android:background="@null"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/btn_category_drink_gray" />
+            </LinearLayout>
 
             <View
                 android:layout_width="match_parent"
@@ -131,7 +191,7 @@
                     android:layout_width="0dp"
                     android:layout_height="50dp"
                     android:layout_weight="1"
-                    android:background="@null"
+                    android:background="@color/colorWhite"
                     android:text="노래방" />
 
                 <Button
@@ -139,7 +199,7 @@
                     android:layout_width="0dp"
                     android:layout_height="50dp"
                     android:layout_weight="1"
-                    android:background="@null"
+                    android:background="@color/colorLightGray"
                     android:text="당구장" />
 
                 <Button
@@ -147,7 +207,7 @@
                     android:layout_width="0dp"
                     android:layout_height="50dp"
                     android:layout_weight="1"
-                    android:background="@null"
+                    android:background="@color/colorLightGray"
                     android:text="PC방" />
 
                 <Button
@@ -155,7 +215,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:background="@null"
+                    android:background="@color/colorLightGray"
                     android:text="볼링장" />
 
             </LinearLayout>
@@ -168,6 +228,6 @@
 
             </ListView>
         </LinearLayout>
-    </com.daahae.damoyeo.presenter.ClickableSlidingDrawerPresenter>
+    </SlidingDrawer>
 
 </RelativeLayout>
