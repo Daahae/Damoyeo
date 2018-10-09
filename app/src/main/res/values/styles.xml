@@ -2,10 +2,20 @@
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="colorControlNormal">@color/appMainColor</item>
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorPrimary">@color/appMainColor</item>
+        <item name="colorPrimaryDark">@color/appMainColor</item>
+        <item name="colorAccent">@color/colorWhite</item>
+
+        <!--Status Bar 배경색-->
+        <item name="android:statusBarColor">@color/colorWhite</item>
+        <!--Status Bar 글자색깔-->
+        <item name="android:windowLightStatusBar">true</item>
+
     </style>
 
     <style name="TranslucentStatusBar" parent="@android:style/Theme.Holo.Light">
@@ -18,14 +28,5 @@
         <item name="android:background">@android:color/transparent</item>
     </style>
 
-    <style name="Theme.AppCompat.Translucent">
-        <item name="android:windowBackground">@android:color/transparent</item>
-        <item name="android:colorBackgroundCacheHint">@null</item>
-        <item name="android:windowIsTranslucent">true</item>
-        <item name="android:windowAnimationStyle">@android:style/Animation</item>
-        <item name="windowNoTitle">true</item>
-        <item name="android:background">#00000000</item>
-        <item name="android:windowContentOverlay">@null</item>
-        <item name="android:windowTranslucentStatus">true</item>
-    </style>
+
 </resources>

@@ -47,6 +47,8 @@ import java.util.ArrayList;
 public class NMapFragmentPresenter {
     private final String TAG = "NMapViewer";
 
+    private NMapActivityPresenter nMapActivityPresenter;
+
     private NMapFragment view;
     private NMapContext mapContext;
 
