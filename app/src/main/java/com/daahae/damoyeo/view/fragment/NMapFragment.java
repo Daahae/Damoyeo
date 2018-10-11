@@ -1,6 +1,7 @@
 package com.daahae.damoyeo.view.fragment;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -13,7 +14,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.daahae.damoyeo.R;
+import com.daahae.damoyeo.presenter.NMapActivityPresenter;
 import com.daahae.damoyeo.presenter.NMapFragmentPresenter;
+import com.daahae.damoyeo.view.activity.NMapActivity;
 import com.daahae.damoyeo.view.data.FloatingActionBtn;
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
@@ -25,11 +28,19 @@ import java.util.ArrayList;
  * NMapFragment 클래스는 NMapActivity를 상속하지 않고 NMapView만 사용하고자 하는 경우에 NMapContext를 이용한 예제임.
  * NMapView 사용시 필요한 초기화 및 리스너 등록은 NMapActivity 사용시와 동일함.
  */
+@SuppressLint("ValidFragment")
 public class NMapFragment extends Fragment {
     private NMapContext mapContext;
     private NMapFragmentPresenter presenter;
 
     private FloatingActionBtn fabtn;
+    private LinearLayout linearBtnSearchMid;
+
+    private NMapActivityPresenter parentPresenter;
+
+    public NMapFragment(NMapActivityPresenter parentPresenter) {
+        this.parentPresenter = parentPresenter;
+    }
 
     /* Fragment 라이프사이클에 따라서 NMapContext의 해당 API를 호출함 */
     @Override
@@ -96,6 +107,9 @@ public class NMapFragment extends Fragment {
                         presenter.viewAllMarkerFull();
                         fabtn.anim();
                         break;
+                    case R.id.linear_search_mid:
+                        parentPresenter.changeView(parentPresenter.SELECT_MID_PAGE);
+                        break;
                 }
             }
         };
@@ -111,6 +125,9 @@ public class NMapFragment extends Fragment {
         fabtn.getFabPick().setOnClickListener(btnOnClickListener);
         fabtn.getFabClear().setOnClickListener(btnOnClickListener);
         fabtn.getFabFull().setOnClickListener(btnOnClickListener);
+
+        linearBtnSearchMid = rootView.findViewById(R.id.linear_search_mid);
+        linearBtnSearchMid.setOnClickListener(btnOnClickListener);
 
         return rootView;
     }

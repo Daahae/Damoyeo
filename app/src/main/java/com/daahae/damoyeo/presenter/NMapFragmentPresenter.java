@@ -9,7 +9,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.arlib.floatingsearchview.FloatingSearchView;
 import com.daahae.damoyeo.R;
 import com.daahae.damoyeo.model.Building;
 import com.daahae.damoyeo.model.Person;
@@ -37,6 +36,8 @@ import java.util.ArrayList;
 
 public class NMapFragmentPresenter {
     private final String TAG = "NMapViewer";
+
+    private NMapActivityPresenter nMapActivityPresenter;
 
     private NMapFragment view;
     private NMapContext mapContext;
