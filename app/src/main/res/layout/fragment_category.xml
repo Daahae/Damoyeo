@@ -81,7 +81,7 @@
                     android:layout_weight="1"
                     android:background="@null"
                     android:scaleType="centerInside"
-                    android:src="@drawable/btn_category_play_orange" />
+                    android:src="@drawable/btn_category_play_gray" />
 
                 <ImageButton
                     android:id="@+id/btn_category_food_dummy"
