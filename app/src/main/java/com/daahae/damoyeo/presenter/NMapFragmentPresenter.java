@@ -14,9 +14,7 @@ import com.daahae.damoyeo.R;
 import com.daahae.damoyeo.model.Building;
 import com.daahae.damoyeo.model.Person;
 import com.daahae.damoyeo.model.Position;
-import com.daahae.damoyeo.view.data.TextSuggestion;
 import com.daahae.damoyeo.view.fragment.NMapFragment;
-import com.daahae.damoyeo.view.function.APISearchMap;
 import com.daahae.damoyeo.view.function.GPSInfo;
 import com.daahae.damoyeo.view.function.NMapPOIflagType;
 import com.daahae.damoyeo.view.function.NMapViewerResourceProvider;
@@ -36,7 +34,6 @@ import com.nhn.android.mapviewer.overlay.NMapPOIdataOverlay;
 import com.nhn.android.mapviewer.overlay.NMapResourceProvider;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class NMapFragmentPresenter {
     private final String TAG = "NMapViewer";
@@ -67,17 +64,10 @@ public class NMapFragmentPresenter {
 
     private GPSInfo gps;
 
-    private APISearchMap searchMap;
-
-    private FloatingSearchView searchView;
-    private ArrayList<Building> searchResults;
-    private Thread searchingThread;
-
     public NMapFragmentPresenter(NMapFragment view, NMapContext context) {
         this.view = view;
         this.mapContext = context;
         this.personList = new ArrayList<Person>();
-        this.searchMap = new APISearchMap(view);
     }
 
     public void setTvAddress(TextView tvAddress) {
@@ -99,10 +89,6 @@ public class NMapFragmentPresenter {
 
     public void setLayoutAddMarker(LinearLayout layoutAddMarker) {
         this.layoutAddMarker = layoutAddMarker;
-    }
-
-    public void setSearchView(FloatingSearchView searchView) {
-        this.searchView = searchView;
     }
 
     /**
@@ -164,51 +150,6 @@ public class NMapFragmentPresenter {
 
         // create my location overlay
         myLocationOverlay = mapOverlayManager.createMyLocationOverlay(mapLocationManager, null);;
-    }
-
-    public void searchLocation(String targetText) {
-        if(targetText.equals(""))
-            Toast.makeText(view.getContext(), "주소를 입력하세요", Toast.LENGTH_SHORT).show();
-        else {
-            runningThread(targetText);
-        }
-    }
-
-    public void runningThread(final String targetText) {
-        // 스레드로 네이버 웹서버에 접속
-        searchingThread = new Thread(){
-            @Override
-            public void run() {
-                synchronized (this) {
-                    // 검색한 텍스트에 맞는 지역 이름을 가져옴
-                    searchResults = searchMap.getMap(targetText);
-                    notify();
-                }
-            }
-        };
-        searchingThread.start();
-
-        synchronized (searchingThread) {
-            try{
-                // searchingThread.wait()메소드를 호출.
-                // 메인쓰레드는 정지
-                // searchingThread가 웹서버에서 검색 결과를 찾은 다음 notify를 호출하게 되면 wait에서 깨어남
-                searchingThread.wait();
-            }catch(InterruptedException e){
-                e.printStackTrace();
-            }
-
-            // 자동완성
-            List<TextSuggestion> textSuggestions = new ArrayList<TextSuggestion>();
-            if(searchResults.size()!=0) {
-                for (Building result : searchResults) {
-                    textSuggestions.add(new TextSuggestion(result.getName()));
-                    Log.d("ddd", result.getName());
-                }
-            }
-            // UI를 스레드 내부에서 변경할 수 없어 스레드 종료 후 적용
-            searchView.swapSuggestions(textSuggestions);
-        }
     }
 
     public void getGPSLocation() {

@@ -9,26 +9,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.arlib.floatingsearchview.FloatingSearchView;
-import com.arlib.floatingsearchview.suggestions.SearchSuggestionsAdapter;
-import com.arlib.floatingsearchview.suggestions.model.SearchSuggestion;
 import com.daahae.damoyeo.R;
 import com.daahae.damoyeo.presenter.NMapFragmentPresenter;
-import com.daahae.damoyeo.view.data.TextSuggestion;
 import com.daahae.damoyeo.view.data.FloatingActionBtn;
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
 import com.nhn.android.maps.NMapContext;
 
-import org.json.JSONObject;
-
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * NMapFragment 클래스는 NMapActivity를 상속하지 않고 NMapView만 사용하고자 하는 경우에 NMapContext를 이용한 예제임.
@@ -52,25 +43,6 @@ public class NMapFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View rootView = (View) inflater.inflate(R.layout.fragment_nmap, container, false);
-
-        FloatingSearchView searchView = rootView.findViewById(R.id.floating_search_view);
-        presenter.setSearchView(searchView);
-        searchView.setOnQueryChangeListener(new FloatingSearchView.OnQueryChangeListener() {
-            @Override
-            public void onSearchTextChanged(String oldQuery, String newQuery) {
-                presenter.searchLocation(newQuery);
-            }
-        });
-
-        searchView.setOnBindSuggestionCallback(new SearchSuggestionsAdapter.OnBindSuggestionCallback() {
-            @Override
-            public void onBindSuggestion(View suggestionView, ImageView leftIcon, TextView textView, SearchSuggestion item, int itemPosition) {
-
-                //here you can set some attributes for the suggestion's left icon and text. For example,
-                //you can choose your favorite image-loading library for setting the left icon's image.
-            }
-
-        });
 
         TextView tvAddress = rootView.findViewById(R.id.tv_address);
         presenter.setTvAddress(tvAddress);
