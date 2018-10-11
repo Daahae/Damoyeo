@@ -20,17 +20,17 @@ import com.arlib.floatingsearchview.suggestions.model.SearchSuggestion;
  * limitations under the License.
  */
 
-public class ColorSuggestion implements SearchSuggestion {
+public class TextSuggestion implements SearchSuggestion {
 
-    private String mColorName;
+    private String textName;
     private boolean mIsHistory = false;
 
-    public ColorSuggestion(String suggestion) {
-        this.mColorName = suggestion.toLowerCase();
+    public TextSuggestion(String suggestion) {
+        this.textName = suggestion.toLowerCase();
     }
 
-    public ColorSuggestion(Parcel source) {
-        this.mColorName = source.readString();
+    public TextSuggestion(Parcel source) {
+        this.textName = source.readString();
         this.mIsHistory = source.readInt() != 0;
     }
 
@@ -44,18 +44,18 @@ public class ColorSuggestion implements SearchSuggestion {
 
     @Override
     public String getBody() {
-        return mColorName;
+        return textName;
     }
 
-    public static final Creator<ColorSuggestion> CREATOR = new Creator<ColorSuggestion>() {
+    public static final Creator<TextSuggestion> CREATOR = new Creator<TextSuggestion>() {
         @Override
-        public ColorSuggestion createFromParcel(Parcel in) {
-            return new ColorSuggestion(in);
+        public TextSuggestion createFromParcel(Parcel in) {
+            return new TextSuggestion(in);
         }
 
         @Override
-        public ColorSuggestion[] newArray(int size) {
-            return new ColorSuggestion[size];
+        public TextSuggestion[] newArray(int size) {
+            return new TextSuggestion[size];
         }
     };
 
@@ -66,7 +66,7 @@ public class ColorSuggestion implements SearchSuggestion {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(mColorName);
+        dest.writeString(textName);
         dest.writeInt(mIsHistory ? 1 : 0);
     }
 }
