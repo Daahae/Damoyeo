@@ -42,11 +42,7 @@ public class NMapFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = (View) inflater.inflate(R.layout.fragment_nmap, container, false);
-
-        fabtn = new FloatingActionBtn();
-        fabtn.setFabOpen(AnimationUtils.loadAnimation(getActivity(), R.anim.fab_open));
-        fabtn.setFabClose(AnimationUtils.loadAnimation(getActivity(), R.anim.fab_close));
+        final View rootView = (View) inflater.inflate(R.layout.fragment_nmap, container, false);
 
         TextView tvAddress = rootView.findViewById(R.id.tv_address);
         presenter.setTvAddress(tvAddress);
@@ -54,19 +50,29 @@ public class NMapFragment extends Fragment {
         LinearLayout layoutAddress = rootView.findViewById(R.id.layout_address);
         presenter.setLayoutAddress(layoutAddress);
 
-        LinearLayout layoutAddMarker = rootView.findViewById(R.id.layout_addmarker);
-        presenter.setLayoutAddMarker(layoutAddMarker);
-        layoutAddMarker.setOnClickListener(new View.OnClickListener() {
+        LinearLayout.OnClickListener layoutOnClickListener = new LinearLayout.OnClickListener() {
             @Override
             public void onClick(View v) {
-                presenter.clickMarker();
+                switch (v.getId()) {
+                    case R.id.layout_addmarker:
+                        presenter.clickMarker();
+                        break;
+                }
             }
-        });
+        };
 
-        Button.OnClickListener onClickListener = new Button.OnClickListener() {
+        LinearLayout layoutAddMarker = rootView.findViewById(R.id.layout_addmarker);
+        presenter.setLayoutAddMarker(layoutAddMarker);
+        layoutAddMarker.setOnClickListener(layoutOnClickListener);
+
+        fabtn = new FloatingActionBtn();
+        fabtn.setFabOpen(AnimationUtils.loadAnimation(getActivity(), R.anim.fab_open));
+        fabtn.setFabClose(AnimationUtils.loadAnimation(getActivity(), R.anim.fab_close));
+
+        Button.OnClickListener btnOnClickListener = new Button.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                switch (view.getId()) {
+            public void onClick(View v) {
+                switch (v.getId()) {
                     case R.id.fab_menu:
                         fabtn.anim();
                         break;
@@ -100,11 +106,11 @@ public class NMapFragment extends Fragment {
         fabtn.setFabClear((FloatingActionButton) rootView.findViewById(R.id.fab_clear));
         fabtn.setFabFull((FloatingActionButton) rootView.findViewById(R.id.fab_full));
 
-        fabtn.getFabMenu().setOnClickListener(onClickListener);
-        fabtn.getFabGPS().setOnClickListener(onClickListener);
-        fabtn.getFabPick().setOnClickListener(onClickListener);
-        fabtn.getFabClear().setOnClickListener(onClickListener);
-        fabtn.getFabFull().setOnClickListener(onClickListener);
+        fabtn.getFabMenu().setOnClickListener(btnOnClickListener);
+        fabtn.getFabGPS().setOnClickListener(btnOnClickListener);
+        fabtn.getFabPick().setOnClickListener(btnOnClickListener);
+        fabtn.getFabClear().setOnClickListener(btnOnClickListener);
+        fabtn.getFabFull().setOnClickListener(btnOnClickListener);
 
         return rootView;
     }

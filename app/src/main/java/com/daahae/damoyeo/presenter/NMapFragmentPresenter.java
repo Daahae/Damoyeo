@@ -1,18 +1,17 @@
 package com.daahae.damoyeo.presenter;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.graphics.Rect;
 import android.provider.Settings;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.arlib.floatingsearchview.FloatingSearchView;
 import com.daahae.damoyeo.R;
+import com.daahae.damoyeo.model.Building;
 import com.daahae.damoyeo.model.Person;
 import com.daahae.damoyeo.model.Position;
 import com.daahae.damoyeo.view.fragment.NMapFragment;
@@ -20,26 +19,18 @@ import com.daahae.damoyeo.view.function.GPSInfo;
 import com.daahae.damoyeo.view.function.NMapPOIflagType;
 import com.daahae.damoyeo.view.function.NMapViewerResourceProvider;
 import com.nhn.android.maps.NMapActivity;
-import com.nhn.android.maps.NMapCompassManager;
 import com.nhn.android.maps.NMapContext;
 import com.nhn.android.maps.NMapController;
 import com.nhn.android.maps.NMapLocationManager;
-import com.nhn.android.maps.NMapOverlay;
-import com.nhn.android.maps.NMapOverlayItem;
 import com.nhn.android.maps.NMapView;
 import com.nhn.android.maps.maplib.NGeoPoint;
 import com.nhn.android.maps.nmapmodel.NMapError;
 import com.nhn.android.maps.nmapmodel.NMapPlacemark;
 import com.nhn.android.maps.overlay.NMapPOIdata;
 import com.nhn.android.maps.overlay.NMapPOIitem;
-import com.nhn.android.maps.overlay.NMapPathData;
-import com.nhn.android.maps.overlay.NMapPathLineStyle;
-import com.nhn.android.mapviewer.overlay.NMapCalloutCustomOverlay;
-import com.nhn.android.mapviewer.overlay.NMapCalloutOverlay;
 import com.nhn.android.mapviewer.overlay.NMapMyLocationOverlay;
 import com.nhn.android.mapviewer.overlay.NMapOverlayManager;
 import com.nhn.android.mapviewer.overlay.NMapPOIdataOverlay;
-import com.nhn.android.mapviewer.overlay.NMapPathDataOverlay;
 import com.nhn.android.mapviewer.overlay.NMapResourceProvider;
 
 import java.util.ArrayList;
@@ -252,6 +243,8 @@ public class NMapFragmentPresenter {
             String address = mapPlacemark.toString();
             Position position = new Position(mapPlacemark.longitude, mapPlacemark.latitude);
 
+            // JSON으로 id, latitude, longitude를 서버로 보내기
+            // 중간지점 찾기 누르면 latitude, longitude를 받기
             Person person = new Person("guest"+id, address, position);
             person.setId(id);
             personList.add(person);
