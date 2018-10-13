@@ -13,16 +13,19 @@ import com.daahae.damoyeo.R;
 import com.daahae.damoyeo.model.Building;
 import com.daahae.damoyeo.model.Person;
 import com.daahae.damoyeo.model.TransportInfoList;
+import com.daahae.damoyeo.presenter.NMapActivityPresenter;
 import com.daahae.damoyeo.presenter.SelectMidFragmentPresenter;
 
 import java.util.ArrayList;
 
 public class MarkerTimeAdapter extends BaseAdapter{
     private SelectMidFragmentPresenter presenter;
+    private NMapActivityPresenter parentPresenter;
     private ArrayList<TransportInfoList> mItems;
 
-    public MarkerTimeAdapter(SelectMidFragmentPresenter presenter){
+    public MarkerTimeAdapter(SelectMidFragmentPresenter presenter, NMapActivityPresenter parentPresenter){
         this.presenter = presenter;
+        this.parentPresenter = parentPresenter;
         this.mItems = new ArrayList<TransportInfoList>();
     }
 
@@ -57,7 +60,7 @@ public class MarkerTimeAdapter extends BaseAdapter{
         mItems.add(transportInfoList);
     }
     @Override
-    public View getView(final int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, final ViewGroup parent) {
         Context context = parent.getContext();
 
         if (convertView == null) {
@@ -76,7 +79,10 @@ public class MarkerTimeAdapter extends BaseAdapter{
         convertView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                presenter.showSelectMaker(myItem.getPerson().getAddressPosition());
+                if(presenter.getSelectMidFlg() == 1)
+                    presenter.showSelectMidInfoMaker(parentPresenter.getMid(), (myItem.getPerson().getAddressPosition()));
+                else if(presenter.getSelectMidFlg() == 2)
+                    presenter.showSelectBuildingMaker(parentPresenter.getBuilding(), (myItem.getPerson().getAddressPosition()));
             }
         });
 

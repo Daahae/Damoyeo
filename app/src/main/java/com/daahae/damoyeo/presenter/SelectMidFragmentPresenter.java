@@ -4,6 +4,8 @@ import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.daahae.damoyeo.model.Building;
+import com.daahae.damoyeo.model.MidInfo;
 import com.daahae.damoyeo.model.Person;
 import com.daahae.damoyeo.model.Position;
 import com.daahae.damoyeo.view.adapter.MarkerTimeAdapter;
@@ -25,6 +27,8 @@ public class SelectMidFragmentPresenter extends NMapPresenter{
     public static final int MID_ALGORITHM = 1;
     public static final int LANDMARK = 2;
 
+    private int selectMidFlg = 1;
+
     private Fragment view;
 
     private MarkerTimeAdapter markerTimeAdapter;
@@ -34,23 +38,29 @@ public class SelectMidFragmentPresenter extends NMapPresenter{
         this.view = view;
     }
 
-    public void selectMid(int selectMidMenu){
+    public int getSelectMidFlg() {
+        return selectMidFlg;
+    }
+
+    public void selectMid(int selectMidMenu, MidInfo mid, Building building, ArrayList<Person> personList){
         switch (selectMidMenu){
             case MID_ALGORITHM:
-                selectMidAlgorithm();
+                selectMidAlgorithm(mid, personList);
+                selectMidFlg = MID_ALGORITHM;
                 break;
             case LANDMARK:
-                selectLandmark();
+                selectMidFlg = LANDMARK;
+                selectLandmark(building, personList);
                 break;
         }
     }
 
-    public void selectMidAlgorithm(){
-
+    private void selectMidAlgorithm(MidInfo mid, ArrayList<Person> personList){
+        showSavedMidInfoMarkers(0, mid, personList);
     }
 
-    public void selectLandmark(){
-
+    private void selectLandmark(Building building, ArrayList<Person> personList){
+        showSavedBuildingMarkers(0, building, personList);
     }
 
     public void setMarkerTimeList(MarkerTimeAdapter markerTimeAdapter, ArrayList<Person> personList){
@@ -67,21 +77,19 @@ public class SelectMidFragmentPresenter extends NMapPresenter{
     }
 
     @Override
-    public void initLocation(ArrayList<Person> personList) {
-        super.initLocation(personList);
-
+    public void init(Fragment view) {
+        super.init(view);
         this.getMapContext().setMapDataProviderListener(onDataProviderListener);
-
-        showSavedMarkers(8, personList);
     }
 
-    public void showSavedMarkers(int scale, ArrayList<Person> personList) {
+    public void showSavedMidInfoMarkers(int scale, MidInfo mid, ArrayList<Person> personList) {
         if(personList.size() != 0) {
             int markerId = NMapPOIflagType.PIN;
             int id = personList.size()+1;
 
             NMapPOIdata poiData = new NMapPOIdata(id, this.getResourceProvider());
             poiData.beginPOIdata(id);
+            poiData.addPOIitem(mid.getPos().getX(), mid.getPos().getY(), null, markerId, 0);
             for (Person index:personList)
                 poiData.addPOIitem(index.getAddressPosition().getX(), index.getAddressPosition().getY(), null, markerId, index.getId());
 
@@ -94,7 +102,7 @@ public class SelectMidFragmentPresenter extends NMapPresenter{
         }
     }
 
-    public void showSelectMaker(Position pos) {
+    public void showSelectMidInfoMaker(MidInfo mid, Position pos) {
         this.getOverlayManager().clearOverlays();
 
         int markerId = NMapPOIflagType.PIN;
@@ -102,8 +110,47 @@ public class SelectMidFragmentPresenter extends NMapPresenter{
 
         NMapPOIdata poiData = new NMapPOIdata(id, this.getResourceProvider());
         poiData.beginPOIdata(id);
-        poiData.addPOIitem(126.978371, 37.5666091, null, markerId, 1);
-        poiData.addPOIitem(pos.getX(), pos.getY(), null, markerId, 2);
+        poiData.addPOIitem(mid.getPos().getX(), mid.getPos().getY(), null, markerId, 0);
+        poiData.addPOIitem(pos.getX(), pos.getY(), null, markerId, 1);
+
+        poiData.endPOIdata();
+
+        NMapPOIdataOverlay poiDataOverlay = this.getOverlayManager().createPOIdataOverlay(poiData, null);
+        poiDataOverlay.showAllPOIdata(0);
+        poiDataOverlay.setOnStateChangeListener(this.getOnPOIdataStateChangeListener());
+        poiDataOverlay.selectPOIitem(0, true);
+    }
+
+    public void showSavedBuildingMarkers(int scale, Building building, ArrayList<Person> personList) {
+        if(personList.size() != 0) {
+            int markerId = NMapPOIflagType.PIN;
+            int id = personList.size()+1;
+
+            NMapPOIdata poiData = new NMapPOIdata(id, this.getResourceProvider());
+            poiData.beginPOIdata(id);
+            poiData.addPOIitem(building.getBuildingPos().getX(), building.getBuildingPos().getY(), null, markerId, 0);
+            for (Person index:personList)
+                poiData.addPOIitem(index.getAddressPosition().getX(), index.getAddressPosition().getY(), null, markerId, index.getId());
+
+            poiData.endPOIdata();
+
+            NMapPOIdataOverlay poiDataOverlay = this.getOverlayManager().createPOIdataOverlay(poiData, null);
+            poiDataOverlay.showAllPOIdata(scale);
+            poiDataOverlay.setOnStateChangeListener(this.getOnPOIdataStateChangeListener());
+            poiDataOverlay.selectPOIitem(0, true);
+        }
+    }
+
+    public void showSelectBuildingMaker(Building building, Position pos) {
+        this.getOverlayManager().clearOverlays();
+
+        int markerId = NMapPOIflagType.PIN;
+        int id = 2;
+
+        NMapPOIdata poiData = new NMapPOIdata(id, this.getResourceProvider());
+        poiData.beginPOIdata(id);
+        poiData.addPOIitem(building.getBuildingPos().getX(), building.getBuildingPos().getY(), null, markerId, 0);
+        poiData.addPOIitem(pos.getX(), pos.getY(), null, markerId, 1);
 
         poiData.endPOIdata();
 

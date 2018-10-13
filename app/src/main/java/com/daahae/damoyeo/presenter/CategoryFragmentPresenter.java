@@ -1,15 +1,20 @@
 package com.daahae.damoyeo.presenter;
 
+import android.support.v4.app.Fragment;
+
 import com.daahae.damoyeo.view.adapter.BuildingAdapter;
 import com.daahae.damoyeo.view.fragment.CategoryFragment;
+import com.nhn.android.maps.NMapContext;
 
-public class CategoryFragmentPresenter {
-    private CategoryFragment view;
+public class CategoryFragmentPresenter extends NMapPresenter{
+    private Fragment view;
+    private NMapActivityPresenter parentPresenter;
 
     private BuildingAdapter buildingAdapter;
 
-    public CategoryFragmentPresenter(CategoryFragment view) {
-        this.view = view;
+    public CategoryFragmentPresenter(Fragment view, NMapContext mapContext, NMapActivityPresenter parentPresenter) {
+        super(view, mapContext);
+        this.parentPresenter = parentPresenter;
     }
 
     public void setBuildingInfo(BuildingAdapter buildingAdapter){
