@@ -1,6 +1,5 @@
 package com.daahae.damoyeo.view.fragment;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -9,27 +8,21 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.daahae.damoyeo.R;
 import com.daahae.damoyeo.presenter.NMapActivityPresenter;
 import com.daahae.damoyeo.presenter.NMapFragmentPresenter;
-import com.daahae.damoyeo.view.activity.NMapActivity;
 import com.daahae.damoyeo.view.data.FloatingActionBtn;
-import com.gun0912.tedpermission.PermissionListener;
-import com.gun0912.tedpermission.TedPermission;
 import com.nhn.android.maps.NMapContext;
 
-import java.util.ArrayList;
-
 /**
- * NMapFragment 클래스는 NMapActivity를 상속하지 않고 NMapView만 사용하고자 하는 경우에 NMapContext를 이용한 예제임.
+ * NMapFragment 클래스는 NMapActivity를 상속하지 않고 NMapView만 사용하고자 하는 경우에 NMapContext를 이용.
  * NMapView 사용시 필요한 초기화 및 리스너 등록은 NMapActivity 사용시와 동일함.
  */
 @SuppressLint("ValidFragment")
-public class NMapFragment extends Fragment {
+public class NMapFragment extends Fragment implements View.OnClickListener{
     private NMapContext mapContext;
     private NMapFragmentPresenter presenter;
 
@@ -48,7 +41,8 @@ public class NMapFragment extends Fragment {
         super.onCreate(savedInstanceState);
         mapContext = new NMapContext(super.getActivity());;
         mapContext.onCreate();
-        presenter = new NMapFragmentPresenter(this, mapContext);
+        presenter = new NMapFragmentPresenter(this, parentPresenter,  mapContext);
+
     }
 
     @Override
@@ -65,14 +59,14 @@ public class NMapFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 switch (v.getId()) {
-                    case R.id.layout_addmarker:
-                        presenter.clickMarker();
+                    case R.id.layout_fixmarker:
+                        presenter.fixMarker();
                         break;
                 }
             }
         };
 
-        LinearLayout layoutAddMarker = rootView.findViewById(R.id.layout_addmarker);
+        LinearLayout layoutAddMarker = rootView.findViewById(R.id.layout_fixmarker);
         presenter.setLayoutAddMarker(layoutAddMarker);
         layoutAddMarker.setOnClickListener(layoutOnClickListener);
 
@@ -80,89 +74,30 @@ public class NMapFragment extends Fragment {
         fabtn.setFabOpen(AnimationUtils.loadAnimation(getActivity(), R.anim.fab_open));
         fabtn.setFabClose(AnimationUtils.loadAnimation(getActivity(), R.anim.fab_close));
 
-        Button.OnClickListener btnOnClickListener = new Button.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                switch (v.getId()) {
-                    case R.id.fab_menu:
-                        fabtn.anim();
-                        break;
-                    case R.id.fab_gps:
-                        // GPS
-                        presenter.getGPSLocation();
-                        fabtn.anim();
-                        break;
-                    case R.id.fab_pick:
-                        // 직접 마커 지정
-                        presenter.pickLocation();
-                        fabtn.anim();
-                        break;
-                    case R.id.fab_clear:
-                        // 초기화
-                        presenter.initLocation();
-                        fabtn.anim();
-                        break;
-                    case R.id.fab_full:
-                        // 전체보기
-                        presenter.viewAllMarkerFull();
-                        fabtn.anim();
-                        break;
-                    case R.id.linear_search_mid:
-                        parentPresenter.changeView(parentPresenter.SELECT_MID_PAGE);
-                        break;
-                }
-            }
-        };
-
         fabtn.setFabMenu((FloatingActionButton) rootView.findViewById(R.id.fab_menu));
         fabtn.setFabGPS((FloatingActionButton) rootView.findViewById(R.id.fab_gps));
         fabtn.setFabPick((FloatingActionButton) rootView.findViewById(R.id.fab_pick));
         fabtn.setFabClear((FloatingActionButton) rootView.findViewById(R.id.fab_clear));
         fabtn.setFabFull((FloatingActionButton) rootView.findViewById(R.id.fab_full));
 
-        fabtn.getFabMenu().setOnClickListener(btnOnClickListener);
-        fabtn.getFabGPS().setOnClickListener(btnOnClickListener);
-        fabtn.getFabPick().setOnClickListener(btnOnClickListener);
-        fabtn.getFabClear().setOnClickListener(btnOnClickListener);
-        fabtn.getFabFull().setOnClickListener(btnOnClickListener);
+        fabtn.getFabMenu().setOnClickListener(this);
+        fabtn.getFabGPS().setOnClickListener(this);
+        fabtn.getFabPick().setOnClickListener(this);
+        fabtn.getFabClear().setOnClickListener(this);
+        fabtn.getFabFull().setOnClickListener(this);
 
         linearBtnSearchMid = rootView.findViewById(R.id.linear_search_mid);
-        linearBtnSearchMid.setOnClickListener(btnOnClickListener);
+        linearBtnSearchMid.setOnClickListener(this);
 
         return rootView;
-    }
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
     }
 
     @Override
     public void onStart(){
         super.onStart();
 
-        presenter.init();
+        presenter.init(this);
         mapContext.onStart();
-
-        PermissionListener permissionListener = new PermissionListener() {
-            @Override
-            public void onPermissionGranted() {
-
-            }
-
-            @Override
-            public void onPermissionDenied(ArrayList<String> deniedPermissions) {
-                getActivity().finish();
-            }
-        };
-
-        // GPS 위치정보를 받기위해 권한을 설정
-        TedPermission.with(getActivity())
-                .setPermissionListener(permissionListener)
-                .setRationaleMessage("지도 서비스를 사용하기 위해서는 위치 접근 권한이 필요해요")
-                .setDeniedMessage("왜 거부하셨어요...\n하지만 [설정] > [권한] 에서 권한을 허용할 수 있어요.")
-                .setPermissions(Manifest.permission.ACCESS_FINE_LOCATION)
-                .check();
     }
 
     @Override
@@ -170,23 +105,55 @@ public class NMapFragment extends Fragment {
         super.onResume();
         mapContext.onResume();
     }
+
     @Override
     public void onPause() {
         super.onPause();
         mapContext.onPause();
     }
+
     @Override
     public void onStop() {
         mapContext.onStop();
         super.onStop();
     }
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-    }
+
     @Override
     public void onDestroy() {
         mapContext.onDestroy();
         super.onDestroy();
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.fab_menu:
+                fabtn.anim();
+                break;
+            case R.id.fab_gps:
+                // GPS
+                presenter.getPermission();
+                presenter.getGPSLocation();
+                fabtn.anim();
+                break;
+            case R.id.fab_pick:
+                // 직접 마커 지정
+                presenter.pickLocation();
+                fabtn.anim();
+                break;
+            case R.id.fab_clear:
+                // 초기화
+                presenter.initLocation();
+                fabtn.anim();
+                break;
+            case R.id.fab_full:
+                // 전체보기
+                presenter.showSavedMarkers(parentPresenter.getPersonList());
+                fabtn.anim();
+                break;
+            case R.id.linear_search_mid:
+                parentPresenter.changeView(parentPresenter.SELECT_MID_PAGE);
+                break;
+        }
     }
 }

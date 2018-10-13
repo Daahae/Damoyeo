@@ -5,13 +5,12 @@ import java.util.ArrayList;
 public class TransportInfoList{
     private ArrayList<Transport> transportInfo;
     private int totalTime;
-    private int personID;
+    private Person person;
 
-
-    public TransportInfoList(ArrayList<Transport> transportInfo, int totalTime, int personID) {
+    public TransportInfoList(ArrayList<Transport> transportInfo, int totalTime, Person person) {
         this.transportInfo = transportInfo;
         this.totalTime = totalTime;
-        this.personID = personID;
+        this.person = person;
     }
 
     public ArrayList<Transport> getTransportInfo() {
@@ -36,8 +35,8 @@ public class TransportInfoList{
 
         return totalTotal;
     }
-    public int getPersonID(){
-        return personID;
+    public Person getPerson(){
+        return person;
     }
 
 
