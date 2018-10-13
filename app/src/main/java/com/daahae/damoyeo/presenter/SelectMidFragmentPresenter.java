@@ -19,22 +19,19 @@ import com.nhn.android.mapviewer.overlay.NMapPOIdataOverlay;
 
 import java.util.ArrayList;
 
-public class SelectMidFragmentPresenter {
+public class SelectMidFragmentPresenter extends NMapPresenter{
+    private final String TAG = "NMapViewer";
 
     public static final int MID_ALGORITHM = 1;
     public static final int LANDMARK = 2;
 
-    private NMapActivityPresenter parentPresenter;
-    private SelectMidFragment view;
-
-    private NMapPresenter map;
+    private Fragment view;
 
     private MarkerTimeAdapter markerTimeAdapter;
 
-    public SelectMidFragmentPresenter(SelectMidFragment view, NMapActivityPresenter parentPresenter, NMapContext context) {
+    public SelectMidFragmentPresenter(Fragment view, NMapContext mapContext) {
+        super(view, mapContext);
         this.view = view;
-        this.parentPresenter = parentPresenter;
-        this.map = new NMapPresenter(view, context);
     }
 
     public void selectMid(int selectMidMenu){
@@ -56,71 +53,82 @@ public class SelectMidFragmentPresenter {
 
     }
 
-    public void setMarkerTimeList(MarkerTimeAdapter markerTimeAdapter){
+    public void setMarkerTimeList(MarkerTimeAdapter markerTimeAdapter, ArrayList<Person> personList){
         this.markerTimeAdapter = markerTimeAdapter;
 
         markerTimeAdapter.resetList();
-        makeDummy();
+        showListView(personList);
     }
 
-    //TODO: 삭제예정
-    public void makeDummy(){
-        for(Person person:parentPresenter.getPersonList()){
+    private void showListView(ArrayList<Person> personList){
+        for(Person person:personList){
             markerTimeAdapter.addDummy(person);
         }
     }
 
-    public void init(Fragment view){
-        map.init(view);
-        map.getMapContext().setMapDataProviderListener(onDataProviderListener);
+    @Override
+    public void initLocation(ArrayList<Person> personList) {
+        super.initLocation(personList);
 
-        showSavedMarkers(parentPresenter.getPersonList());
+        this.getMapContext().setMapDataProviderListener(onDataProviderListener);
+
+        showSavedMarkers(8, personList);
     }
 
-    private final NMapActivity.OnDataProviderListener onDataProviderListener = new NMapActivity.OnDataProviderListener() {
-
-        @Override
-        public void onReverseGeocoderResponse(NMapPlacemark placeMark, NMapError errInfo) {
-            map.setDataProviderListenerMessage(placeMark, errInfo);
-        }
-    };
-
-    public void showSavedMarkers(ArrayList<Person> personList) {
+    public void showSavedMarkers(int scale, ArrayList<Person> personList) {
         if(personList.size() != 0) {
             int markerId = NMapPOIflagType.PIN;
             int id = personList.size()+1;
 
-            NMapPOIdata poiData = new NMapPOIdata(id, map.getResourceProvider());
+            NMapPOIdata poiData = new NMapPOIdata(id, this.getResourceProvider());
             poiData.beginPOIdata(id);
-            for (Person index:personList) {
+            for (Person index:personList)
                 poiData.addPOIitem(index.getAddressPosition().getX(), index.getAddressPosition().getY(), null, markerId, index.getId());
-            }
 
             poiData.endPOIdata();
 
-            NMapPOIdataOverlay poiDataOverlay = map.getOverlayManager().createPOIdataOverlay(poiData, null);
-            poiDataOverlay.showAllPOIdata(7);
-            poiDataOverlay.setOnStateChangeListener(map.getOnPOIdataStateChangeListener());
+            NMapPOIdataOverlay poiDataOverlay = this.getOverlayManager().createPOIdataOverlay(poiData, null);
+            poiDataOverlay.showAllPOIdata(scale);
+            poiDataOverlay.setOnStateChangeListener(this.getOnPOIdataStateChangeListener());
             poiDataOverlay.selectPOIitem(0, true);
         }
     }
 
     public void showSelectMaker(Position pos) {
-        map.getOverlayManager().clearOverlays();
+        this.getOverlayManager().clearOverlays();
 
         int markerId = NMapPOIflagType.PIN;
         int id = 2;
 
-        NMapPOIdata poiData = new NMapPOIdata(id, map.getResourceProvider());
+        NMapPOIdata poiData = new NMapPOIdata(id, this.getResourceProvider());
         poiData.beginPOIdata(id);
         poiData.addPOIitem(126.978371, 37.5666091, null, markerId, 1);
         poiData.addPOIitem(pos.getX(), pos.getY(), null, markerId, 2);
 
         poiData.endPOIdata();
 
-        NMapPOIdataOverlay poiDataOverlay = map.getOverlayManager().createPOIdataOverlay(poiData, null);
+        NMapPOIdataOverlay poiDataOverlay = this.getOverlayManager().createPOIdataOverlay(poiData, null);
         poiDataOverlay.showAllPOIdata(0);
-        poiDataOverlay.setOnStateChangeListener(map.getOnPOIdataStateChangeListener());
+        poiDataOverlay.setOnStateChangeListener(this.getOnPOIdataStateChangeListener());
         poiDataOverlay.selectPOIitem(0, true);
     }
+
+    private final NMapActivity.OnDataProviderListener onDataProviderListener = new NMapActivity.OnDataProviderListener() {
+
+        @Override
+        public void onReverseGeocoderResponse(NMapPlacemark placeMark, NMapError errInfo) {
+            Log.i(TAG, "onReverseGeocoderResponse: placeMark="
+                    + ((placeMark != null) ? placeMark.toString() : null));
+            Log.i(TAG, "onReverseGeocoderResponse: placeMark="
+                    + ((placeMark != null) ? placeMark.latitude : null));
+            Log.i(TAG, "onReverseGeocoderResponse: placeMark="
+                    + ((placeMark != null) ? placeMark.longitude : null));
+
+            if (errInfo != null) {
+                Log.e(TAG, "Failed to findPlacemarkAtLocation: error=" + errInfo.toString());
+
+                Toast.makeText(view.getContext(), errInfo.toString(), Toast.LENGTH_LONG).show();
+            }
+        }
+    };
 }

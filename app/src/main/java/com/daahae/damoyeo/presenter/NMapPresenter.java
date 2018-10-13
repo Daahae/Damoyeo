@@ -1,5 +1,6 @@
 package com.daahae.damoyeo.presenter;
 
+import android.Manifest;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.View;
@@ -8,8 +9,11 @@ import android.widget.Toast;
 
 import com.daahae.damoyeo.R;
 import com.daahae.damoyeo.model.Person;
+import com.daahae.damoyeo.view.function.GPSInfo;
 import com.daahae.damoyeo.view.function.NMapPOIflagType;
 import com.daahae.damoyeo.view.function.NMapViewerResourceProvider;
+import com.gun0912.tedpermission.PermissionListener;
+import com.gun0912.tedpermission.TedPermission;
 import com.nhn.android.maps.NMapContext;
 import com.nhn.android.maps.NMapController;
 import com.nhn.android.maps.NMapLocationManager;
@@ -123,47 +127,48 @@ public class NMapPresenter {
         controller.setMapCenter(new NGeoPoint(126.978371, 37.5666091), 11);     //Default Data
 
         resourceProvider = new NMapViewerResourceProvider(view.getContext());
-        overlayManager = new NMapOverlayManager(view.getContext(), mapView, resourceProvider);
+        overlayManager = new NMapOverlayManager(view.getActivity(), mapView, resourceProvider);
 
-        locationManager = new NMapLocationManager(view.getContext());;
+        locationManager = new NMapLocationManager(view.getActivity());;
         locationManager.setOnLocationChangeListener(onMyLocationChangeListener);
 
         locationOverlay = overlayManager.createMyLocationOverlay(locationManager, null);;
     }
 
     public void stopGPSLocation() {
-        if (locationOverlay != null)
-            locationManager.disableMyLocation();
-    }
-
-    public void removeOverlay() {
         if (locationOverlay != null) {
+            locationManager.disableMyLocation();
             overlayManager.removeOverlay(locationOverlay);
         }
     }
 
-    public void initLocation() {
+    public void initLocation(ArrayList<Person> personList) {
         stopGPSLocation();
-        removeOverlay();
 
         overlayManager.clearOverlays();
         controller.setMapCenter(new NGeoPoint(126.978371, 37.5666091), 11);
     }
 
-    public void setDataProviderListenerMessage(NMapPlacemark placeMark, NMapError errInfo) {
-        Log.i(TAG, "onReverseGeocoderResponse: placeMark="
-                + ((placeMark != null) ? placeMark.toString() : null));
-        Log.i(TAG, "onReverseGeocoderResponse: placeMark="
-                + ((placeMark != null) ? placeMark.latitude : null));
-        Log.i(TAG, "onReverseGeocoderResponse: placeMark="
-                + ((placeMark != null) ? placeMark.longitude : null));
+    public void getPermission(final Fragment view) {
+        PermissionListener permissionListener = new PermissionListener() {
+            @Override
+            public void onPermissionGranted() {
 
-        if (errInfo != null) {
-            Log.e(TAG, "Failed to findPlacemarkAtLocation: error=" + errInfo.toString());
+            }
 
-            Toast.makeText(view.getContext(), errInfo.toString(), Toast.LENGTH_LONG).show();
-            return;
-        }
+            @Override
+            public void onPermissionDenied(ArrayList<String> deniedPermissions) {
+                view.getActivity().finish();
+            }
+        };
+
+        // GPS 위치정보를 받기위해 권한을 설정
+        TedPermission.with(view.getActivity())
+                .setPermissionListener(permissionListener)
+                .setRationaleMessage("지도 서비스를 사용하기 위해서는 위치 접근 권한이 필요해요")
+                .setDeniedMessage("왜 거부하셨어요...\n하지만 [설정] > [권한] 에서 권한을 허용할 수 있어요.")
+                .setPermissions(Manifest.permission.ACCESS_FINE_LOCATION)
+                .check();
     }
 
     private final NMapLocationManager.OnLocationChangeListener onMyLocationChangeListener = new NMapLocationManager.OnLocationChangeListener() {

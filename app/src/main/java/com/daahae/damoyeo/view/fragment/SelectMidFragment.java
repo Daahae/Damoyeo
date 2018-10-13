@@ -48,7 +48,7 @@ public class SelectMidFragment extends Fragment implements View.OnClickListener{
         super.onCreate(savedInstanceState);
         mapContext = new NMapContext(super.getActivity());;
         mapContext.onCreate();
-        presenter = new SelectMidFragmentPresenter(this, parentPresenter, mapContext);
+        presenter = new SelectMidFragmentPresenter(this, mapContext);
         markerTimeAdapter = new MarkerTimeAdapter(presenter);
     }
 
@@ -70,7 +70,7 @@ public class SelectMidFragment extends Fragment implements View.OnClickListener{
         btnSelectLandmark.setOnClickListener(this);
 
         listMarkerTime = rootView.findViewById(R.id.list_marker_time);
-        presenter.setMarkerTimeList(markerTimeAdapter);
+        presenter.setMarkerTimeList(markerTimeAdapter, parentPresenter.getPersonList());
 
         listMarkerTime.setAdapter(markerTimeAdapter);
 
@@ -92,6 +92,7 @@ public class SelectMidFragment extends Fragment implements View.OnClickListener{
     public void onResume() {
         super.onResume();
         mapContext.onResume();
+        presenter.initLocation(parentPresenter.getPersonList());
     }
 
     @Override
@@ -137,7 +138,7 @@ public class SelectMidFragment extends Fragment implements View.OnClickListener{
                 break;
 
             case R.id.btn_all_marker_list:
-                presenter.showSavedMarkers(parentPresenter.getPersonList());
+                presenter.showSavedMarkers(0, parentPresenter.getPersonList());
                 break;
         }
     }

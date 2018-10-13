@@ -30,6 +30,8 @@ public class NMapActivityPresenter {
         fragmentTransaction.replace( R.id.fragmentHere, fragment );
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
+
+        initPersonList();
     }
 
     public void backView(Fragment fragment){
@@ -70,7 +72,7 @@ public class NMapActivityPresenter {
         return personList;
     }
 
-    public void setPersonList(ArrayList<Person> personList) {
-        this.personList = personList;
+    private void initPersonList() {
+        this.personList = new ArrayList<Person>();
     }
 }

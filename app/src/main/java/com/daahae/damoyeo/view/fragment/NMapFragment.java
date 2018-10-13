@@ -41,7 +41,7 @@ public class NMapFragment extends Fragment implements View.OnClickListener{
         super.onCreate(savedInstanceState);
         mapContext = new NMapContext(super.getActivity());;
         mapContext.onCreate();
-        presenter = new NMapFragmentPresenter(this, parentPresenter,  mapContext);
+        presenter = new NMapFragmentPresenter(this,  mapContext,  parentPresenter);
 
     }
 
@@ -60,7 +60,7 @@ public class NMapFragment extends Fragment implements View.OnClickListener{
             public void onClick(View v) {
                 switch (v.getId()) {
                     case R.id.layout_fixmarker:
-                        presenter.fixMarker();
+                        presenter.fixMarker(parentPresenter.getPersonList());
                         break;
                 }
             }
@@ -132,18 +132,18 @@ public class NMapFragment extends Fragment implements View.OnClickListener{
                 break;
             case R.id.fab_gps:
                 // GPS
-                presenter.getPermission();
-                presenter.getGPSLocation();
+                presenter.getPermission(this);
+                presenter.getGPSLocation(parentPresenter.getPersonList());
                 fabtn.anim();
                 break;
             case R.id.fab_pick:
                 // 직접 마커 지정
-                presenter.pickLocation();
+                presenter.pickLocation(parentPresenter.getPersonList());
                 fabtn.anim();
                 break;
             case R.id.fab_clear:
                 // 초기화
-                presenter.initLocation();
+                presenter.initLocation(parentPresenter.getPersonList());
                 fabtn.anim();
                 break;
             case R.id.fab_full:
