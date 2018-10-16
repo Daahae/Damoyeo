@@ -12,8 +12,9 @@ exports.getInfoByCategory = function (lat, lng, radius, type) {
       var jsonObject = JSON.parse(res.getBody());
       
       var object = {};
-      var item = 'Info';
-      object[item] = [];
+      //var item = 'Info';
+      //object[item] = [];
+      object.Info = new Array();
       
       var data;
       
@@ -26,7 +27,8 @@ exports.getInfoByCategory = function (lat, lng, radius, type) {
                   lng : jsonObject.results[i].geometry.location.lng
                };
                
-               object[item].push(data);
+               //object[item].push(data);
+               object.Info.push(data);
             }  
          } else {
             data = {
@@ -35,7 +37,8 @@ exports.getInfoByCategory = function (lat, lng, radius, type) {
                lng : jsonObject.results[i].geometry.location.lng
             };
             
-            object[item].push(data);
+            //object[item].push(data);
+            object.Info.push(data);
          }
 	  }
 	  return JSON.stringify(object);
