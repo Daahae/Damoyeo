@@ -5,10 +5,13 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 
 import com.daahae.damoyeo.R;
+import com.daahae.damoyeo.model.Person;
 import com.daahae.damoyeo.view.activity.NMapActivity;
 import com.daahae.damoyeo.view.fragment.CategoryFragment;
 import com.daahae.damoyeo.view.fragment.NMapFragment;
 import com.daahae.damoyeo.view.fragment.SelectMidFragment;
+
+import java.util.ArrayList;
 
 public class NMapActivityPresenter {
     private NMapActivity view;// 뷰
@@ -16,14 +19,22 @@ public class NMapActivityPresenter {
     public static final int SELECT_MID_PAGE = 2;
     public static final int CATEGORY_PAGE = 3;
 
+    private Fragment fragment;
+    private FragmentManager fragmentManager;
+    private FragmentTransaction fragmentTransaction;
     //모델은 각자 클래스 생성
+
+    private ArrayList<Person> person;
+    private ArrayList<String> totalTimes;
 
     public NMapActivityPresenter(NMapActivity view){
         this.view = view;
+        totalTimes = new ArrayList<>();
+        person = new ArrayList<>();
 
-        Fragment fragment = new NMapFragment(this);
-        FragmentManager fragmentManager = view.getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragment = new NMapFragment(this);
+        fragmentManager = view.getSupportFragmentManager();
+        fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace( R.id.fragmentHere, fragment );
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
@@ -31,8 +42,7 @@ public class NMapActivityPresenter {
     }
 
     public void backView(Fragment fragment){
-
-        FragmentManager fragmentManager = view.getSupportFragmentManager();
+        fragmentManager = view.getSupportFragmentManager();
         fragmentManager.beginTransaction().remove(fragment).commit();
         fragmentManager.popBackStack();
     }
@@ -41,28 +51,37 @@ public class NMapActivityPresenter {
 
         switch (nextPageNumber){
             case NMAP_PAGE:
-                view.getSupportFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.fragmentHere, new NMapFragment(this))
-                        .addToBackStack(null)
-                        .commit();
+                setViewFragment(new NMapFragment(this));
                 break;
 
             case SELECT_MID_PAGE:
-                view.getSupportFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.fragmentHere, new SelectMidFragment(this))
-                        .addToBackStack(null)
-                        .commit();
+                setViewFragment(new SelectMidFragment(this));
                 break;
 
             case CATEGORY_PAGE:
-                view.getSupportFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.fragmentHere, new CategoryFragment(this))
-                        .addToBackStack(null)
-                        .commit();
+                setViewFragment(new CategoryFragment(this));
                 break;
         }
+    }
+
+    public void sendMarkerTimeMessage(ArrayList<Person> person,ArrayList<String> totalTimes){
+        this.totalTimes = totalTimes;
+        this.person = person;
+    }
+
+    public ArrayList<String> getTotalTimes() {
+        return totalTimes;
+    }
+
+    public ArrayList<Person> getPerson() {
+        return person;
+    }
+
+    private void setViewFragment(Fragment fragment){
+        view.getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragmentHere, fragment)
+                .addToBackStack(null)
+                .commit();
     }
 }

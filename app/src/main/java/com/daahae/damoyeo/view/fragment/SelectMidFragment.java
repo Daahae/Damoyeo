@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -51,30 +52,41 @@ public class SelectMidFragment extends Fragment implements View.OnClickListener{
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = (View) inflater.inflate(R.layout.fragment_select_mid, container, false);
 
-        btnSelectMid = rootView.findViewById(R.id.btn_select_mid);
-        btnSelectMid.setOnClickListener(this);
+        initView(rootView);
+        initListener();
+
+
+        presenter.initMarkerTime(parentPresenter.getPerson(), parentPresenter.getTotalTimes());
+        presenter.setMarkerTimeList(markerTimeAdapter);
+        listMarkerTime.setAdapter(markerTimeAdapter);
+        Log.v("mid","뷰 생성");
+        return rootView;
+    }
+
+    private void initView(View rootView){
 
         btnBack = rootView.findViewById(R.id.btn_back_select_mid);
-        btnBack.setOnClickListener(this);
 
         btnSelectMidAlgorithm = rootView.findViewById(R.id.btn_select_mid_algorithm);
-        btnSelectMidAlgorithm.setOnClickListener(this);
-
         btnSelectLandmark = rootView.findViewById(R.id.btn_select_landmark);
-        btnSelectLandmark.setOnClickListener(this);
+
+        btnSelectMid = rootView.findViewById(R.id.btn_select_mid);
 
         listMarkerTime = rootView.findViewById(R.id.list_marker_time);
-        presenter.setMarkerTimeList(markerTimeAdapter);
+    }
 
-        listMarkerTime.setAdapter(markerTimeAdapter);
-
-        return rootView;
+    private void initListener(){
+        btnSelectMid.setOnClickListener(this);
+        btnBack.setOnClickListener(this);
+        btnSelectMidAlgorithm.setOnClickListener(this);
+        btnSelectLandmark.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View view) {
         switch(view.getId()){
             case R.id.btn_select_mid:
+
                 parentPresenter.changeView(parentPresenter.CATEGORY_PAGE);
                 break;
             case R.id.btn_back_select_mid:

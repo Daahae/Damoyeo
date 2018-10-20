@@ -1,5 +1,10 @@
 package com.daahae.damoyeo.presenter;
 
+import android.util.Log;
+
+import com.daahae.damoyeo.communication.RetrofitCommunication;
+import com.daahae.damoyeo.model.Person;
+import com.daahae.damoyeo.model.Position;
 import com.daahae.damoyeo.view.adapter.MarkerTimeAdapter;
 import com.daahae.damoyeo.view.fragment.SelectMidFragment;
 
@@ -15,8 +20,21 @@ public class SelectMidFragmentPresenter {
 
     private MarkerTimeAdapter markerTimeAdapter;
 
+    private RetrofitPresenter retrofitPresenter;
+
+    private  ArrayList<Person> people;
+    private ArrayList<String> totalTimes;
+
     public SelectMidFragmentPresenter(SelectMidFragment view) {
+        retrofitPresenter = new RetrofitPresenter();
         this.view = view;
+        totalTimes = new ArrayList<>();
+        people = new ArrayList<>();
+    }
+
+    public void initMarkerTime(ArrayList<Person> people, ArrayList<String> totalTimes){
+        this.people = people;
+        this.totalTimes = totalTimes;
     }
 
     public void selectMid(int selectMidMenu){
@@ -39,18 +57,16 @@ public class SelectMidFragmentPresenter {
     }
 
     public void setMarkerTimeList(MarkerTimeAdapter markerTimeAdapter){
+
         this.markerTimeAdapter = markerTimeAdapter;
 
         markerTimeAdapter.resetList();
-        makeDummy();
-    }
-
-    //TODO: 삭제예정
-    private void makeDummy(){
-
-        for(int i=0;i<3;i++){
-            markerTimeAdapter.addDummy();
+        for(int i=0; i<totalTimes.size();i++){
+            markerTimeAdapter.add("dummy",totalTimes.get(i));
+            //Log.v("데이터",people.get(i).getName()+totalTimes.get(i));
         }
+        Log.v("어뎁터","set Data");
+
     }
 
 }

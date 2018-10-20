@@ -10,7 +10,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.daahae.damoyeo.R;
-import com.daahae.damoyeo.model.Building;
 import com.daahae.damoyeo.model.Person;
 import com.daahae.damoyeo.model.Position;
 import com.daahae.damoyeo.view.fragment.NMapFragment;
@@ -34,7 +33,7 @@ import com.nhn.android.mapviewer.overlay.NMapResourceProvider;
 
 import java.util.ArrayList;
 
-public class NMapFragmentPresenter {
+public class NMapFragmentPresenter{
     private final String TAG = "NMapViewer";
 
     private NMapActivityPresenter nMapActivityPresenter;
@@ -65,10 +64,13 @@ public class NMapFragmentPresenter {
 
     private GPSInfo gps;
 
+    private RetrofitPresenter retrofitPresenter;
+
     public NMapFragmentPresenter(NMapFragment view, NMapContext context) {
         this.view = view;
         this.mapContext = context;
         this.personList = new ArrayList<Person>();
+        retrofitPresenter = new RetrofitPresenter();
     }
 
     public void setTvAddress(TextView tvAddress) {
@@ -151,6 +153,13 @@ public class NMapFragmentPresenter {
 
         // create my location overlay
         myLocationOverlay = mapOverlayManager.createMyLocationOverlay(mapLocationManager, null);;
+    }
+
+    public ArrayList<String> sendRetrofit(){
+        retrofitPresenter.dummy();
+        ArrayList<String> totalTimes = retrofitPresenter.sendPersonMessage();
+        Log.v("NMAP", "보냄");
+        return totalTimes;
     }
 
     public void getGPSLocation() {

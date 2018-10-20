@@ -1,5 +1,8 @@
 package com.daahae.damoyeo.presenter;
 
+import android.view.View;
+import android.widget.Button;
+
 import com.daahae.damoyeo.view.adapter.BuildingAdapter;
 import com.daahae.damoyeo.view.fragment.CategoryFragment;
 
@@ -18,6 +21,10 @@ public class CategoryFragmentPresenter {
         buildingAdapter.resetList();
         makeDummy();
 
+    }
+
+    public void setClickFirstButton(Button button){
+        button.setClickable(true);
     }
 
     //TODO: 삭제예정

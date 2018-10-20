@@ -9,16 +9,26 @@ import android.widget.TextView;
 
 import com.daahae.damoyeo.R;
 import com.daahae.damoyeo.model.Building;
+import com.daahae.damoyeo.model.MarkerTime;
 import com.daahae.damoyeo.model.TransportInfoList;
+import com.daahae.damoyeo.presenter.MarkerTimeAdapterPresenter;
 
 import java.util.ArrayList;
 
 public class MarkerTimeAdapter extends BaseAdapter{
 
-    private ArrayList<TransportInfoList> mItems;
+    private TextView txtMarkerName;
+    private TextView txtMarkerTime;
+
+    private MarkerTime myItem;
+    private ArrayList<MarkerTime> mItems;
+
+    private MarkerTimeAdapterPresenter presenter;
+
 
     public MarkerTimeAdapter(){
-        mItems = new ArrayList<TransportInfoList>();
+        mItems = new ArrayList<MarkerTime>();
+        presenter = new MarkerTimeAdapterPresenter(this);
     }
 
     /* 아이템을 세트로 담기 위한 어레이 */
@@ -33,7 +43,7 @@ public class MarkerTimeAdapter extends BaseAdapter{
     }
 
     @Override
-    public TransportInfoList getItem(int position) {
+    public MarkerTime getItem(int position) {
         return mItems.get(position);
     }
 
@@ -42,15 +52,14 @@ public class MarkerTimeAdapter extends BaseAdapter{
         return 0;
     }
 
-    //더미
-    public void addDummy(){
-        TransportInfoList dummy = new TransportInfoList(null, 10, 15011067);
-        mItems.add(dummy);
+    public void add(MarkerTime markerTime){
+        mItems.add(markerTime);
     }
 
-    public void add(TransportInfoList transportInfoList){
-        mItems.add(transportInfoList);
+    public void add(String name, String totalTime){
+        mItems.add(new MarkerTime(name, totalTime));
     }
+
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
@@ -61,15 +70,19 @@ public class MarkerTimeAdapter extends BaseAdapter{
             convertView = inflater.inflate(R.layout.item_time_taken_marker, parent, false);
         }
 
-        TextView txtMarkerName = (TextView)convertView.findViewById(R.id.txt_marker_name_item);
-        TextView txtMarkerTime = (TextView)convertView.findViewById(R.id.txt_marker_time_about_mid_item);
+        initGetView(convertView);
 
-        TransportInfoList myItem = (TransportInfoList) mItems.get(position);
+        myItem = (MarkerTime) mItems.get(position);
 
-        txtMarkerName.setText(String.valueOf(myItem.getPersonID()));
-        txtMarkerTime.setText(String.valueOf(myItem.getTotalTime()));
+        //TODO: GetTotal 수정
+        presenter.setMarkerListText(txtMarkerName,txtMarkerTime,myItem.getName(),myItem.getTotalTime());
 
         return convertView;
+    }
+
+    private void initGetView(View convertView){
+        txtMarkerName = (TextView)convertView.findViewById(R.id.txt_marker_name_item);
+        txtMarkerTime = (TextView)convertView.findViewById(R.id.txt_marker_time_about_mid_item);
     }
 
 }

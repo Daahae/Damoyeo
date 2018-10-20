@@ -5,6 +5,7 @@ import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,11 +13,12 @@ import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.daahae.damoyeo.R;
 import com.daahae.damoyeo.presenter.NMapActivityPresenter;
 import com.daahae.damoyeo.presenter.NMapFragmentPresenter;
-import com.daahae.damoyeo.view.activity.NMapActivity;
+import com.daahae.damoyeo.presenter.RetrofitPresenter;
 import com.daahae.damoyeo.view.data.FloatingActionBtn;
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
@@ -29,9 +31,11 @@ import java.util.ArrayList;
  * NMapView 사용시 필요한 초기화 및 리스너 등록은 NMapActivity 사용시와 동일함.
  */
 @SuppressLint("ValidFragment")
-public class NMapFragment extends Fragment {
+public class NMapFragment extends Fragment{
     private NMapContext mapContext;
     private NMapFragmentPresenter presenter;
+
+    private RetrofitPresenter retrofitPresenter;
 
     private FloatingActionBtn fabtn;
     private LinearLayout linearBtnSearchMid;
@@ -49,6 +53,7 @@ public class NMapFragment extends Fragment {
         mapContext = new NMapContext(super.getActivity());;
         mapContext.onCreate();
         presenter = new NMapFragmentPresenter(this, mapContext);
+        retrofitPresenter = new RetrofitPresenter();
     }
 
     @Override
@@ -108,8 +113,11 @@ public class NMapFragment extends Fragment {
                         fabtn.anim();
                         break;
                     case R.id.linear_search_mid:
+                        parentPresenter.sendMarkerTimeMessage(retrofitPresenter.getPersons(),presenter.sendRetrofit());
                         parentPresenter.changeView(parentPresenter.SELECT_MID_PAGE);
+
                         break;
+
                 }
             }
         };
