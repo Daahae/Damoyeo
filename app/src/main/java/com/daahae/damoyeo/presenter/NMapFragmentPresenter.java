@@ -1,7 +1,6 @@
 package com.daahae.damoyeo.presenter;
 
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -11,7 +10,7 @@ import com.daahae.damoyeo.R;
 import com.daahae.damoyeo.model.Person;
 import com.daahae.damoyeo.model.Position;
 import com.daahae.damoyeo.view.function.GPSInfo;
-import com.daahae.damoyeo.view.function.NMapPOIflagType;
+import com.daahae.damoyeo.view.data.NMapPOIflagType;
 import com.nhn.android.maps.NMapActivity;
 import com.nhn.android.maps.NMapContext;
 import com.nhn.android.maps.nmapmodel.NMapError;
@@ -23,8 +22,6 @@ import com.nhn.android.mapviewer.overlay.NMapPOIdataOverlay;
 import java.util.ArrayList;
 
 public class NMapFragmentPresenter extends NMapPresenter{
-    private final String TAG = "NMapViewer";
-
     private Fragment view;
     private NMapActivityPresenter parentPresenter;
 
@@ -32,9 +29,8 @@ public class NMapFragmentPresenter extends NMapPresenter{
     private LinearLayout layoutAddress, layoutAddMarker;
 
     private NMapPlacemark instantMarker;
-
-    private boolean isFixedMarker = false;
-    private Person targetMarker = null;
+    private boolean isFixedMarker;
+    private Person targetMarker;
 
     public NMapFragmentPresenter(Fragment view, NMapContext mapContext, NMapActivityPresenter parentPresenter) {
         super(view, mapContext);
@@ -42,50 +38,66 @@ public class NMapFragmentPresenter extends NMapPresenter{
         this.parentPresenter = parentPresenter;
     }
 
-    // set method
+    // get/set
+    private NMapPlacemark getInstantMarker() {
+        return instantMarker;
+    }
+
+    private void setInstantMarker(NMapPlacemark instantMarker) {
+        this.instantMarker = instantMarker;
+    }
+
+    private Person getTargetMarker() {
+        return targetMarker;
+    }
+
+    private void setTargetMarker(Person targetMarker) {
+        this.targetMarker = targetMarker;
+    }
+
     public void setTvAddress(TextView tvAddress) {
         this.tvAddress = tvAddress;
+    }
+
+    private void setAddress(String address){
+        tvAddress.setText(address);
     }
 
     public void setLayoutAddress(LinearLayout layoutAddress) {
         this.layoutAddress = layoutAddress;
     }
 
-    private void setVisibleAddress(boolean isPickLocation) {
-        if(isPickLocation)
-            layoutAddress.setVisibility(View.VISIBLE);
-        else {
-            layoutAddress.setVisibility(View.GONE);
-            tvAddress.setText("마커를 움직이세요");
-        }
-    }
-
     public void setLayoutAddMarker(LinearLayout layoutAddMarker) {
         this.layoutAddMarker = layoutAddMarker;
     }
 
-    private void setInstantMarkerAddress(NMapPlacemark instantMarker) {
-        this.instantMarker = instantMarker;
-        if (instantMarker != null) {
-            if(tvAddress!=null)
-                tvAddress.setText(instantMarker.toString());
+    private void setVisibleAddress(boolean isVisible) {
+        if(isVisible)
+            layoutAddress.setVisibility(View.VISIBLE);
+        else {
+            layoutAddress.setVisibility(View.GONE);
+            setAddress(view.getResources().getString(R.string.msg_default));
         }
     }
 
+    private void setInstantMarkerAddress(NMapPlacemark instantMarker) {
+        setInstantMarker(instantMarker);
+        if (instantMarker != null)
+            setAddress(instantMarker.toString());
+    }
+
     private void setIsFixedMarker(boolean isFixedMarker) {
-        if(isFixedMarker){
-            this.isFixedMarker = true;
-            layoutAddMarker.setBackground(view.getResources().getDrawable(R.drawable.btn_minus));
-        } else {
-            this.isFixedMarker = false;
-            layoutAddMarker.setBackground(view.getResources().getDrawable(R.drawable.btn_plus));
-        }
+        this.isFixedMarker = isFixedMarker;
+        if(isFixedMarker)
+            layoutAddMarker.setBackground(view.getResources().getDrawable(R.drawable.btn_minus, null));
+        else
+            layoutAddMarker.setBackground(view.getResources().getDrawable(R.drawable.btn_plus, null));
     }
 
     @Override
     public void init(Fragment view) {
         super.init(view);
-        this.getMapContext().setMapDataProviderListener(onDataProviderListener);
+        getMapContext().setMapDataProviderListener(onDataProviderListener);
     }
 
     @Override
@@ -94,194 +106,167 @@ public class NMapFragmentPresenter extends NMapPresenter{
 
         setVisibleAddress(false);
         setIsFixedMarker(false);
-        targetMarker = null;
+        setInstantMarker(null);
+        setTargetMarker(null);
         personList.clear();
     }
 
-    // 지도위 찍기, 드래그 가능한 마커
-    private void setInstantFloatingMarker(Position startPosition) {
+    private void setInstantFloatingMarker(Position pos) {
         int marker = NMapPOIflagType.PIN;
 
-        NMapPOIdata poiData = new NMapPOIdata(1, this.getResourceProvider());
+        NMapPOIdata poiData = new NMapPOIdata(1, getResourceProvider());
         poiData.beginPOIdata(1);
         NMapPOIitem item;
 
-        if(startPosition != null)
-            item = poiData.addPOIitem(startPosition.getX(), startPosition.getY(), null, marker, 0);
+        if(pos != null)
+            item = poiData.addPOIitem(pos.getX(), pos.getY(), null, marker, 0);
         else {
             item = poiData.addPOIitem(null, null, marker, 0);
-            item.setPoint(this.getController().getMapCenter());
+            item.setPoint(getController().getMapCenter());
         }
 
-        if (item != null) {
-            item.setFloatingMode(NMapPOIitem.FLOATING_TOUCH | NMapPOIitem.FLOATING_DRAG);
-        }
+        item.setFloatingMode(NMapPOIitem.FLOATING_TOUCH | NMapPOIitem.FLOATING_DRAG);
 
         poiData.endPOIdata();
 
-        NMapPOIdataOverlay poiDataOverlay = this.getOverlayManager().createPOIdataOverlay(poiData, null);
-        if (poiDataOverlay != null) {
-            poiDataOverlay.setOnFloatingItemChangeListener(this.getOnPOIdataFloatingItemChangeListener());
-            poiDataOverlay.setOnStateChangeListener(onPOIdataStateChangeListener);
-            poiDataOverlay.showAllPOIdata(11);
-            poiDataOverlay.selectPOIitem(0, true);
-        }
+        NMapPOIdataOverlay poiDataOverlay = getOverlayManager().createPOIdataOverlay(poiData, null);
+        poiDataOverlay.setOnFloatingItemChangeListener(getOnPOIdataFloatingItemChangeListener());
+        poiDataOverlay.setOnStateChangeListener(onPOIdataStateChangeListener);
+        poiDataOverlay.showAllPOIdata(11);
+        poiDataOverlay.selectPOIitem(0, true);
     }
 
-    public void getGPSLocation(ArrayList<Person> personList) {
-        if (getLocationOverlay() != null) {
-            // GPS 깜빡이는 오버레이 표시
-            if (!getOverlayManager().hasOverlay(getLocationOverlay())) {
-                getOverlayManager().addOverlay(getLocationOverlay());
-            }
-
-            GPSInfo gps = new GPSInfo(view.getActivity());
-
-            // GPS 퍼미션 한번더 확인
-            gps.setGPSPermission(this);
-
-            // GPS 사용유무 가져오기
-            if (gps.isGetLocation()) {
-                showSavedMarkersOnSaveState(personList);
-                setVisibleAddress(true);
-
-                Position pos = new Position(gps.getLongitude(), gps.getLatitude());
-                setInstantFloatingMarker(pos);
-            }
-            // GPS 를 사용할수 없으므로
-            else
-                gps.showSettingsAlert();
-        }
-    }
-
-    public void pickLocation(ArrayList<Person> personList) {
-        setVisibleAddress(true);
-
-        // GPS가 켜져있다면 끈다.
-        this.stopGPSLocation();
-
-        // 저장된 마커들 표시
-        showSavedMarkersOnSaveState(personList);
-
-        setInstantFloatingMarker(null);
-    }
-
-    public void fixMarker(ArrayList<Person> personList) {
-        if(isFixedMarker)
-            removeMarker(personList);
-        else
-            saveMarker(personList);
-    }
-
-    private void saveMarker(ArrayList<Person> personList) {
-        if(instantMarker != null) {
-            setVisibleAddress(true);
-            this.getOverlayManager().clearOverlays();
-
-            int id = personList.size()+1;
-            String address = instantMarker.toString();
-            Position position = new Position(instantMarker.longitude, instantMarker.latitude);
-
-            Person person = new Person("guest"+id, address, position);
-            person.setId(id);
-            personList.add(person);
-
-            setSavedMarkers(id, 11, personList);
-
-            Toast.makeText(view.getContext(), person.getName() + "님의 마커가 추가되었습니다.", Toast.LENGTH_SHORT).show();
-        } else
-            Toast.makeText(view.getContext(), "마커를 움직이세요", Toast.LENGTH_SHORT).show();
-    }
-
-    private void removeMarker(ArrayList<Person> personList) {
-        if(targetMarker != null){
-            if(personList.size() != 0)
-                if(personList.contains(targetMarker)) {
-                    personList.remove(targetMarker);
-                    Toast.makeText(view.getContext(), targetMarker.getName()+"님의 마커가 삭제되었습니다.", Toast.LENGTH_SHORT).show();
-                    if(personList.size() > 0)
-                        showSavedMarkersOnSaveState(personList);
-                    else
-                        initLocation(personList);
-                    targetMarker = null;
-                }
-        } else {
-            Toast.makeText(view.getContext(), "선택한 마커를 확인해주세요", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    private void setTargetMarker(NMapPOIitem nMapPOIitem, ArrayList<Person> personList) {
-        if(personList.size()!=0) {
-            if (nMapPOIitem.getId() != 0) {
-                for (Person index : personList) {
-                    if (index.getId() == nMapPOIitem.getId()) {
-                        targetMarker = index;
-                        tvAddress.setText(targetMarker.getAddress());
-                        setIsFixedMarker(true);
-                        break;
-                    }
-                }
-                if (targetMarker == null) {
-                    setIsFixedMarker(false);
-                    Toast.makeText(view.getContext(), "올바르지 않은 마커가 선택되었습니다.", Toast.LENGTH_SHORT).show();
-                }
-            } else
-                setIsFixedMarker(false);
-        }
-    }
-
-    public void setSavedMarkers(int id, int scale, ArrayList<Person> personList) {
+    private void setSavedMarkers(ArrayList<Person> personList, int scale) {
         int markerId = NMapPOIflagType.PIN;
 
-        NMapPOIdata poiData = new NMapPOIdata(id, this.getResourceProvider());
+        int id = personList.size() + 1;
+        NMapPOIdata poiData = new NMapPOIdata(id, getResourceProvider());
         poiData.beginPOIdata(id);
         for (Person index:personList)
             poiData.addPOIitem(index.getAddressPosition().getX(), index.getAddressPosition().getY(), null, markerId, index.getId());
 
         poiData.endPOIdata();
 
-        NMapPOIdataOverlay poiDataOverlay = this.getOverlayManager().createPOIdataOverlay(poiData, null);
-        if(scale != -1)
+        NMapPOIdataOverlay poiDataOverlay = getOverlayManager().createPOIdataOverlay(poiData, null);
+        if(scale >= 0)
             poiDataOverlay.showAllPOIdata(scale);
         poiDataOverlay.setOnStateChangeListener(onPOIdataStateChangeListener);
         poiDataOverlay.selectPOIitem(0, true);
     }
 
-    public void showSavedMarkersOnSaveState(ArrayList<Person> personList) {
-        this.getOverlayManager().clearOverlays();
+    public void getGPSLocation(Fragment view, ArrayList<Person> personList) {
+        if (getLocationOverlay() != null) {
+            GPSInfo gps = new GPSInfo(view.getActivity());
+            // GPS 퍼미션 한번더 확인
+            gps.setGPSPermission(this);
 
-        if(personList.size() != 0) {
-            int id = personList.size()+1;
-            setSavedMarkers(id, -1, personList);
+            if (gps.isGetLocation()) {
+                // GPS 깜빡이는 오버레이 표시
+                getGPSOverlay();
+
+                showSavedMarkersOnSaveState(personList);
+
+                Position pos = new Position(gps.getLongitude(), gps.getLatitude());
+                setInstantFloatingMarker(pos);
+
+                setVisibleAddress(true);
+            }
+            else
+                gps.showSettingsAlert();
         }
     }
 
-    public void showSavedMarkers(ArrayList<Person> personList) {
-        this.getOverlayManager().clearOverlays();
-        if(personList.size() != 0) {
-            int id = personList.size()+1;
-            setSavedMarkers(id, 0, personList);
+    public void pickLocation(ArrayList<Person> personList) {
+        // GPS가 켜져있다면 끈다.
+        stopGPSLocation();
+
+        showSavedMarkersOnSaveState(personList);
+
+        setInstantFloatingMarker(null);
+        setVisibleAddress(true);
+    }
+
+    public void fixMarker(Fragment view, ArrayList<Person> personList) {
+        if(isFixedMarker)
+            removeMarker(view, getTargetMarker(), personList);
+        else
+            saveMarker(view, getInstantMarker(), personList);
+    }
+
+    private void saveMarker(Fragment view, NMapPlacemark instantMarker, ArrayList<Person> personList) {
+        if(instantMarker != null) {
+            getOverlayManager().clearOverlays();
+
+            int id = personList.size() + 1;
+            String address = instantMarker.toString();
+            Position position = new Position(instantMarker.longitude, instantMarker.latitude);
+
+            Person person = new Person(view.getResources().getString(R.string.guest)+id, address, position);
+            person.setId(id);
+            personList.add(person);
+
+            setSavedMarkers(personList, 11);
+            setInstantMarker(null);
+
+            Toast.makeText(view.getActivity(), person.getName() + view.getResources().getString(R.string.msg_savemarker), Toast.LENGTH_SHORT).show();
         } else
-            Toast.makeText(view.getContext(), "인원을 추가하세요", Toast.LENGTH_SHORT).show();
+            Toast.makeText(view.getActivity(), view.getResources().getString(R.string.msg_default), Toast.LENGTH_SHORT).show();
+    }
+
+    private void removeMarker(Fragment view, Person targetMarker, ArrayList<Person> personList) {
+        if(targetMarker != null){
+            if(personList.contains(targetMarker)) {
+                personList.remove(targetMarker);
+
+                if(personList.size() > 0)
+                    showSavedMarkersOnSaveState(personList);
+                else
+                    initLocation(personList);
+
+                Toast.makeText(view.getContext(), targetMarker.getName() + view.getResources().getString(R.string.msg_removemarker), Toast.LENGTH_SHORT).show();
+                setTargetMarker(null);
+            }
+        } else
+            Toast.makeText(view.getActivity(), view.getResources().getString(R.string.msg_checkmarker), Toast.LENGTH_SHORT).show();
+    }
+
+    private void setTargetMarkerById(Fragment view, int id, Person targetMarker, ArrayList<Person> personList) {
+        if (id > 0) {
+            if(personList.size() > 0) {
+                for (Person index : personList) {
+                    if (index.getId() == id) {
+                        setTargetMarker(index);
+                        setAddress(targetMarker.getAddress());
+                        setIsFixedMarker(true);
+                        break;
+                    }
+                }
+                if (targetMarker == null) {
+                    setIsFixedMarker(false);
+                    Toast.makeText(view.getActivity(), view.getResources().getString(R.string.msg_checkmarker), Toast.LENGTH_SHORT).show();
+                }
+            }
+        } else
+            setIsFixedMarker(false);
+    }
+
+    private void showSavedMarkersOnSaveState(ArrayList<Person> personList) {
+        getOverlayManager().clearOverlays();
+        if(personList.size() > 0)
+            setSavedMarkers(personList, -1);
+    }
+
+    public void showSavedMarkers(Fragment view, ArrayList<Person> personList) {
+        getOverlayManager().clearOverlays();
+        if(personList.size() > 0)
+            setSavedMarkers(personList, 0);
+        else
+            Toast.makeText(view.getActivity(), view.getResources().getString(R.string.msg_cannotshow), Toast.LENGTH_SHORT).show();
     }
 
     private final NMapActivity.OnDataProviderListener onDataProviderListener = new NMapActivity.OnDataProviderListener() {
-
         @Override
         public void onReverseGeocoderResponse(NMapPlacemark placeMark, NMapError errInfo) {
-            Log.i(TAG, "onReverseGeocoderResponse: placeMark="
-                    + ((placeMark != null) ? placeMark.toString() : null));
-            Log.i(TAG, "onReverseGeocoderResponse: placeMark="
-                    + ((placeMark != null) ? placeMark.latitude : null));
-            Log.i(TAG, "onReverseGeocoderResponse: placeMark="
-                    + ((placeMark != null) ? placeMark.longitude : null));
-
-            if (errInfo != null) {
-                Log.e(TAG, "Failed to findPlacemarkAtLocation: error=" + errInfo.toString());
-
-                Toast.makeText(view.getContext(), errInfo.toString(), Toast.LENGTH_LONG).show();
-                return;
-            }
             setInstantMarkerAddress(placeMark);
         }
     };
@@ -289,18 +274,12 @@ public class NMapFragmentPresenter extends NMapPresenter{
     private final NMapPOIdataOverlay.OnStateChangeListener onPOIdataStateChangeListener = new NMapPOIdataOverlay.OnStateChangeListener() {
         @Override
         public void onFocusChanged(NMapPOIdataOverlay nMapPOIdataOverlay, NMapPOIitem nMapPOIitem) {
-            if (nMapPOIitem != null) {
-                Log.i(TAG, "onFocusChanged: " + nMapPOIitem.toString());
-                setTargetMarker(nMapPOIitem, parentPresenter.getPersonList());
-            } else {
-                Log.i(TAG, "onFocusChanged: ");
-            }
+            if (nMapPOIitem != null)
+                setTargetMarkerById(view, nMapPOIitem.getId(), getTargetMarker(), parentPresenter.getPersonList());
         }
 
         @Override
         public void onCalloutClick(NMapPOIdataOverlay nMapPOIdataOverlay, NMapPOIitem nMapPOIitem) {
-            Toast.makeText(view.getContext(), "onCalloutClick: " + nMapPOIitem.getTitle(), Toast.LENGTH_LONG).show();
-            Log.e(TAG, "onFocusChanged: " + nMapPOIitem.toString());
         }
     };
 }

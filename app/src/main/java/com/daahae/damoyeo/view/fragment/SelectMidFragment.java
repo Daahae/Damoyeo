@@ -22,6 +22,7 @@ import com.daahae.damoyeo.presenter.NMapFragmentPresenter;
 import com.daahae.damoyeo.presenter.SelectMidFragmentPresenter;
 import com.daahae.damoyeo.view.adapter.BuildingAdapter;
 import com.daahae.damoyeo.view.adapter.MarkerTimeAdapter;
+import com.daahae.damoyeo.view.data.Constant;
 import com.nhn.android.maps.NMapContext;
 
 @SuppressLint("ValidFragment")
@@ -119,20 +120,20 @@ public class SelectMidFragment extends Fragment implements View.OnClickListener{
     public void onClick(View view) {
         switch(view.getId()){
             case R.id.btn_select_mid:
-                parentPresenter.changeView(parentPresenter.CATEGORY_PAGE);
+                parentPresenter.changeView(Constant.CATEGORY_PAGE);
                 break;
             case R.id.btn_back_select_mid:
                 parentPresenter.backView(this);
                 break;
             case R.id.btn_select_mid_algorithm:
-                presenter.selectMid(presenter.MID_ALGORITHM, parentPresenter.getMid(), parentPresenter.getBuilding(), parentPresenter.getPersonList());
+                presenter.selectMid(Constant.MID_ALGORITHM, parentPresenter.getMid(), parentPresenter.getBuilding(), parentPresenter.getPersonList());
                 btnSelectMidAlgorithm.setImageResource(R.drawable.btn_selected_mid_white);
                 btnSelectMidAlgorithm.setBackgroundResource(R.color.appMainColor);
                 btnSelectLandmark.setImageResource(R.drawable.btn_selected_landmark_orange);
                 btnSelectLandmark.setBackgroundResource(R.color.colorWhite);
                 break;
             case R.id.btn_select_landmark:
-                presenter.selectMid(presenter.LANDMARK, parentPresenter.getMid(), parentPresenter.getBuilding(), parentPresenter.getPersonList());
+                presenter.selectMid(Constant.LANDMARK, parentPresenter.getMid(), parentPresenter.getBuilding(), parentPresenter.getPersonList());
                 btnSelectMidAlgorithm.setImageResource(R.drawable.btn_selected_mid_orange);
                 btnSelectMidAlgorithm.setBackgroundResource(R.color.colorWhite);
                 btnSelectLandmark.setImageResource(R.drawable.btn_selected_landmark_white);

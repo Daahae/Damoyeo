@@ -2,6 +2,7 @@ package com.daahae.damoyeo.view.fragment;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -14,6 +15,7 @@ import android.widget.TextView;
 import com.daahae.damoyeo.R;
 import com.daahae.damoyeo.presenter.NMapActivityPresenter;
 import com.daahae.damoyeo.presenter.NMapFragmentPresenter;
+import com.daahae.damoyeo.view.data.Constant;
 import com.daahae.damoyeo.view.data.FloatingActionBtn;
 import com.nhn.android.maps.NMapContext;
 
@@ -23,15 +25,16 @@ import com.nhn.android.maps.NMapContext;
  */
 @SuppressLint("ValidFragment")
 public class NMapFragment extends Fragment implements View.OnClickListener{
+    private Fragment view;
     private NMapContext mapContext;
     private NMapFragmentPresenter presenter;
 
     private FloatingActionBtn fabtn;
-    private LinearLayout linearBtnSearchMid;
 
     private NMapActivityPresenter parentPresenter;
 
     public NMapFragment(NMapActivityPresenter parentPresenter) {
+        this.view = this;
         this.parentPresenter = parentPresenter;
     }
 
@@ -46,7 +49,7 @@ public class NMapFragment extends Fragment implements View.OnClickListener{
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View rootView = (View) inflater.inflate(R.layout.fragment_nmap, container, false);
 
         TextView tvAddress = rootView.findViewById(R.id.tv_address);
@@ -60,7 +63,7 @@ public class NMapFragment extends Fragment implements View.OnClickListener{
             public void onClick(View v) {
                 switch (v.getId()) {
                     case R.id.layout_fixmarker:
-                        presenter.fixMarker(parentPresenter.getPersonList());
+                        presenter.fixMarker(view, parentPresenter.getPersonList());
                         break;
                 }
             }
@@ -86,7 +89,7 @@ public class NMapFragment extends Fragment implements View.OnClickListener{
         fabtn.getFabClear().setOnClickListener(this);
         fabtn.getFabFull().setOnClickListener(this);
 
-        linearBtnSearchMid = rootView.findViewById(R.id.linear_search_mid);
+        LinearLayout linearBtnSearchMid = rootView.findViewById(R.id.linear_search_mid);
         linearBtnSearchMid.setOnClickListener(this);
 
         return rootView;
@@ -133,7 +136,7 @@ public class NMapFragment extends Fragment implements View.OnClickListener{
             case R.id.fab_gps:
                 // GPS
                 presenter.getPermission(this);
-                presenter.getGPSLocation(parentPresenter.getPersonList());
+                presenter.getGPSLocation(this, parentPresenter.getPersonList());
                 fabtn.anim();
                 break;
             case R.id.fab_pick:
@@ -148,11 +151,11 @@ public class NMapFragment extends Fragment implements View.OnClickListener{
                 break;
             case R.id.fab_full:
                 // 전체보기
-                presenter.showSavedMarkers(parentPresenter.getPersonList());
+                presenter.showSavedMarkers(this, parentPresenter.getPersonList());
                 fabtn.anim();
                 break;
             case R.id.linear_search_mid:
-                parentPresenter.changeView(parentPresenter.SELECT_MID_PAGE);
+                parentPresenter.changeView(Constant.SELECT_MID_PAGE);
                 break;
         }
     }

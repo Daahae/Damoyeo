@@ -80,9 +80,9 @@ public class MarkerTimeAdapter extends BaseAdapter{
             @Override
             public void onClick(View v) {
                 if(presenter.getSelectMidFlg() == 1)
-                    presenter.showSelectMidInfoMaker(parentPresenter.getMid(), (myItem.getPerson().getAddressPosition()));
+                    presenter.showSelectMidInfoMarker(parentPresenter.getMid(), (myItem.getPerson().getAddressPosition()));
                 else if(presenter.getSelectMidFlg() == 2)
-                    presenter.showSelectBuildingMaker(parentPresenter.getBuilding(), (myItem.getPerson().getAddressPosition()));
+                    presenter.showSelectBuildingMarker(parentPresenter.getBuilding(), (myItem.getPerson().getAddressPosition()));
             }
         });
 

@@ -10,6 +10,7 @@ import com.daahae.damoyeo.model.MidInfo;
 import com.daahae.damoyeo.model.Person;
 import com.daahae.damoyeo.model.Position;
 import com.daahae.damoyeo.view.activity.NMapActivity;
+import com.daahae.damoyeo.view.data.Constant;
 import com.daahae.damoyeo.view.fragment.CategoryFragment;
 import com.daahae.damoyeo.view.fragment.NMapFragment;
 import com.daahae.damoyeo.view.fragment.SelectMidFragment;
@@ -18,9 +19,6 @@ import java.util.ArrayList;
 
 public class NMapActivityPresenter {
     private NMapActivity view;
-    public static final int NMAP_PAGE = 1;
-    public static final int SELECT_MID_PAGE = 2;
-    public static final int CATEGORY_PAGE = 3;
 
     private ArrayList<Person> personList;
     private MidInfo mid;
@@ -37,6 +35,7 @@ public class NMapActivityPresenter {
         fragmentTransaction.commit();
 
         initPersonList();
+        // TODO 서버와 통신
         initMidinfo();
         initBuilding();
     }
@@ -49,7 +48,7 @@ public class NMapActivityPresenter {
 
     public void changeView(int nextPageNumber){
         switch (nextPageNumber){
-            case NMAP_PAGE:
+            case Constant.NMAP_PAGE:
                 view.getSupportFragmentManager()
                         .beginTransaction()
                         .replace(R.id.fragmentHere, new NMapFragment(this))
@@ -57,7 +56,7 @@ public class NMapActivityPresenter {
                         .commit();
                 break;
 
-            case SELECT_MID_PAGE:
+            case Constant.SELECT_MID_PAGE:
                 view.getSupportFragmentManager()
                         .beginTransaction()
                         .replace(R.id.fragmentHere, new SelectMidFragment(this))
@@ -65,7 +64,7 @@ public class NMapActivityPresenter {
                         .commit();
                 break;
 
-            case CATEGORY_PAGE:
+            case Constant.CATEGORY_PAGE:
                 view.getSupportFragmentManager()
                         .beginTransaction()
                         .replace(R.id.fragmentHere, new CategoryFragment(this))
@@ -92,12 +91,12 @@ public class NMapActivityPresenter {
     }
 
     private void initMidinfo() {
-        Position pos = new Position(126.978371, 37.5666091);
-        this.mid = new MidInfo(pos, "서울특별시 중구 명동");
+        Position pos = new Position(Constant.longitude, Constant.latitude);
+        mid = new MidInfo(pos, Constant.address);
     }
 
     private void initBuilding() {
-        Position pos = new Position(126.978371, 37.5666091);
-        this.building = new Building(pos, "서울특별시 중구 명동", 0, pos, "서울시청", "서울특별시 중구 명동 서울시청", "02-0000-0000");
+        Position pos = new Position(Constant.longitude, Constant.latitude);
+        building = new Building(pos, Constant.address, 0, pos, Constant.name, Constant.address, Constant.tel);
     }
 }

@@ -39,7 +39,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
-                    android:text="@string/init_tv_address"
+                    android:text="@string/msg_default"
                     android:textColor="#000"
                     android:textSize="20sp" />
 

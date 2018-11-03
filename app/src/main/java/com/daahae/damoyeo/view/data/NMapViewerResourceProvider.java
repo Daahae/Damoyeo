@@ -1,4 +1,4 @@
-package com.daahae.damoyeo.view.function;
+package com.daahae.damoyeo.view.data;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -57,7 +57,7 @@ public class NMapViewerResourceProvider extends NMapResourceProvider{
 
         int resourceId = findResourceIdForMarker(markerId, focused);
         if (resourceId > 0) {
-            marker = mContext.getResources().getDrawable(resourceId);
+            marker = mContext.getResources().getDrawable(resourceId, null);
         } else {
             resourceId = 4 * markerId;
             if (focused) {
@@ -110,7 +110,7 @@ public class NMapViewerResourceProvider extends NMapResourceProvider{
 
         Drawable marker = null;
         if (resourceId > 0) {
-            marker = mContext.getResources().getDrawable(resourceId);
+            marker = mContext.getResources().getDrawable(resourceId, null);
         }
 
         if (marker != null) {
@@ -246,7 +246,7 @@ public class NMapViewerResourceProvider extends NMapResourceProvider{
     @Override
     public Drawable getDirectionArrow() {
 
-        Drawable drawable = mContext.getResources().getDrawable(R.drawable.ic_angle);
+        Drawable drawable = mContext.getResources().getDrawable(R.drawable.ic_angle, null);
 
         if (drawable != null) {
             int w = drawable.getIntrinsicWidth() / 2;
@@ -353,12 +353,12 @@ public class NMapViewerResourceProvider extends NMapResourceProvider{
             NMapPOIitem poiItem = (NMapPOIitem)item;
 
             if (poiItem.showRightButton()) {
-                Drawable drawable = mContext.getResources().getDrawable(R.drawable.bg_speech);
+                Drawable drawable = mContext.getResources().getDrawable(R.drawable.bg_speech, null);
                 return drawable;
             }
         }
 
-        Drawable drawable = mContext.getResources().getDrawable(R.drawable.pin_ballon_bg);
+        Drawable drawable = mContext.getResources().getDrawable(R.drawable.pin_ballon_bg, null);
 
         return drawable;
     }
@@ -384,9 +384,9 @@ public class NMapViewerResourceProvider extends NMapResourceProvider{
             if (poiItem.showRightButton()) {
                 Drawable[] drawable = new Drawable[3];
 
-                drawable[0] = mContext.getResources().getDrawable(R.drawable.btn_green_normal);
-                drawable[1] = mContext.getResources().getDrawable(R.drawable.btn_green_pressed);
-                drawable[2] = mContext.getResources().getDrawable(R.drawable.btn_green_highlight);
+                drawable[0] = mContext.getResources().getDrawable(R.drawable.btn_green_normal, null);
+                drawable[1] = mContext.getResources().getDrawable(R.drawable.btn_green_pressed, null);
+                drawable[2] = mContext.getResources().getDrawable(R.drawable.btn_green_highlight, null);
 
                 return drawable;
             }
@@ -405,9 +405,9 @@ public class NMapViewerResourceProvider extends NMapResourceProvider{
 
                 switch (poiItem.getRightAccessoryId()) {
                     case NMapPOIflagType.CLICKABLE_ARROW:
-                        drawable[0] = mContext.getResources().getDrawable(R.drawable.pin_ballon_arrow);
-                        drawable[1] = mContext.getResources().getDrawable(R.drawable.pin_ballon_on_arrow);
-                        drawable[2] = mContext.getResources().getDrawable(R.drawable.pin_ballon_on_arrow);
+                        drawable[0] = mContext.getResources().getDrawable(R.drawable.pin_ballon_arrow, null);
+                        drawable[1] = mContext.getResources().getDrawable(R.drawable.pin_ballon_on_arrow, null);
+                        drawable[2] = mContext.getResources().getDrawable(R.drawable.pin_ballon_on_arrow, null);
                         break;
                 }
 
