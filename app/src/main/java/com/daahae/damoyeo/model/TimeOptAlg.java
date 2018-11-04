@@ -1,4 +1,4 @@
-package com.daahae.damoyeo.presenter;
+package com.daahae.damoyeo.model;
 
 import com.daahae.damoyeo.model.MidInfo;
 import com.daahae.damoyeo.model.Person;

@@ -15,6 +15,7 @@ import com.daahae.damoyeo.model.Person;
 import com.daahae.damoyeo.model.TransportInfoList;
 import com.daahae.damoyeo.presenter.NMapActivityPresenter;
 import com.daahae.damoyeo.presenter.SelectMidFragmentPresenter;
+import com.daahae.damoyeo.view.data.Constant;
 
 import java.util.ArrayList;
 
@@ -79,10 +80,10 @@ public class MarkerTimeAdapter extends BaseAdapter{
         convertView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(presenter.getSelectMidFlg() == 1)
-                    presenter.showSelectMidInfoMarker(parentPresenter.getMid(), (myItem.getPerson().getAddressPosition()));
-                else if(presenter.getSelectMidFlg() == 2)
-                    presenter.showSelectBuildingMarker(parentPresenter.getBuilding(), (myItem.getPerson().getAddressPosition()));
+                if(presenter.getSelectMidFlg() == Constant.MID_ALGORITHM)
+                    presenter.showMidInfoEachMarker(parentPresenter.getMid(), (myItem.getPerson().getAddressPosition()));
+                else if(presenter.getSelectMidFlg() == Constant.LANDMARK)
+                    presenter.showLandmarkEachMarker(parentPresenter.getBuilding(), (myItem.getPerson().getAddressPosition()));
             }
         });
 

@@ -1,6 +1,7 @@
 package com.daahae.damoyeo.presenter;
 
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 
@@ -9,6 +10,7 @@ import com.daahae.damoyeo.model.Building;
 import com.daahae.damoyeo.model.MidInfo;
 import com.daahae.damoyeo.model.Person;
 import com.daahae.damoyeo.model.Position;
+import com.daahae.damoyeo.presenter.Contract.NMapActivityContract;
 import com.daahae.damoyeo.view.activity.NMapActivity;
 import com.daahae.damoyeo.view.data.Constant;
 import com.daahae.damoyeo.view.fragment.CategoryFragment;
@@ -17,8 +19,8 @@ import com.daahae.damoyeo.view.fragment.SelectMidFragment;
 
 import java.util.ArrayList;
 
-public class NMapActivityPresenter {
-    private NMapActivity view;
+public class NMapActivityPresenter implements NMapActivityContract.Presenter {
+    private FragmentActivity view;
 
     private ArrayList<Person> personList;
     private MidInfo mid;
@@ -27,6 +29,11 @@ public class NMapActivityPresenter {
     public NMapActivityPresenter(NMapActivity view){
         this.view = view;
 
+        init(view);
+    }
+
+    @Override
+    public void init(FragmentActivity view) {
         Fragment fragment = new NMapFragment(this);
         FragmentManager fragmentManager = view.getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -40,13 +47,15 @@ public class NMapActivityPresenter {
         initBuilding();
     }
 
-    public void backView(Fragment fragment){
+    @Override
+    public void backView(Fragment fragment) {
         FragmentManager fragmentManager = view.getSupportFragmentManager();
         fragmentManager.beginTransaction().remove(fragment).commit();
         fragmentManager.popBackStack();
     }
 
-    public void changeView(int nextPageNumber){
+    @Override
+    public void changeView(int nextPageNumber) {
         switch (nextPageNumber){
             case Constant.NMAP_PAGE:
                 view.getSupportFragmentManager()
@@ -74,19 +83,23 @@ public class NMapActivityPresenter {
         }
     }
 
+    @Override
     public ArrayList<Person> getPersonList() {
         return personList;
     }
 
+    @Override
     public MidInfo getMid() {
         return mid;
     }
 
+    @Override
     public Building getBuilding() {
         return building;
     }
 
-    private void initPersonList() {
+    @Override
+    public void initPersonList() {
         this.personList = new ArrayList<Person>();
     }
 

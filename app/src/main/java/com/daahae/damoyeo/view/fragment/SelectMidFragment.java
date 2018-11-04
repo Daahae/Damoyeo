@@ -17,6 +17,7 @@ import android.widget.Toast;
 import com.daahae.damoyeo.R;
 import com.daahae.damoyeo.model.Building;
 import com.daahae.damoyeo.model.MidInfo;
+import com.daahae.damoyeo.presenter.Contract.SelectMidFragmentContract;
 import com.daahae.damoyeo.presenter.NMapActivityPresenter;
 import com.daahae.damoyeo.presenter.NMapFragmentPresenter;
 import com.daahae.damoyeo.presenter.SelectMidFragmentPresenter;
@@ -26,7 +27,7 @@ import com.daahae.damoyeo.view.data.Constant;
 import com.nhn.android.maps.NMapContext;
 
 @SuppressLint("ValidFragment")
-public class SelectMidFragment extends Fragment implements View.OnClickListener{
+public class SelectMidFragment extends Fragment implements View.OnClickListener, SelectMidFragmentContract.View {
     private NMapContext mapContext;
 
     private SelectMidFragmentPresenter presenter;
@@ -51,7 +52,9 @@ public class SelectMidFragment extends Fragment implements View.OnClickListener{
         super.onCreate(savedInstanceState);
         mapContext = new NMapContext(super.getActivity());;
         mapContext.onCreate();
-        presenter = new SelectMidFragmentPresenter(this, mapContext);
+
+        setPresenter(new SelectMidFragmentPresenter(this, mapContext));
+
         markerTimeAdapter = new MarkerTimeAdapter(presenter, parentPresenter);
     }
 
@@ -95,7 +98,7 @@ public class SelectMidFragment extends Fragment implements View.OnClickListener{
     public void onResume() {
         super.onResume();
         mapContext.onResume();
-        presenter.showSavedMidInfoMarkers(8, parentPresenter.getMid(), parentPresenter.getPersonList());
+        presenter.showMidInfoAllMarkers(8, parentPresenter.getMid(), parentPresenter.getPersonList());
     }
 
     @Override
@@ -126,14 +129,14 @@ public class SelectMidFragment extends Fragment implements View.OnClickListener{
                 parentPresenter.backView(this);
                 break;
             case R.id.btn_select_mid_algorithm:
-                presenter.selectMid(Constant.MID_ALGORITHM, parentPresenter.getMid(), parentPresenter.getBuilding(), parentPresenter.getPersonList());
+                presenter.setSelectMidFlg(Constant.MID_ALGORITHM, parentPresenter.getMid(), parentPresenter.getBuilding(), parentPresenter.getPersonList());
                 btnSelectMidAlgorithm.setImageResource(R.drawable.btn_selected_mid_white);
                 btnSelectMidAlgorithm.setBackgroundResource(R.color.appMainColor);
                 btnSelectLandmark.setImageResource(R.drawable.btn_selected_landmark_orange);
                 btnSelectLandmark.setBackgroundResource(R.color.colorWhite);
                 break;
             case R.id.btn_select_landmark:
-                presenter.selectMid(Constant.LANDMARK, parentPresenter.getMid(), parentPresenter.getBuilding(), parentPresenter.getPersonList());
+                presenter.setSelectMidFlg(Constant.LANDMARK, parentPresenter.getMid(), parentPresenter.getBuilding(), parentPresenter.getPersonList());
                 btnSelectMidAlgorithm.setImageResource(R.drawable.btn_selected_mid_orange);
                 btnSelectMidAlgorithm.setBackgroundResource(R.color.colorWhite);
                 btnSelectLandmark.setImageResource(R.drawable.btn_selected_landmark_white);
@@ -141,11 +144,16 @@ public class SelectMidFragment extends Fragment implements View.OnClickListener{
                 break;
 
             case R.id.btn_all_marker_list:
-                if(presenter.getSelectMidFlg() == 1)
-                    presenter.showSavedMidInfoMarkers(0, parentPresenter.getMid(), parentPresenter.getPersonList());
-                else if(presenter.getSelectMidFlg() == 2)
-                    presenter.showSavedBuildingMarkers(0, parentPresenter.getBuilding(), parentPresenter.getPersonList());
+                if(presenter.getSelectMidFlg() == Constant.MID_ALGORITHM)
+                    presenter.showMidInfoAllMarkers(0, parentPresenter.getMid(), parentPresenter.getPersonList());
+                else if(presenter.getSelectMidFlg() == Constant.LANDMARK)
+                    presenter.showLandmarkAllMarkers(0, parentPresenter.getBuilding(), parentPresenter.getPersonList());
                 break;
         }
+    }
+
+    @Override
+    public void setPresenter(SelectMidFragmentPresenter presenter) {
+        this.presenter = presenter;
     }
 }

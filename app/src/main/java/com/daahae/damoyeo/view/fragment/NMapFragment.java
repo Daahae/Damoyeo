@@ -13,6 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.daahae.damoyeo.R;
+import com.daahae.damoyeo.presenter.Contract.NMapFragmentContract;
 import com.daahae.damoyeo.presenter.NMapActivityPresenter;
 import com.daahae.damoyeo.presenter.NMapFragmentPresenter;
 import com.daahae.damoyeo.view.data.Constant;
@@ -24,17 +25,19 @@ import com.nhn.android.maps.NMapContext;
  * NMapView 사용시 필요한 초기화 및 리스너 등록은 NMapActivity 사용시와 동일함.
  */
 @SuppressLint("ValidFragment")
-public class NMapFragment extends Fragment implements View.OnClickListener{
-    private Fragment view;
+public class NMapFragment extends Fragment implements View.OnClickListener, NMapFragmentContract.View {
+
     private NMapContext mapContext;
+    private NMapActivityPresenter parentPresenter;
     private NMapFragmentPresenter presenter;
 
     private FloatingActionBtn fabtn;
 
-    private NMapActivityPresenter parentPresenter;
+    private TextView tvAddress;
+    private LinearLayout layoutAddress, layoutAddMarker;
+    private boolean isFixedMarker;
 
     public NMapFragment(NMapActivityPresenter parentPresenter) {
-        this.view = this;
         this.parentPresenter = parentPresenter;
     }
 
@@ -44,34 +47,19 @@ public class NMapFragment extends Fragment implements View.OnClickListener{
         super.onCreate(savedInstanceState);
         mapContext = new NMapContext(super.getActivity());;
         mapContext.onCreate();
-        presenter = new NMapFragmentPresenter(this,  mapContext,  parentPresenter);
 
+        setPresenter(new NMapFragmentPresenter(this,  mapContext,  parentPresenter));;
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View rootView = (View) inflater.inflate(R.layout.fragment_nmap, container, false);
 
-        TextView tvAddress = rootView.findViewById(R.id.tv_address);
-        presenter.setTvAddress(tvAddress);
+        tvAddress = rootView.findViewById(R.id.tv_address);
+        layoutAddress = rootView.findViewById(R.id.layout_address);
 
-        LinearLayout layoutAddress = rootView.findViewById(R.id.layout_address);
-        presenter.setLayoutAddress(layoutAddress);
-
-        LinearLayout.OnClickListener layoutOnClickListener = new LinearLayout.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                switch (v.getId()) {
-                    case R.id.layout_fixmarker:
-                        presenter.fixMarker(view, parentPresenter.getPersonList());
-                        break;
-                }
-            }
-        };
-
-        LinearLayout layoutAddMarker = rootView.findViewById(R.id.layout_fixmarker);
-        presenter.setLayoutAddMarker(layoutAddMarker);
-        layoutAddMarker.setOnClickListener(layoutOnClickListener);
+        layoutAddMarker = rootView.findViewById(R.id.layout_fixmarker);
+        layoutAddMarker.setOnClickListener(this);
 
         fabtn = new FloatingActionBtn();
         fabtn.setFabOpen(AnimationUtils.loadAnimation(getActivity(), R.anim.fab_open));
@@ -154,9 +142,41 @@ public class NMapFragment extends Fragment implements View.OnClickListener{
                 presenter.showSavedMarkers(this, parentPresenter.getPersonList());
                 fabtn.anim();
                 break;
+            case R.id.layout_fixmarker:
+                presenter.fixMarker(isFixedMarker, this, presenter.getInstantMarker(), presenter.getTargetMarker(), parentPresenter.getPersonList());
+                break;
             case R.id.linear_search_mid:
                 parentPresenter.changeView(Constant.SELECT_MID_PAGE);
                 break;
         }
+    }
+
+    @Override
+    public void setPresenter(NMapFragmentPresenter presenter) {
+        this.presenter = presenter;
+    }
+
+    @Override
+    public void setAddress(String address){
+        tvAddress.setText(address);
+    }
+
+    @Override
+    public void setVisibleAddress(boolean isVisible) {
+        if(isVisible)
+            layoutAddress.setVisibility(View.VISIBLE);
+        else {
+            layoutAddress.setVisibility(View.GONE);
+            setAddress(getResources().getString(R.string.msg_default));
+        }
+    }
+
+    @Override
+    public void setIsFixedMarker(boolean isFixedMarker) {
+        this.isFixedMarker = isFixedMarker;
+        if(isFixedMarker)
+            layoutAddMarker.setBackground(getResources().getDrawable(R.drawable.btn_minus, null));
+        else
+            layoutAddMarker.setBackground(getResources().getDrawable(R.drawable.btn_plus, null));
     }
 }

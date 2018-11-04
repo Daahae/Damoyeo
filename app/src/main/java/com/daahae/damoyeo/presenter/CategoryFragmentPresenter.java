@@ -2,11 +2,12 @@ package com.daahae.damoyeo.presenter;
 
 import android.support.v4.app.Fragment;
 
+import com.daahae.damoyeo.presenter.Contract.CategoryFragmentContract;
 import com.daahae.damoyeo.view.adapter.BuildingAdapter;
 import com.daahae.damoyeo.view.fragment.CategoryFragment;
 import com.nhn.android.maps.NMapContext;
 
-public class CategoryFragmentPresenter extends NMapPresenter{
+public class CategoryFragmentPresenter extends NMapPresenter implements CategoryFragmentContract.Presenter {
     private Fragment view;
     private NMapActivityPresenter parentPresenter;
 
@@ -17,12 +18,12 @@ public class CategoryFragmentPresenter extends NMapPresenter{
         this.parentPresenter = parentPresenter;
     }
 
-    public void setBuildingInfo(BuildingAdapter buildingAdapter){
+    @Override
+    public void setBuildingInfo(BuildingAdapter buildingAdapter) {
         this.buildingAdapter = buildingAdapter;
 
         buildingAdapter.resetList();
         makeDummy();
-
     }
 
     //TODO: 삭제예정

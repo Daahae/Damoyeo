@@ -14,12 +14,10 @@
  * limitations under the License.
  */
 
-package com.daahae.damoyeo.view;
+package com.daahae.damoyeo.presenter.Contract;
 
-import android.support.v4.app.Fragment;
+public interface BaseView<T> {
 
-public interface BasePresenter {
-
-    void init(Fragment view);
+    void setPresenter(T presenter);
 
 }

@@ -2,18 +2,14 @@ package com.daahae.damoyeo.presenter;
 
 import android.Manifest;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.daahae.damoyeo.R;
 import com.daahae.damoyeo.model.Person;
-import com.daahae.damoyeo.model.Position;
-import com.daahae.damoyeo.view.NMapContract;
+import com.daahae.damoyeo.presenter.Contract.BaseNMap;
 import com.daahae.damoyeo.view.data.Constant;
 import com.daahae.damoyeo.view.data.NMapViewerResourceProvider;
-import com.daahae.damoyeo.view.function.GPSInfo;
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
 import com.nhn.android.maps.NMapActivity;
@@ -32,7 +28,7 @@ import com.nhn.android.mapviewer.overlay.NMapResourceProvider;
 
 import java.util.ArrayList;
 
-public class NMapPresenter implements NMapContract.Presenter{
+public class NMapPresenter implements BaseNMap {
     private Fragment view;
     private NMapContext mapContext;
 

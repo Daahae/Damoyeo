@@ -1,26 +1,22 @@
 package com.daahae.damoyeo.presenter;
 
 import android.support.v4.app.Fragment;
-import android.util.Log;
-import android.widget.Toast;
 
 import com.daahae.damoyeo.model.Building;
 import com.daahae.damoyeo.model.MidInfo;
 import com.daahae.damoyeo.model.Person;
 import com.daahae.damoyeo.model.Position;
+import com.daahae.damoyeo.presenter.Contract.SelectMidFragmentContract;
 import com.daahae.damoyeo.view.adapter.MarkerTimeAdapter;
 import com.daahae.damoyeo.view.data.Constant;
 import com.daahae.damoyeo.view.data.NMapPOIflagType;
-import com.nhn.android.maps.NMapActivity;
 import com.nhn.android.maps.NMapContext;
-import com.nhn.android.maps.nmapmodel.NMapError;
-import com.nhn.android.maps.nmapmodel.NMapPlacemark;
 import com.nhn.android.maps.overlay.NMapPOIdata;
 import com.nhn.android.mapviewer.overlay.NMapPOIdataOverlay;
 
 import java.util.ArrayList;
 
-public class SelectMidFragmentPresenter extends NMapPresenter{
+public class SelectMidFragmentPresenter extends NMapPresenter implements SelectMidFragmentContract.Presenter {
     private int selectMidFlg = Constant.MID_ALGORITHM;
 
     private MarkerTimeAdapter markerTimeAdapter;
@@ -29,51 +25,48 @@ public class SelectMidFragmentPresenter extends NMapPresenter{
         super(view, mapContext);
     }
 
-    public int getSelectMidFlg() {
-        return selectMidFlg;
-    }
-
-    public void selectMid(int selectMidMenu, MidInfo mid, Building building, ArrayList<Person> personList){
-        switch (selectMidMenu){
-            case Constant.MID_ALGORITHM:
-                selectMidAlgorithm(mid, personList);
-                selectMidFlg = Constant.MID_ALGORITHM;
-                break;
-            case Constant.LANDMARK:
-                selectLandmark(building, personList);
-                selectMidFlg = Constant.LANDMARK;
-                break;
-        }
-    }
-
-    private void selectMidAlgorithm(MidInfo mid, ArrayList<Person> personList){
-        showSavedMidInfoMarkers(0, mid, personList);
-    }
-
-    private void selectLandmark(Building building, ArrayList<Person> personList){
-        showSavedBuildingMarkers(0, building, personList);
-    }
-
-    public void setMarkerTimeList(MarkerTimeAdapter markerTimeAdapter, ArrayList<Person> personList){
-        this.markerTimeAdapter = markerTimeAdapter;
-
-        markerTimeAdapter.resetList();
-        showListView(personList);
-    }
-
-    private void showListView(ArrayList<Person> personList){
-        for(Person person:personList)
-            markerTimeAdapter.addDummy(person);
-    }
-
     @Override
     public void init(Fragment view) {
         super.init(view);
         getMapContext().setMapDataProviderListener(getOnDataProviderListener());
     }
 
-    public void showSavedMidInfoMarkers(int scale, MidInfo mid, ArrayList<Person> personList) {
-        if(personList.size() != 0) {
+    @Override
+    public void setMarkerTimeList(MarkerTimeAdapter markerTimeAdapter, ArrayList<Person> personList) {
+        this.markerTimeAdapter = markerTimeAdapter;
+
+        markerTimeAdapter.resetList();
+        showListView(personList);
+    }
+
+    @Override
+    public void showListView(ArrayList<Person> personList) {
+        for(Person person:personList)
+            markerTimeAdapter.addDummy(person);
+    }
+
+    @Override
+    public int getSelectMidFlg() {
+        return selectMidFlg;
+    }
+
+    @Override
+    public void setSelectMidFlg(int selectMidMenu, MidInfo mid, Building building, ArrayList<Person> personList) {
+        selectMidFlg = selectMidMenu;
+
+        switch (selectMidMenu){
+            case Constant.MID_ALGORITHM:
+                showMidInfoAllMarkers(0, mid, personList);
+                break;
+            case Constant.LANDMARK:
+                showLandmarkAllMarkers(0, building, personList);
+                break;
+        }
+    }
+
+    @Override
+    public void showMidInfoAllMarkers(int scale, MidInfo mid, ArrayList<Person> personList) {
+        if(personList.size() > 0) {
             int markerId = NMapPOIflagType.PIN;
             int id = personList.size()+1;
 
@@ -92,7 +85,8 @@ public class SelectMidFragmentPresenter extends NMapPresenter{
         }
     }
 
-    public void showSelectMidInfoMarker(MidInfo mid, Position pos) {
+    @Override
+    public void showMidInfoEachMarker(MidInfo mid, Position pos) {
         getOverlayManager().clearOverlays();
 
         int markerId = NMapPOIflagType.PIN;
@@ -111,8 +105,9 @@ public class SelectMidFragmentPresenter extends NMapPresenter{
         poiDataOverlay.selectPOIitem(0, true);
     }
 
-    public void showSavedBuildingMarkers(int scale, Building building, ArrayList<Person> personList) {
-        if(personList.size() != 0) {
+    @Override
+    public void showLandmarkAllMarkers(int scale, Building building, ArrayList<Person> personList) {
+        if(personList.size() > 0) {
             int markerId = NMapPOIflagType.PIN;
             int id = personList.size()+1;
 
@@ -131,8 +126,9 @@ public class SelectMidFragmentPresenter extends NMapPresenter{
         }
     }
 
-    public void showSelectBuildingMarker(Building building, Position pos) {
-        this.getOverlayManager().clearOverlays();
+    @Override
+    public void showLandmarkEachMarker(Building building, Position pos) {
+        getOverlayManager().clearOverlays();
 
         int markerId = NMapPOIflagType.PIN;
         int id = 2;
