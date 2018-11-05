@@ -2,9 +2,6 @@ package com.daahae.damoyeo.presenter;
 
 import android.support.v4.app.Fragment;
 import android.util.Log;
-import android.view.View;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.daahae.damoyeo.R;
@@ -42,9 +39,10 @@ public class NMapFragmentPresenter extends NMapPresenter implements NMapFragment
     }
 
     public ArrayList<String> sendRetrofit(){
-        parentPresenter.addPerson();
+        parentPresenter.setRetrofitPersonList();
         ArrayList<String> totalTimes = retrofitPresenter.sendPersonMessage();
         Log.v("NMAP", "보냄");
+
         return totalTimes;
     }
 

@@ -26,7 +26,6 @@ public class NMapActivityPresenter implements NMapActivityContract.Presenter {
     private MidInfo mid;
     private Building building;
 
-    private ArrayList<Person> person;
     private ArrayList<String> totalTimes;
 
     private Fragment fragment;
@@ -34,11 +33,21 @@ public class NMapActivityPresenter implements NMapActivityContract.Presenter {
     private FragmentTransaction fragmentTransaction;
 
     private RetrofitPresenter retrofitPresenter;
+
     public NMapActivityPresenter(NMapActivity view){
         this.view = view;
 
         init();
         setFragmentInitialization();
+    }
+
+    @Override
+    public void init() {
+        initPersonList();
+        initMidinfo();
+        initBuilding();
+
+        retrofitPresenter = new RetrofitPresenter();
     }
 
     private void setFragmentInitialization(){
@@ -51,26 +60,18 @@ public class NMapActivityPresenter implements NMapActivityContract.Presenter {
     }
 
     @Override
-    public void init() {
-
-        initPersonList();
-        initMidinfo();
-        initBuilding();
-
-        totalTimes = new ArrayList<>();
-        person = new ArrayList<>();
-        retrofitPresenter = new RetrofitPresenter();
-    }
-
-    public RetrofitPresenter getRetrofitPresenter() {
-        return retrofitPresenter;
-    }
-
-    @Override
     public void backView(Fragment fragment) {
         fragmentManager = view.getSupportFragmentManager();
         fragmentManager.beginTransaction().remove(fragment).commit();
         fragmentManager.popBackStack();
+    }
+
+    private void setViewFragment(Fragment fragment){
+        view.getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragmentHere, fragment)
+                .addToBackStack(null)
+                .commit();
     }
 
     @Override
@@ -92,6 +93,22 @@ public class NMapActivityPresenter implements NMapActivityContract.Presenter {
     }
 
     @Override
+    public void initPersonList() {
+        this.personList = new ArrayList<Person>();
+    }
+
+    // TODO 통신 후 set
+    private void initMidinfo() {
+        Position pos = new Position(Constant.latitude, Constant.longitude);
+        mid = new MidInfo(pos, Constant.address);
+    }
+
+    private void initBuilding() {
+        Position pos = new Position(Constant.latitude, Constant.longitude);
+        building = new Building(pos, Constant.address, 0, pos, Constant.name, Constant.address, Constant.tel);
+    }
+
+    @Override
     public ArrayList<Person> getPersonList() {
         return personList;
     }
@@ -106,39 +123,19 @@ public class NMapActivityPresenter implements NMapActivityContract.Presenter {
         return building;
     }
 
-    @Override
-    public void initPersonList() {
-        this.personList = new ArrayList<Person>();
-    }
-
-    private void initMidinfo() {
-        Position pos = new Position(Constant.latitude, Constant.longitude);
-        mid = new MidInfo(pos, Constant.address);
-    }
-
-    private void initBuilding() {
-        Position pos = new Position(Constant.latitude, Constant.longitude);
-        building = new Building(pos, Constant.address, 0, pos, Constant.name, Constant.address, Constant.tel);
-    }
-
-    private void setViewFragment(Fragment fragment){
-        view.getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.fragmentHere, fragment)
-                .addToBackStack(null)
-                .commit();
+    public ArrayList<String> getTotalTimes() {
+        return totalTimes;
     }
 
     public void sendMarkerTimeMessage(ArrayList<String> totalTimes){
         this.totalTimes = totalTimes;
     }
 
-    public ArrayList<String> getTotalTimes() {
-        return totalTimes;
+    public RetrofitPresenter getRetrofitPresenter() {
+        return retrofitPresenter;
     }
 
-    public void addPerson(){
-        retrofitPresenter.addPerson(personList);
+    public void setRetrofitPersonList(){
+        retrofitPresenter.setPersonList(personList);
     }
-
 }

@@ -4,26 +4,17 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.daahae.damoyeo.R;
-import com.daahae.damoyeo.model.Building;
 import com.daahae.damoyeo.model.MarkerTime;
-import com.daahae.damoyeo.model.Person;
-import com.daahae.damoyeo.model.TransportInfoList;
-import com.daahae.damoyeo.presenter.MarkerTimeAdapterPresenter;
 import com.daahae.damoyeo.presenter.NMapActivityPresenter;
 import com.daahae.damoyeo.presenter.SelectMidFragmentPresenter;
-import com.daahae.damoyeo.view.data.Constant;
 
 import java.util.ArrayList;
 
 public class MarkerTimeAdapter extends BaseAdapter{
-    private SelectMidFragmentPresenter presenter;
-    private NMapActivityPresenter parentPresenter;
 
     private TextView txtMarkerName;
     private TextView txtMarkerTime;
@@ -31,9 +22,7 @@ public class MarkerTimeAdapter extends BaseAdapter{
     private MarkerTime myItem;
     private ArrayList<MarkerTime> mItems;
 
-    public MarkerTimeAdapter(SelectMidFragmentPresenter presenter, NMapActivityPresenter parentPresenter){
-        this.presenter = presenter;
-        this.parentPresenter = parentPresenter;
+    public MarkerTimeAdapter(){
         this.mItems = new ArrayList<MarkerTime>();
     }
 
@@ -87,7 +76,7 @@ public class MarkerTimeAdapter extends BaseAdapter{
         txtMarkerTime = (TextView)convertView.findViewById(R.id.txt_marker_time_about_mid_item);
     }
 
-    public void setMarkerListText(TextView MarkerNameView, TextView MarkerTime, String nameText, String timeText){
+    private void setMarkerListText(TextView MarkerNameView, TextView MarkerTime, String nameText, String timeText){
         MarkerNameView.setText(nameText);
         MarkerTime.setText(timeText);
     }

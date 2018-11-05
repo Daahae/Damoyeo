@@ -20,11 +20,14 @@ import java.util.ArrayList;
 public class SelectMidFragmentPresenter extends NMapPresenter implements SelectMidFragmentContract.Presenter {
     private int selectMidFlg = Constant.MID_ALGORITHM;
 
+    private NMapActivityPresenter parentPresenter;
+
     private MarkerTimeAdapter markerTimeAdapter;
     private ArrayList<String> totalTimes;
 
-    public SelectMidFragmentPresenter(Fragment view, NMapContext mapContext) {
+    public SelectMidFragmentPresenter(Fragment view, NMapContext mapContext, NMapActivityPresenter parentPresenter) {
         super(view, mapContext);
+        this.parentPresenter = parentPresenter;
     }
 
     @Override
@@ -45,10 +48,8 @@ public class SelectMidFragmentPresenter extends NMapPresenter implements SelectM
     public void setMarkerTimeList(MarkerTimeAdapter markerTimeAdapter) {
         this.markerTimeAdapter = markerTimeAdapter;
 
-        for(int i=0; i<totalTimes.size();i++){
-            // TODO
-            markerTimeAdapter.add("dummy",totalTimes.get(i));
-        }
+        for(int i=0; i < totalTimes.size();i++)
+            markerTimeAdapter.add(parentPresenter.getPersonList().get(i).getName(), totalTimes.get(i));
     }
 
     @Override

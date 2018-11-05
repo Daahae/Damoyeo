@@ -16,8 +16,6 @@
 
 package com.daahae.damoyeo.presenter.Contract;
 
-import android.support.v4.app.FragmentActivity;
-
 public interface BasePresenter {
 
     void init();

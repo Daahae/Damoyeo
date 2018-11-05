@@ -32,8 +32,6 @@ public class NMapFragment extends Fragment implements View.OnClickListener, NMap
     private NMapActivityPresenter parentPresenter;
     private NMapFragmentPresenter presenter;
 
-    private RetrofitPresenter retrofitPresenter;
-
     private FloatingActionBtn fabtn;
 
     private TextView tvAddress;
@@ -52,7 +50,6 @@ public class NMapFragment extends Fragment implements View.OnClickListener, NMap
         mapContext.onCreate();
 
         setPresenter(new NMapFragmentPresenter(this,  mapContext,  parentPresenter));;
-        retrofitPresenter = parentPresenter.getRetrofitPresenter();
     }
 
     @Override

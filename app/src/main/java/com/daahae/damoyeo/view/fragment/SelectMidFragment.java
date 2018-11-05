@@ -28,7 +28,7 @@ import com.daahae.damoyeo.view.data.Constant;
 import com.nhn.android.maps.NMapContext;
 
 @SuppressLint("ValidFragment")
-public class SelectMidFragment extends Fragment implements View.OnClickListener, SelectMidFragmentContract.View, AdapterView.OnItemClickListener {
+public class SelectMidFragment extends Fragment implements View.OnClickListener, AdapterView.OnItemClickListener, SelectMidFragmentContract.View {
     private NMapContext mapContext;
 
     private SelectMidFragmentPresenter presenter;
@@ -54,9 +54,9 @@ public class SelectMidFragment extends Fragment implements View.OnClickListener,
         mapContext = new NMapContext(super.getActivity());;
         mapContext.onCreate();
 
-        setPresenter(new SelectMidFragmentPresenter(this, mapContext));
+        setPresenter(new SelectMidFragmentPresenter(this, mapContext, parentPresenter));
 
-        markerTimeAdapter = new MarkerTimeAdapter(presenter,parentPresenter);
+        markerTimeAdapter = new MarkerTimeAdapter();
     }
 
     @Nullable
@@ -68,7 +68,7 @@ public class SelectMidFragment extends Fragment implements View.OnClickListener,
         initListener();
 
         presenter.initMarkerTime(parentPresenter.getTotalTimes());
-        markerTimeAdapter.resetList();
+        presenter.setResetList();
         presenter.setMarkerTimeList(markerTimeAdapter);
         listMarkerTime.setAdapter(markerTimeAdapter);
         Log.v("mid","뷰 생성");

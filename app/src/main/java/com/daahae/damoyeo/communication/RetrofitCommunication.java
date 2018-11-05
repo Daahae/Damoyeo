@@ -73,7 +73,6 @@ public class RetrofitCommunication{
         String strMessage = makeForm();
         Log.v("메시지",strMessage);
 
-
         final retrofit2.Call<JsonObject> comment = retrofitService.getTest(strMessage);
         new Thread(new Runnable() {
             @Override
@@ -112,8 +111,6 @@ public class RetrofitCommunication{
         return totalTimes;
     }
 
-
-
     private String makeForm(){
         String strMessage="[";
         for(int i=0;i<persons.size();i++){
@@ -123,6 +120,4 @@ public class RetrofitCommunication{
         strMessage+="]";
         return strMessage;
     }
-
-
 }
