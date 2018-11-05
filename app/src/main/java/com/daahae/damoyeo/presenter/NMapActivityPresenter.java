@@ -26,59 +26,67 @@ public class NMapActivityPresenter implements NMapActivityContract.Presenter {
     private MidInfo mid;
     private Building building;
 
+    private ArrayList<Person> person;
+    private ArrayList<String> totalTimes;
+
+    private Fragment fragment;
+    private FragmentManager fragmentManager;
+    private FragmentTransaction fragmentTransaction;
+
+    private RetrofitPresenter retrofitPresenter;
     public NMapActivityPresenter(NMapActivity view){
         this.view = view;
 
-        init(view);
+        init();
+        setFragmentInitialization();
     }
 
-    @Override
-    public void init(FragmentActivity view) {
-        Fragment fragment = new NMapFragment(this);
-        FragmentManager fragmentManager = view.getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+    private void setFragmentInitialization(){
+        fragment = new NMapFragment(this);
+        fragmentManager = view.getSupportFragmentManager();
+        fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace( R.id.fragmentHere, fragment );
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
+    }
+
+    @Override
+    public void init() {
 
         initPersonList();
-        // TODO 서버와 통신
         initMidinfo();
         initBuilding();
+
+        totalTimes = new ArrayList<>();
+        person = new ArrayList<>();
+        retrofitPresenter = new RetrofitPresenter();
+    }
+
+    public RetrofitPresenter getRetrofitPresenter() {
+        return retrofitPresenter;
     }
 
     @Override
     public void backView(Fragment fragment) {
-        FragmentManager fragmentManager = view.getSupportFragmentManager();
+        fragmentManager = view.getSupportFragmentManager();
         fragmentManager.beginTransaction().remove(fragment).commit();
         fragmentManager.popBackStack();
     }
 
     @Override
-    public void changeView(int nextPageNumber) {
+    public void changeView(int nextPageNumber){
+
         switch (nextPageNumber){
             case Constant.NMAP_PAGE:
-                view.getSupportFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.fragmentHere, new NMapFragment(this))
-                        .addToBackStack(null)
-                        .commit();
+                setViewFragment(new NMapFragment(this));
                 break;
 
             case Constant.SELECT_MID_PAGE:
-                view.getSupportFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.fragmentHere, new SelectMidFragment(this))
-                        .addToBackStack(null)
-                        .commit();
+                setViewFragment(new SelectMidFragment(this));
                 break;
 
             case Constant.CATEGORY_PAGE:
-                view.getSupportFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.fragmentHere, new CategoryFragment(this))
-                        .addToBackStack(null)
-                        .commit();
+                setViewFragment(new CategoryFragment(this));
                 break;
         }
     }
@@ -104,12 +112,33 @@ public class NMapActivityPresenter implements NMapActivityContract.Presenter {
     }
 
     private void initMidinfo() {
-        Position pos = new Position(Constant.longitude, Constant.latitude);
+        Position pos = new Position(Constant.latitude, Constant.longitude);
         mid = new MidInfo(pos, Constant.address);
     }
 
     private void initBuilding() {
-        Position pos = new Position(Constant.longitude, Constant.latitude);
+        Position pos = new Position(Constant.latitude, Constant.longitude);
         building = new Building(pos, Constant.address, 0, pos, Constant.name, Constant.address, Constant.tel);
     }
+
+    private void setViewFragment(Fragment fragment){
+        view.getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragmentHere, fragment)
+                .addToBackStack(null)
+                .commit();
+    }
+
+    public void sendMarkerTimeMessage(ArrayList<String> totalTimes){
+        this.totalTimes = totalTimes;
+    }
+
+    public ArrayList<String> getTotalTimes() {
+        return totalTimes;
+    }
+
+    public void addPerson(){
+        retrofitPresenter.addPerson(personList);
+    }
+
 }

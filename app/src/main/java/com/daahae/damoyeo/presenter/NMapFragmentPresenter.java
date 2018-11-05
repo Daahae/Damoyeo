@@ -1,6 +1,7 @@
 package com.daahae.damoyeo.presenter;
 
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -31,10 +32,20 @@ public class NMapFragmentPresenter extends NMapPresenter implements NMapFragment
     private NMapPlacemark instantMarker;
     private Person targetMarker;
 
+    private RetrofitPresenter retrofitPresenter;
+
     public NMapFragmentPresenter(Fragment view, NMapContext mapContext, NMapActivityPresenter parentPresenter) {
         super(view, mapContext);
         this.view = (NMapFragment) view;
         this.parentPresenter = parentPresenter;
+        retrofitPresenter = parentPresenter.getRetrofitPresenter();
+    }
+
+    public ArrayList<String> sendRetrofit(){
+        parentPresenter.addPerson();
+        ArrayList<String> totalTimes = retrofitPresenter.sendPersonMessage();
+        Log.v("NMAP", "보냄");
+        return totalTimes;
     }
 
     // get/set
@@ -88,7 +99,7 @@ public class NMapFragmentPresenter extends NMapPresenter implements NMapFragment
         NMapPOIitem item;
 
         if(pos != null)
-            item = poiData.addPOIitem(pos.getX(), pos.getY(), null, marker, 0);
+            item = poiData.addPOIitem(pos.getY(), pos.getX(), null, marker, 0);
         else {
             item = poiData.addPOIitem(null, null, marker, 0);
             item.setPoint(getController().getMapCenter());
@@ -114,7 +125,7 @@ public class NMapFragmentPresenter extends NMapPresenter implements NMapFragment
         NMapPOIdata poiData = new NMapPOIdata(id, getResourceProvider());
         poiData.beginPOIdata(id);
         for (Person index:personList)
-            poiData.addPOIitem(index.getAddressPosition().getX(), index.getAddressPosition().getY(), null, markerId, index.getId());
+            poiData.addPOIitem(index.getAddressPosition().getY(), index.getAddressPosition().getX(), null, markerId, index.getId());
 
         poiData.endPOIdata();
 
@@ -139,7 +150,7 @@ public class NMapFragmentPresenter extends NMapPresenter implements NMapFragment
 
                 showSavedMarkersOnSaveState(personList);
 
-                Position pos = new Position(gps.getLongitude(), gps.getLatitude());
+                Position pos = new Position(gps.getLatitude(), gps.getLongitude());
                 setInstantFloatingMarker(pos);
 
                 view.setVisibleAddress(true);
@@ -178,7 +189,7 @@ public class NMapFragmentPresenter extends NMapPresenter implements NMapFragment
 
             int id = personList.size() + 1;
             String address = instantMarker.toString();
-            Position position = new Position(instantMarker.longitude, instantMarker.latitude);
+            Position position = new Position(instantMarker.latitude, instantMarker.longitude);
 
             Person person = new Person(view.getResources().getString(R.string.guest)+id, address, position);
             person.setId(id);

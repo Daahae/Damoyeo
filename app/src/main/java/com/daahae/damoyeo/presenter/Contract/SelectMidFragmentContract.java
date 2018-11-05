@@ -20,9 +20,7 @@ public interface SelectMidFragmentContract {
 
         int getSelectMidFlg();
 
-        void setMarkerTimeList(MarkerTimeAdapter markerTimeAdapter, ArrayList<Person> personList);
-
-        void showListView(ArrayList<Person> personList);
+        void setMarkerTimeList(MarkerTimeAdapter markerTimeAdapter);
 
         void setSelectMidFlg(int selectMidMenu, MidInfo mid, Building building, ArrayList<Person> personList);
 

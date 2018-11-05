@@ -4,8 +4,8 @@ public class Constant {
     public static final String TAG = "NMapViewer";
 
     // default location
-    public static final double longitude = 126.978371;
     public static final double latitude = 37.5666091;
+    public static final double longitude = 126.978371;
     public static final String name = "서울시청";
     public static final String address = "서울특별시 중구 명동";
     public static final String tel = "02-1234-5678";

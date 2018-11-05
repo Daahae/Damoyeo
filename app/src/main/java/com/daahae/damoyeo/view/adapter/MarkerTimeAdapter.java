@@ -11,8 +11,10 @@ import android.widget.Toast;
 
 import com.daahae.damoyeo.R;
 import com.daahae.damoyeo.model.Building;
+import com.daahae.damoyeo.model.MarkerTime;
 import com.daahae.damoyeo.model.Person;
 import com.daahae.damoyeo.model.TransportInfoList;
+import com.daahae.damoyeo.presenter.MarkerTimeAdapterPresenter;
 import com.daahae.damoyeo.presenter.NMapActivityPresenter;
 import com.daahae.damoyeo.presenter.SelectMidFragmentPresenter;
 import com.daahae.damoyeo.view.data.Constant;
@@ -22,12 +24,17 @@ import java.util.ArrayList;
 public class MarkerTimeAdapter extends BaseAdapter{
     private SelectMidFragmentPresenter presenter;
     private NMapActivityPresenter parentPresenter;
-    private ArrayList<TransportInfoList> mItems;
+
+    private TextView txtMarkerName;
+    private TextView txtMarkerTime;
+
+    private MarkerTime myItem;
+    private ArrayList<MarkerTime> mItems;
 
     public MarkerTimeAdapter(SelectMidFragmentPresenter presenter, NMapActivityPresenter parentPresenter){
         this.presenter = presenter;
         this.parentPresenter = parentPresenter;
-        this.mItems = new ArrayList<TransportInfoList>();
+        this.mItems = new ArrayList<MarkerTime>();
     }
 
     /* 아이템을 세트로 담기 위한 어레이 */
@@ -42,7 +49,7 @@ public class MarkerTimeAdapter extends BaseAdapter{
     }
 
     @Override
-    public TransportInfoList getItem(int position) {
+    public MarkerTime getItem(int position) {
         return mItems.get(position);
     }
 
@@ -51,15 +58,12 @@ public class MarkerTimeAdapter extends BaseAdapter{
         return 0;
     }
 
-    //더미
-    public void addDummy(Person person){
-        TransportInfoList dummy = new TransportInfoList(null, 10, person);
-        mItems.add(dummy);
+    public void add(MarkerTime markerTime){
+        mItems.add(markerTime);
     }
 
-    public void add(TransportInfoList transportInfoList){
-        mItems.add(transportInfoList);
-    }
+    public void add(String name, String totalTime){mItems.add(new MarkerTime(name, totalTime));}
+
     @Override
     public View getView(final int position, View convertView, final ViewGroup parent) {
         Context context = parent.getContext();
@@ -68,25 +72,23 @@ public class MarkerTimeAdapter extends BaseAdapter{
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = inflater.inflate(R.layout.item_time_taken_marker, parent, false);
         }
+        initGetView(convertView);
 
-        TextView txtMarkerName = (TextView)convertView.findViewById(R.id.txt_marker_name_item);
-        TextView txtMarkerTime = (TextView)convertView.findViewById(R.id.txt_marker_time_about_mid_item);
+        myItem = (MarkerTime) mItems.get(position);
 
-        final TransportInfoList myItem = (TransportInfoList) mItems.get(position);
-
-        txtMarkerName.setText(String.valueOf(myItem.getPerson().getName()));
-        txtMarkerTime.setText(String.valueOf(myItem.getTotalTime()));
-
-        convertView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(presenter.getSelectMidFlg() == Constant.MID_ALGORITHM)
-                    presenter.showMidInfoEachMarker(parentPresenter.getMid(), (myItem.getPerson().getAddressPosition()));
-                else if(presenter.getSelectMidFlg() == Constant.LANDMARK)
-                    presenter.showLandmarkEachMarker(parentPresenter.getBuilding(), (myItem.getPerson().getAddressPosition()));
-            }
-        });
+        //TODO: GetTotal 수정
+        setMarkerListText(txtMarkerName,txtMarkerTime,myItem.getName(),myItem.getTotalTime());
 
         return convertView;
+    }
+
+    private void initGetView(View convertView){
+        txtMarkerName = (TextView)convertView.findViewById(R.id.txt_marker_name_item);
+        txtMarkerTime = (TextView)convertView.findViewById(R.id.txt_marker_time_about_mid_item);
+    }
+
+    public void setMarkerListText(TextView MarkerNameView, TextView MarkerTime, String nameText, String timeText){
+        MarkerNameView.setText(nameText);
+        MarkerTime.setText(timeText);
     }
 }

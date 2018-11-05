@@ -20,6 +20,6 @@ import android.support.v4.app.FragmentActivity;
 
 public interface BasePresenter {
 
-    void init(FragmentActivity view);
+    void init();
 
 }

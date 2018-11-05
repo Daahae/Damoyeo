@@ -16,6 +16,7 @@ import com.daahae.damoyeo.R;
 import com.daahae.damoyeo.presenter.Contract.NMapFragmentContract;
 import com.daahae.damoyeo.presenter.NMapActivityPresenter;
 import com.daahae.damoyeo.presenter.NMapFragmentPresenter;
+import com.daahae.damoyeo.presenter.RetrofitPresenter;
 import com.daahae.damoyeo.view.data.Constant;
 import com.daahae.damoyeo.view.data.FloatingActionBtn;
 import com.nhn.android.maps.NMapContext;
@@ -30,6 +31,8 @@ public class NMapFragment extends Fragment implements View.OnClickListener, NMap
     private NMapContext mapContext;
     private NMapActivityPresenter parentPresenter;
     private NMapFragmentPresenter presenter;
+
+    private RetrofitPresenter retrofitPresenter;
 
     private FloatingActionBtn fabtn;
 
@@ -49,6 +52,7 @@ public class NMapFragment extends Fragment implements View.OnClickListener, NMap
         mapContext.onCreate();
 
         setPresenter(new NMapFragmentPresenter(this,  mapContext,  parentPresenter));;
+        retrofitPresenter = parentPresenter.getRetrofitPresenter();
     }
 
     @Override
@@ -146,8 +150,10 @@ public class NMapFragment extends Fragment implements View.OnClickListener, NMap
                 presenter.fixMarker(isFixedMarker, this, presenter.getInstantMarker(), presenter.getTargetMarker(), parentPresenter.getPersonList());
                 break;
             case R.id.linear_search_mid:
+                parentPresenter.sendMarkerTimeMessage(presenter.sendRetrofit());
                 parentPresenter.changeView(Constant.SELECT_MID_PAGE);
                 break;
+
         }
     }
 

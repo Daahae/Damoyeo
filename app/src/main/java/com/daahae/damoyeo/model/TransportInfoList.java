@@ -1,43 +1,52 @@
 package com.daahae.damoyeo.model;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.ArrayList;
+import java.util.List;
 
-public class TransportInfoList{
-    private ArrayList<Transport> transportInfo;
-    private int totalTime;
-    private Person person;
+public class TransportInfoList {
 
-    public TransportInfoList(ArrayList<Transport> transportInfo, int totalTime, Person person) {
-        this.transportInfo = transportInfo;
-        this.totalTime = totalTime;
-        this.person = person;
+    @SerializedName("userArr")
+    private List<Data> userArr;
+
+    public List<Data> getUserArr() {
+        return userArr;
     }
 
-    public ArrayList<Transport> getTransportInfo() {
-        return transportInfo;
+    public class Data{
+
+        @SerializedName("subPathArr")
+        private ArrayList<Transport> transportInfo;
+        @SerializedName("totalTime")
+        private int totalTime;
+        @SerializedName("timeBySubway")
+        private int timeBySubway;
+        @SerializedName("timeByBus")
+        private int timeByBus;
+        @SerializedName("timeByWalk")
+        private int timeByWalk;
+
+
+        public ArrayList<Transport> getTransportInfo() {
+            return transportInfo;
+        }
+
+        public int getTotalTime() {
+            return totalTime;
+        }
+
+        public int getTimeBySubway() {
+            return timeBySubway;
+        }
+
+        public int getTimeByBus() {
+            return timeByBus;
+        }
+
+        public int getTimeByWalk() {
+            return timeByWalk;
+        }
+
     }
-
-    public void setTransportInfo(ArrayList<Transport> transportInfo) {
-        this.transportInfo = transportInfo;
-        this.totalTime = getTotal();
-    }
-
-    public int getTotalTime() {
-        return totalTime;
-    }
-
-    // TODO 메소드명 변경
-    private int getTotal(){
-        int totalTotal = 0;
-
-        for(Transport transport : transportInfo)
-            totalTotal += transport.getTime();
-
-        return totalTotal;
-    }
-    public Person getPerson(){
-        return person;
-    }
-
-
 }

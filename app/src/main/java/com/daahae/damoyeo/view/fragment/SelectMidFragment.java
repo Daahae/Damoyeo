@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,7 +28,7 @@ import com.daahae.damoyeo.view.data.Constant;
 import com.nhn.android.maps.NMapContext;
 
 @SuppressLint("ValidFragment")
-public class SelectMidFragment extends Fragment implements View.OnClickListener, SelectMidFragmentContract.View {
+public class SelectMidFragment extends Fragment implements View.OnClickListener, SelectMidFragmentContract.View, AdapterView.OnItemClickListener {
     private NMapContext mapContext;
 
     private SelectMidFragmentPresenter presenter;
@@ -55,7 +56,7 @@ public class SelectMidFragment extends Fragment implements View.OnClickListener,
 
         setPresenter(new SelectMidFragmentPresenter(this, mapContext));
 
-        markerTimeAdapter = new MarkerTimeAdapter(presenter, parentPresenter);
+        markerTimeAdapter = new MarkerTimeAdapter(presenter,parentPresenter);
     }
 
     @Nullable
@@ -63,27 +64,40 @@ public class SelectMidFragment extends Fragment implements View.OnClickListener,
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = (View) inflater.inflate(R.layout.fragment_select_mid, container, false);
 
-        btnSelectMid = rootView.findViewById(R.id.btn_select_mid);
-        btnSelectMid.setOnClickListener(this);
+        initView(rootView);
+        initListener();
 
-        btnBack = rootView.findViewById(R.id.btn_back_select_mid);
-        btnBack.setOnClickListener(this);
-
-        btnSelectMidAlgorithm = rootView.findViewById(R.id.btn_select_mid_algorithm);
-        btnSelectMidAlgorithm.setOnClickListener(this);
-
-        btnSelectLandmark = rootView.findViewById(R.id.btn_select_landmark);
-        btnSelectLandmark.setOnClickListener(this);
-
-        listMarkerTime = rootView.findViewById(R.id.list_marker_time);
-        presenter.setMarkerTimeList(markerTimeAdapter, parentPresenter.getPersonList());
-
+        presenter.initMarkerTime(parentPresenter.getTotalTimes());
+        markerTimeAdapter.resetList();
+        presenter.setMarkerTimeList(markerTimeAdapter);
         listMarkerTime.setAdapter(markerTimeAdapter);
+        Log.v("mid","뷰 생성");
 
-        btnAllMarkerList = rootView.findViewById(R.id.btn_all_marker_list);
-        btnAllMarkerList.setOnClickListener(this);
+        listMarkerTime.setOnItemClickListener(this);
 
         return rootView;
+    }
+
+    private void initView(View rootView){
+
+        btnBack = rootView.findViewById(R.id.btn_back_select_mid);
+
+        btnSelectMidAlgorithm = rootView.findViewById(R.id.btn_select_mid_algorithm);
+        btnSelectLandmark = rootView.findViewById(R.id.btn_select_landmark);
+
+        btnSelectMid = rootView.findViewById(R.id.btn_select_mid);
+
+        listMarkerTime = rootView.findViewById(R.id.list_marker_time);
+
+        btnAllMarkerList = rootView.findViewById(R.id.btn_all_marker_list);
+    }
+
+    private void initListener(){
+        btnSelectMid.setOnClickListener(this);
+        btnBack.setOnClickListener(this);
+        btnSelectMidAlgorithm.setOnClickListener(this);
+        btnSelectLandmark.setOnClickListener(this);
+        btnAllMarkerList.setOnClickListener(this);
     }
 
     @Override
@@ -155,5 +169,13 @@ public class SelectMidFragment extends Fragment implements View.OnClickListener,
     @Override
     public void setPresenter(SelectMidFragmentPresenter presenter) {
         this.presenter = presenter;
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        if(presenter.getSelectMidFlg() == Constant.MID_ALGORITHM)
+            presenter.showMidInfoEachMarker(parentPresenter.getMid(), parentPresenter.getPersonList().get(position).getAddressPosition());
+        else if(presenter.getSelectMidFlg() == Constant.LANDMARK)
+            presenter.showLandmarkEachMarker(parentPresenter.getBuilding(), parentPresenter.getPersonList().get(position).getAddressPosition());
     }
 }

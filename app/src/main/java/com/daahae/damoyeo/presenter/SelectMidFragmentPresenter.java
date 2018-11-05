@@ -1,6 +1,7 @@
 package com.daahae.damoyeo.presenter;
 
 import android.support.v4.app.Fragment;
+import android.widget.ListView;
 
 import com.daahae.damoyeo.model.Building;
 import com.daahae.damoyeo.model.MidInfo;
@@ -20,6 +21,7 @@ public class SelectMidFragmentPresenter extends NMapPresenter implements SelectM
     private int selectMidFlg = Constant.MID_ALGORITHM;
 
     private MarkerTimeAdapter markerTimeAdapter;
+    private ArrayList<String> totalTimes;
 
     public SelectMidFragmentPresenter(Fragment view, NMapContext mapContext) {
         super(view, mapContext);
@@ -31,18 +33,22 @@ public class SelectMidFragmentPresenter extends NMapPresenter implements SelectM
         getMapContext().setMapDataProviderListener(getOnDataProviderListener());
     }
 
-    @Override
-    public void setMarkerTimeList(MarkerTimeAdapter markerTimeAdapter, ArrayList<Person> personList) {
-        this.markerTimeAdapter = markerTimeAdapter;
+    public void initMarkerTime(ArrayList<String> totalTimes){
+        this.totalTimes = totalTimes;
+    }
 
+    public void setResetList(){
         markerTimeAdapter.resetList();
-        showListView(personList);
     }
 
     @Override
-    public void showListView(ArrayList<Person> personList) {
-        for(Person person:personList)
-            markerTimeAdapter.addDummy(person);
+    public void setMarkerTimeList(MarkerTimeAdapter markerTimeAdapter) {
+        this.markerTimeAdapter = markerTimeAdapter;
+
+        for(int i=0; i<totalTimes.size();i++){
+            // TODO
+            markerTimeAdapter.add("dummy",totalTimes.get(i));
+        }
     }
 
     @Override
@@ -72,9 +78,9 @@ public class SelectMidFragmentPresenter extends NMapPresenter implements SelectM
 
             NMapPOIdata poiData = new NMapPOIdata(id, getResourceProvider());
             poiData.beginPOIdata(id);
-            poiData.addPOIitem(mid.getPos().getX(), mid.getPos().getY(), null, markerId, 0);
+            poiData.addPOIitem(mid.getPos().getY(), mid.getPos().getX(), null, markerId, 0);
             for (Person index:personList)
-                poiData.addPOIitem(index.getAddressPosition().getX(), index.getAddressPosition().getY(), null, markerId, index.getId());
+                poiData.addPOIitem(index.getAddressPosition().getY(), index.getAddressPosition().getX(), null, markerId, index.getId());
 
             poiData.endPOIdata();
 
@@ -94,8 +100,8 @@ public class SelectMidFragmentPresenter extends NMapPresenter implements SelectM
 
         NMapPOIdata poiData = new NMapPOIdata(id, getResourceProvider());
         poiData.beginPOIdata(id);
-        poiData.addPOIitem(mid.getPos().getX(), mid.getPos().getY(), null, markerId, 0);
-        poiData.addPOIitem(pos.getX(), pos.getY(), null, markerId, 1);
+        poiData.addPOIitem(mid.getPos().getY(), mid.getPos().getX(), null, markerId, 0);
+        poiData.addPOIitem(pos.getY(), pos.getX(), null, markerId, 1);
 
         poiData.endPOIdata();
 
@@ -113,9 +119,9 @@ public class SelectMidFragmentPresenter extends NMapPresenter implements SelectM
 
             NMapPOIdata poiData = new NMapPOIdata(id, getResourceProvider());
             poiData.beginPOIdata(id);
-            poiData.addPOIitem(building.getBuildingPos().getX(), building.getBuildingPos().getY(), null, markerId, 0);
+            poiData.addPOIitem(building.getBuildingPos().getY(), building.getBuildingPos().getX(), null, markerId, 0);
             for (Person index:personList)
-                poiData.addPOIitem(index.getAddressPosition().getX(), index.getAddressPosition().getY(), null, markerId, index.getId());
+                poiData.addPOIitem(index.getAddressPosition().getY(), index.getAddressPosition().getX(), null, markerId, index.getId());
 
             poiData.endPOIdata();
 
@@ -135,8 +141,8 @@ public class SelectMidFragmentPresenter extends NMapPresenter implements SelectM
 
         NMapPOIdata poiData = new NMapPOIdata(id, getResourceProvider());
         poiData.beginPOIdata(id);
-        poiData.addPOIitem(building.getBuildingPos().getX(), building.getBuildingPos().getY(), null, markerId, 0);
-        poiData.addPOIitem(pos.getX(), pos.getY(), null, markerId, 1);
+        poiData.addPOIitem(building.getBuildingPos().getY(), building.getBuildingPos().getX(), null, markerId, 0);
+        poiData.addPOIitem(pos.getY(), pos.getX(), null, markerId, 1);
 
         poiData.endPOIdata();
 

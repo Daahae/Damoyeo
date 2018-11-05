@@ -24,7 +24,8 @@ import com.daahae.damoyeo.view.adapter.BuildingAdapter;
 import com.nhn.android.maps.NMapContext;
 
 @SuppressLint("ValidFragment")
-public class CategoryFragment extends Fragment implements View.OnClickListener, CategoryFragmentContract.View {
+public class CategoryFragment extends Fragment implements View.OnClickListener, CategoryFragmentContract.View, AdapterView.OnItemClickListener, View.OnTouchListener
+,SlidingDrawer.OnDrawerOpenListener,SlidingDrawer.OnDrawerCloseListener{
 
     private NMapContext mapContext;
     private CategoryFragmentPresenter presenter;
@@ -41,7 +42,7 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
     private LinearLayout linearCategoryMenu;
     private LinearLayout linearSmallCategory;
 
-    private Button btnSmallCategory1, btnSmallCategory2, btnSmallCategory3, btnSmallCategory4;
+    private Button btnSmallCategory1, btnSmallCategory2, btnSmallCategory3;
 
     private BuildingAdapter buildingAdapter;
     private ListView listCategory;
@@ -67,20 +68,23 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = (View) inflater.inflate(R.layout.fragment_category, container, false);
 
+        initView(rootView);
+        initListener();
+        connectAdapter();
+        setBuildingList();
+
+        return rootView;
+    }
+
+
+    private void initView(View rootView){
+
         btnBack = rootView.findViewById(R.id.btn_back_category);
-        btnBack.setOnClickListener(this);
 
         btnPlay = rootView.findViewById(R.id.btn_category_play);
-        btnPlay.setOnClickListener(this);
-
         btnFood = rootView.findViewById(R.id.btn_category_food);
-        btnFood.setOnClickListener(this);
-
         btnCafe = rootView.findViewById(R.id.btn_category_cafe);
-        btnCafe.setOnClickListener(this);
-
         btnDrink = rootView.findViewById(R.id.btn_category_drink);
-        btnDrink.setOnClickListener(this);
 
         btnPlayNon = rootView.findViewById(R.id.btn_category_play_dummy);
         btnFoodNon = rootView.findViewById(R.id.btn_category_food_dummy);
@@ -90,32 +94,71 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
         linearSmallCategory = rootView.findViewById(R.id.linear_small_category);
 
         btnSmallCategory1 = rootView.findViewById(R.id.btn_small_category_1);
-        btnSmallCategory1.setOnClickListener(this);
-
         btnSmallCategory2 = rootView.findViewById(R.id.btn_small_category_2);
-        btnSmallCategory2.setOnClickListener(this);
-
         btnSmallCategory3 = rootView.findViewById(R.id.btn_small_category_3);
-        btnSmallCategory3.setOnClickListener(this);
-
-        btnSmallCategory4 = rootView.findViewById(R.id.btn_small_category_4);
-        btnSmallCategory4.setOnClickListener(this);
 
         listCategory = rootView.findViewById(R.id.list_category);
-        presenter.setBuildingInfo(buildingAdapter); // 빌딩 정보 넣기
-
-        listCategory.setAdapter(buildingAdapter);
-        listCategory.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                //TODO: 리스트뷰 아이템 클릭시
-            }
-        });
 
         linearContent = rootView.findViewById(R.id.content);
-        linearContent.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
+
+        linearHandleMenu = rootView.findViewById(R.id.linear_handle_menu);
+        linearCategoryMenu = rootView.findViewById(R.id.linear_category_menu);
+
+        slidingDrawer = rootView.findViewById(R.id.slide);
+
+    }
+
+    private void initListener(){
+
+        btnBack.setOnClickListener(this);
+
+        btnPlay.setOnClickListener(this);
+        btnFood.setOnClickListener(this);
+        btnCafe.setOnClickListener(this);
+        btnDrink.setOnClickListener(this);
+
+        btnSmallCategory1.setOnClickListener(this);
+        btnSmallCategory2.setOnClickListener(this);
+        btnSmallCategory3.setOnClickListener(this);
+
+        //각 리스트 아이템(building) 클릭
+        listCategory.setOnItemClickListener(this);
+
+        //SlidingDrawer 내려가는 기능
+        linearContent.setOnTouchListener(this);
+
+        //SlidingDrawer 내려갔을때 view
+        slidingDrawer.setOnDrawerCloseListener(this);
+
+        //SlidingDrawer 올라갔을때 view
+        slidingDrawer.setOnDrawerOpenListener(this);
+    }
+
+    private void connectAdapter(){
+        listCategory.setAdapter(buildingAdapter);
+    }
+
+    public void setBuildingList(){
+        presenter.setBuildingInfo(buildingAdapter); // 빌딩 정보 넣기
+    }
+
+    @Override
+    public void onDrawerClosed() {
+        linearHandleMenu.setVisibility(View.VISIBLE);
+        linearCategoryMenu.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onDrawerOpened() {
+        linearHandleMenu.setVisibility(View.GONE);
+        linearCategoryMenu.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public boolean onTouch(View view, MotionEvent motionEvent) {
+        int id = view.getId();
+        switch (id){
+            case R.id.content:
                 int action = motionEvent.getAction();
 
                 switch (action){
@@ -123,29 +166,16 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
                         slidingDrawer.animateClose();
                         break;
                 }
-                return false;
-            }
-        });
-        linearHandleMenu = rootView.findViewById(R.id.linear_handle_menu);
-        linearCategoryMenu = rootView.findViewById(R.id.linear_category_menu);
 
-        slidingDrawer = rootView.findViewById(R.id.slide);
-        slidingDrawer.setOnDrawerOpenListener(new SlidingDrawer.OnDrawerOpenListener() {
-            @Override
-            public void onDrawerOpened() {
-                linearHandleMenu.setVisibility(View.GONE);
-                linearCategoryMenu.setVisibility(View.VISIBLE);
-            }
-        });
-        slidingDrawer.setOnDrawerCloseListener(new SlidingDrawer.OnDrawerCloseListener() {
-            @Override
-            public void onDrawerClosed() {
-                linearHandleMenu.setVisibility(View.VISIBLE);
-                linearCategoryMenu.setVisibility(View.GONE);
-            }
-        });
+                break;
+        }
+        return false;
+    }
 
-        return rootView;
+
+    @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+        //TODO: 리스트뷰 아이템 클릭시
     }
 
 
@@ -166,11 +196,12 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
                 btnCafeNon.setImageResource(R.drawable.btn_category_cafe_gray);
                 btnDrinkNon.setImageResource(R.drawable.btn_category_drink_gray);
 
+                presenter.setClickFirstButton(btnSmallCategory1);
                 linearSmallCategory.setVisibility(View.VISIBLE);
-                btnSmallCategory1.setText("노래방");
-                btnSmallCategory2.setText("당구장");
-                btnSmallCategory3.setText("PC방");
-                btnSmallCategory4.setText("볼링장");
+                btnSmallCategory1.setText("쇼핑");
+                btnSmallCategory2.setText("관람");
+                btnSmallCategory3.setVisibility(View.VISIBLE);
+                btnSmallCategory3.setText("힐링");
                 break;
             case R.id.btn_category_food:
                 btnPlay.setImageResource(R.drawable.btn_category_play_gray);
@@ -183,11 +214,7 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
                 btnCafeNon.setImageResource(R.drawable.btn_category_cafe_gray);
                 btnDrinkNon.setImageResource(R.drawable.btn_category_drink_gray);
 
-                linearSmallCategory.setVisibility(View.VISIBLE);
-                btnSmallCategory1.setText("일식");
-                btnSmallCategory2.setText("한식");
-                btnSmallCategory3.setText("중식");
-                btnSmallCategory4.setText("양식");
+                linearSmallCategory.setVisibility(View.GONE);
                 break;
             case R.id.btn_category_cafe:
                 btnPlay.setImageResource(R.drawable.btn_category_play_gray);
@@ -200,7 +227,11 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
                 btnCafeNon.setImageResource(R.drawable.btn_category_cafe_orange);
                 btnDrinkNon.setImageResource(R.drawable.btn_category_drink_gray);
 
-                linearSmallCategory.setVisibility(View.GONE);
+                presenter.setClickFirstButton(btnSmallCategory1);
+                linearSmallCategory.setVisibility(View.VISIBLE);
+                btnSmallCategory1.setText("카페");
+                btnSmallCategory2.setText("베이커리");
+                btnSmallCategory3.setVisibility(View.GONE);
                 break;
             case R.id.btn_category_drink:
                 btnPlay.setImageResource(R.drawable.btn_category_play_gray);
@@ -220,25 +251,16 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
                 btnSmallCategory1.setBackgroundResource(R.color.colorWhite);
                 btnSmallCategory2.setBackgroundResource(R.color.colorLightGray);
                 btnSmallCategory3.setBackgroundResource(R.color.colorLightGray);
-                btnSmallCategory4.setBackgroundResource(R.color.colorLightGray);
                 break;
             case R.id.btn_small_category_2:
                 btnSmallCategory1.setBackgroundResource(R.color.colorLightGray);
                 btnSmallCategory2.setBackgroundResource(R.color.colorWhite);
                 btnSmallCategory3.setBackgroundResource(R.color.colorLightGray);
-                btnSmallCategory4.setBackgroundResource(R.color.colorLightGray);
                 break;
             case R.id.btn_small_category_3:
                 btnSmallCategory1.setBackgroundResource(R.color.colorLightGray);
                 btnSmallCategory2.setBackgroundResource(R.color.colorLightGray);
                 btnSmallCategory3.setBackgroundResource(R.color.colorWhite);
-                btnSmallCategory4.setBackgroundResource(R.color.colorLightGray);
-                break;
-            case R.id.btn_small_category_4:
-                btnSmallCategory1.setBackgroundResource(R.color.colorLightGray);
-                btnSmallCategory2.setBackgroundResource(R.color.colorLightGray);
-                btnSmallCategory3.setBackgroundResource(R.color.colorLightGray);
-                btnSmallCategory4.setBackgroundResource(R.color.colorWhite);
                 break;
         }
     }

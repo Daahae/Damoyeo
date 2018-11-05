@@ -3,8 +3,9 @@ package com.daahae.damoyeo.presenter;
 import android.support.v4.app.Fragment;
 
 import com.daahae.damoyeo.presenter.Contract.CategoryFragmentContract;
+import android.widget.Button;
+
 import com.daahae.damoyeo.view.adapter.BuildingAdapter;
-import com.daahae.damoyeo.view.fragment.CategoryFragment;
 import com.nhn.android.maps.NMapContext;
 
 public class CategoryFragmentPresenter extends NMapPresenter implements CategoryFragmentContract.Presenter {
@@ -24,6 +25,10 @@ public class CategoryFragmentPresenter extends NMapPresenter implements Category
 
         buildingAdapter.resetList();
         makeDummy();
+    }
+
+    public void setClickFirstButton(Button button){
+        button.setClickable(true);
     }
 
     //TODO: 삭제예정
