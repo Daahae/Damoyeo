@@ -1,56 +1,148 @@
 package com.daahae.damoyeo.presenter;
 
+import android.support.v4.app.Fragment;
+
+import com.daahae.damoyeo.model.Building;
+import com.daahae.damoyeo.model.MidInfo;
+import com.daahae.damoyeo.model.Person;
+import com.daahae.damoyeo.model.Position;
+import com.daahae.damoyeo.presenter.Contract.SelectMidFragmentContract;
 import com.daahae.damoyeo.view.adapter.MarkerTimeAdapter;
-import com.daahae.damoyeo.view.fragment.SelectMidFragment;
+import com.daahae.damoyeo.view.data.Constant;
+import com.daahae.damoyeo.view.data.NMapPOIflagType;
+import com.nhn.android.maps.NMapContext;
+import com.nhn.android.maps.overlay.NMapPOIdata;
+import com.nhn.android.mapviewer.overlay.NMapPOIdataOverlay;
 
 import java.util.ArrayList;
 
-public class SelectMidFragmentPresenter {
-
-
-    public static final int MID_ALGORITHM = 1;
-    public static final int LANDMARK = 2;
-
-    private SelectMidFragment view;
+public class SelectMidFragmentPresenter extends NMapPresenter implements SelectMidFragmentContract.Presenter {
+    private int selectMidFlg = Constant.MID_ALGORITHM;
 
     private MarkerTimeAdapter markerTimeAdapter;
 
-    public SelectMidFragmentPresenter(SelectMidFragment view) {
-        this.view = view;
+    public SelectMidFragmentPresenter(Fragment view, NMapContext mapContext) {
+        super(view, mapContext);
     }
 
-    public void selectMid(int selectMidMenu){
-        switch (selectMidMenu){
-            case MID_ALGORITHM:
-                selectMidAlgorithm();
-                break;
-            case LANDMARK:
-                selectLandmark();
-                break;
-        }
+    @Override
+    public void init(Fragment view) {
+        super.init(view);
+        getMapContext().setMapDataProviderListener(getOnDataProviderListener());
     }
 
-    private void selectMidAlgorithm(){
-
-    }
-
-    private void selectLandmark(){
-
-    }
-
-    public void setMarkerTimeList(MarkerTimeAdapter markerTimeAdapter){
+    @Override
+    public void setMarkerTimeList(MarkerTimeAdapter markerTimeAdapter, ArrayList<Person> personList) {
         this.markerTimeAdapter = markerTimeAdapter;
 
         markerTimeAdapter.resetList();
-        makeDummy();
+        showListView(personList);
     }
 
-    //TODO: 삭제예정
-    private void makeDummy(){
+    @Override
+    public void showListView(ArrayList<Person> personList) {
+        for(Person person:personList)
+            markerTimeAdapter.addDummy(person);
+    }
 
-        for(int i=0;i<3;i++){
-            markerTimeAdapter.addDummy();
+    @Override
+    public int getSelectMidFlg() {
+        return selectMidFlg;
+    }
+
+    @Override
+    public void setSelectMidFlg(int selectMidMenu, MidInfo mid, Building building, ArrayList<Person> personList) {
+        selectMidFlg = selectMidMenu;
+
+        switch (selectMidMenu){
+            case Constant.MID_ALGORITHM:
+                showMidInfoAllMarkers(0, mid, personList);
+                break;
+            case Constant.LANDMARK:
+                showLandmarkAllMarkers(0, building, personList);
+                break;
         }
     }
 
+    @Override
+    public void showMidInfoAllMarkers(int scale, MidInfo mid, ArrayList<Person> personList) {
+        if(personList.size() > 0) {
+            int markerId = NMapPOIflagType.PIN;
+            int id = personList.size()+1;
+
+            NMapPOIdata poiData = new NMapPOIdata(id, getResourceProvider());
+            poiData.beginPOIdata(id);
+            poiData.addPOIitem(mid.getPos().getX(), mid.getPos().getY(), null, markerId, 0);
+            for (Person index:personList)
+                poiData.addPOIitem(index.getAddressPosition().getX(), index.getAddressPosition().getY(), null, markerId, index.getId());
+
+            poiData.endPOIdata();
+
+            NMapPOIdataOverlay poiDataOverlay = getOverlayManager().createPOIdataOverlay(poiData, null);
+            poiDataOverlay.showAllPOIdata(scale);
+            poiDataOverlay.setOnStateChangeListener(getOnPOIdataStateChangeListener());
+            poiDataOverlay.selectPOIitem(0, true);
+        }
+    }
+
+    @Override
+    public void showMidInfoEachMarker(MidInfo mid, Position pos) {
+        getOverlayManager().clearOverlays();
+
+        int markerId = NMapPOIflagType.PIN;
+        int id = 2;
+
+        NMapPOIdata poiData = new NMapPOIdata(id, getResourceProvider());
+        poiData.beginPOIdata(id);
+        poiData.addPOIitem(mid.getPos().getX(), mid.getPos().getY(), null, markerId, 0);
+        poiData.addPOIitem(pos.getX(), pos.getY(), null, markerId, 1);
+
+        poiData.endPOIdata();
+
+        NMapPOIdataOverlay poiDataOverlay = getOverlayManager().createPOIdataOverlay(poiData, null);
+        poiDataOverlay.showAllPOIdata(0);
+        poiDataOverlay.setOnStateChangeListener(getOnPOIdataStateChangeListener());
+        poiDataOverlay.selectPOIitem(0, true);
+    }
+
+    @Override
+    public void showLandmarkAllMarkers(int scale, Building building, ArrayList<Person> personList) {
+        if(personList.size() > 0) {
+            int markerId = NMapPOIflagType.PIN;
+            int id = personList.size()+1;
+
+            NMapPOIdata poiData = new NMapPOIdata(id, getResourceProvider());
+            poiData.beginPOIdata(id);
+            poiData.addPOIitem(building.getBuildingPos().getX(), building.getBuildingPos().getY(), null, markerId, 0);
+            for (Person index:personList)
+                poiData.addPOIitem(index.getAddressPosition().getX(), index.getAddressPosition().getY(), null, markerId, index.getId());
+
+            poiData.endPOIdata();
+
+            NMapPOIdataOverlay poiDataOverlay = getOverlayManager().createPOIdataOverlay(poiData, null);
+            poiDataOverlay.showAllPOIdata(scale);
+            poiDataOverlay.setOnStateChangeListener(getOnPOIdataStateChangeListener());
+            poiDataOverlay.selectPOIitem(0, true);
+        }
+    }
+
+    @Override
+    public void showLandmarkEachMarker(Building building, Position pos) {
+        getOverlayManager().clearOverlays();
+
+        int markerId = NMapPOIflagType.PIN;
+        int id = 2;
+
+        NMapPOIdata poiData = new NMapPOIdata(id, getResourceProvider());
+        poiData.beginPOIdata(id);
+        poiData.addPOIitem(building.getBuildingPos().getX(), building.getBuildingPos().getY(), null, markerId, 0);
+        poiData.addPOIitem(pos.getX(), pos.getY(), null, markerId, 1);
+
+        poiData.endPOIdata();
+
+        NMapPOIdataOverlay poiDataOverlay = getOverlayManager().createPOIdataOverlay(poiData, null);
+        poiDataOverlay.showAllPOIdata(0);
+        poiDataOverlay.setOnStateChangeListener(getOnPOIdataStateChangeListener());
+        poiDataOverlay.selectPOIitem(0, true);
+    }
 }

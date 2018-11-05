@@ -15,6 +15,9 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.provider.Settings;
 import android.support.v4.content.ContextCompat;
+import android.widget.Toast;
+
+import com.daahae.damoyeo.presenter.NMapPresenter;
 
 public class GPSInfo extends Service implements LocationListener{
     private final Context mContext;
@@ -43,6 +46,18 @@ public class GPSInfo extends Service implements LocationListener{
     public GPSInfo(Context context) {
         this.mContext = context;
         getLocation();
+    }
+
+    public void setGPSPermission(NMapPresenter map) {
+        boolean isMyLocationEnabled = map.getLocationManager().enableMyLocation(true);
+        if (!isMyLocationEnabled) {
+            Toast.makeText(mContext, "Please enable a My Location source in system settings",
+                    Toast.LENGTH_LONG).show();
+
+            Intent goToSettings = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+            mContext.startActivity(goToSettings);
+            return;
+        }
     }
 
     @TargetApi(23)

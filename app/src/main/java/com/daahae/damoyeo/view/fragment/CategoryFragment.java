@@ -18,12 +18,15 @@ import android.widget.SlidingDrawer;
 
 import com.daahae.damoyeo.R;
 import com.daahae.damoyeo.presenter.CategoryFragmentPresenter;
+import com.daahae.damoyeo.presenter.Contract.CategoryFragmentContract;
 import com.daahae.damoyeo.presenter.NMapActivityPresenter;
 import com.daahae.damoyeo.view.adapter.BuildingAdapter;
+import com.nhn.android.maps.NMapContext;
 
 @SuppressLint("ValidFragment")
-public class CategoryFragment extends Fragment implements View.OnClickListener{
+public class CategoryFragment extends Fragment implements View.OnClickListener, CategoryFragmentContract.View {
 
+    private NMapContext mapContext;
     private CategoryFragmentPresenter presenter;
     private NMapActivityPresenter parentPresenter;
 
@@ -50,7 +53,11 @@ public class CategoryFragment extends Fragment implements View.OnClickListener{
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        presenter = new CategoryFragmentPresenter(this);
+        mapContext = new NMapContext(super.getActivity());;
+        mapContext.onCreate();
+
+        setPresenter(new CategoryFragmentPresenter(this, mapContext, parentPresenter));
+
         buildingAdapter = new BuildingAdapter();
     }
 
@@ -234,5 +241,10 @@ public class CategoryFragment extends Fragment implements View.OnClickListener{
                 btnSmallCategory4.setBackgroundResource(R.color.colorWhite);
                 break;
         }
+    }
+
+    @Override
+    public void setPresenter(CategoryFragmentPresenter presenter) {
+        this.presenter = presenter;
     }
 }

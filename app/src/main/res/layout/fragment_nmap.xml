@@ -39,7 +39,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
-                    android:text="@string/init_tv_address"
+                    android:text="@string/msg_default"
                     android:textColor="#000"
                     android:textSize="20sp" />
 
@@ -50,7 +50,7 @@
                     android:orientation="horizontal">
 
                     <LinearLayout
-                        android:id="@+id/layout_addmarker"
+                        android:id="@+id/layout_fixmarker"
                         android:layout_width="30dp"
                         android:layout_height="30dp"
                         android:layout_marginEnd="10dp"
@@ -124,7 +124,7 @@
     <LinearLayout
         android:id="@+id/linear_search_mid"
         android:layout_width="match_parent"
-        android:layout_height="70dp"
+        android:layout_height="80dp"
         android:gravity="center"
         android:orientation="vertical"
         android:background="@drawable/btn_search"

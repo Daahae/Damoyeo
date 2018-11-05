@@ -39,20 +39,51 @@
                 android:src="@drawable/ic_main" />
         </RelativeLayout>
 
-        <!--지도-->
-
         <LinearLayout
-            android:layout_width="100dp"
+            android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1"
-            android:layout_gravity="right"
-            android:orientation="horizontal">
+            android:layout_weight="1">
 
-            <ListView
-                android:id="@+id/list_marker_time"
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent">
+
+                <com.nhn.android.maps.NMapView
+                    android:id="@+id/mapView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    />
+
+            </LinearLayout>
+            <LinearLayout
                 android:layout_width="100dp"
                 android:layout_height="match_parent"
-                android:layout_gravity="right" />
+                android:layout_gravity="right"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <Button
+                        android:id="@+id/btn_all_marker_list"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/colorWhite"
+
+                        android:text="전체보기" />
+
+                    <ListView
+                        android:id="@+id/list_marker_time"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="right" />
+                </LinearLayout>
+
+            </LinearLayout>
+
         </LinearLayout>
 
         <LinearLayout

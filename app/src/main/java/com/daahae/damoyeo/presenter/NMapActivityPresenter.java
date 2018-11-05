@@ -1,26 +1,39 @@
 package com.daahae.damoyeo.presenter;
 
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 
 import com.daahae.damoyeo.R;
+import com.daahae.damoyeo.model.Building;
+import com.daahae.damoyeo.model.MidInfo;
+import com.daahae.damoyeo.model.Person;
+import com.daahae.damoyeo.model.Position;
+import com.daahae.damoyeo.presenter.Contract.NMapActivityContract;
 import com.daahae.damoyeo.view.activity.NMapActivity;
+import com.daahae.damoyeo.view.data.Constant;
 import com.daahae.damoyeo.view.fragment.CategoryFragment;
 import com.daahae.damoyeo.view.fragment.NMapFragment;
 import com.daahae.damoyeo.view.fragment.SelectMidFragment;
 
-public class NMapActivityPresenter {
-    private NMapActivity view;// 뷰
-    public static final int NMAP_PAGE = 1;
-    public static final int SELECT_MID_PAGE = 2;
-    public static final int CATEGORY_PAGE = 3;
+import java.util.ArrayList;
 
-    //모델은 각자 클래스 생성
+public class NMapActivityPresenter implements NMapActivityContract.Presenter {
+    private FragmentActivity view;
+
+    private ArrayList<Person> personList;
+    private MidInfo mid;
+    private Building building;
 
     public NMapActivityPresenter(NMapActivity view){
         this.view = view;
 
+        init(view);
+    }
+
+    @Override
+    public void init(FragmentActivity view) {
         Fragment fragment = new NMapFragment(this);
         FragmentManager fragmentManager = view.getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -28,19 +41,23 @@ public class NMapActivityPresenter {
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
 
+        initPersonList();
+        // TODO 서버와 통신
+        initMidinfo();
+        initBuilding();
     }
 
-    public void backView(Fragment fragment){
-
+    @Override
+    public void backView(Fragment fragment) {
         FragmentManager fragmentManager = view.getSupportFragmentManager();
         fragmentManager.beginTransaction().remove(fragment).commit();
         fragmentManager.popBackStack();
     }
 
-    public void changeView(int nextPageNumber){
-
+    @Override
+    public void changeView(int nextPageNumber) {
         switch (nextPageNumber){
-            case NMAP_PAGE:
+            case Constant.NMAP_PAGE:
                 view.getSupportFragmentManager()
                         .beginTransaction()
                         .replace(R.id.fragmentHere, new NMapFragment(this))
@@ -48,7 +65,7 @@ public class NMapActivityPresenter {
                         .commit();
                 break;
 
-            case SELECT_MID_PAGE:
+            case Constant.SELECT_MID_PAGE:
                 view.getSupportFragmentManager()
                         .beginTransaction()
                         .replace(R.id.fragmentHere, new SelectMidFragment(this))
@@ -56,7 +73,7 @@ public class NMapActivityPresenter {
                         .commit();
                 break;
 
-            case CATEGORY_PAGE:
+            case Constant.CATEGORY_PAGE:
                 view.getSupportFragmentManager()
                         .beginTransaction()
                         .replace(R.id.fragmentHere, new CategoryFragment(this))
@@ -64,5 +81,35 @@ public class NMapActivityPresenter {
                         .commit();
                 break;
         }
+    }
+
+    @Override
+    public ArrayList<Person> getPersonList() {
+        return personList;
+    }
+
+    @Override
+    public MidInfo getMid() {
+        return mid;
+    }
+
+    @Override
+    public Building getBuilding() {
+        return building;
+    }
+
+    @Override
+    public void initPersonList() {
+        this.personList = new ArrayList<Person>();
+    }
+
+    private void initMidinfo() {
+        Position pos = new Position(Constant.longitude, Constant.latitude);
+        mid = new MidInfo(pos, Constant.address);
+    }
+
+    private void initBuilding() {
+        Position pos = new Position(Constant.longitude, Constant.latitude);
+        building = new Building(pos, Constant.address, 0, pos, Constant.name, Constant.address, Constant.tel);
     }
 }
