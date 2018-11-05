@@ -32,8 +32,8 @@ public class SelectMidFragment extends Fragment implements View.OnClickListener{
 
     private ImageButton btnSelectMidAlgorithm, btnSelectLandmark;
 
-    private MarkerTimeAdapter markerTimeAdapter;
     private ListView listMarkerTime;
+    private MarkerTimeAdapter markerTimeAdapter;
 
 
     public SelectMidFragment(NMapActivityPresenter parentPresenter) {
@@ -55,9 +55,11 @@ public class SelectMidFragment extends Fragment implements View.OnClickListener{
         initView(rootView);
         initListener();
 
+        presenter.initList(listMarkerTime);
 
-        presenter.initMarkerTime(parentPresenter.getPerson(), parentPresenter.getTotalTimes());
+        presenter.initMarkerTime(parentPresenter.getTotalTimes());
         presenter.setMarkerTimeList(markerTimeAdapter);
+        presenter.setResetList();
         listMarkerTime.setAdapter(markerTimeAdapter);
         Log.v("mid","뷰 생성");
         return rootView;

@@ -63,12 +63,12 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
 
         initView(rootView);
         initListener();
-
-        listCategory.setAdapter(buildingAdapter);
+        connectAdapter();
         setBuildingList();
 
         return rootView;
     }
+
 
     private void initView(View rootView){
 
@@ -125,6 +125,10 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
 
         //SlidingDrawer 올라갔을때 view
         slidingDrawer.setOnDrawerOpenListener(this);
+    }
+
+    private void connectAdapter(){
+        listCategory.setAdapter(buildingAdapter);
     }
 
     public void setBuildingList(){

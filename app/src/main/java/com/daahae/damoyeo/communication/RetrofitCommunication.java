@@ -5,6 +5,7 @@ import android.util.Log;
 import com.daahae.damoyeo.model.Person;
 import com.daahae.damoyeo.model.Position;
 import com.daahae.damoyeo.model.TransportInfoList;
+import com.daahae.damoyeo.presenter.RetrofitPresenter;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
@@ -34,9 +35,12 @@ public class RetrofitCommunication{
 
     private boolean isGetMessage = false;
 
-    public RetrofitCommunication(){
+    private RetrofitPresenter retrofitPresenter;
+
+    public RetrofitCommunication(RetrofitPresenter retrofitPresenter){
         connectServer();
-        init();
+        init(retrofitPresenter);
+
     }
 
     public boolean isGetMessage() {
@@ -47,10 +51,12 @@ public class RetrofitCommunication{
         return totalTimes;
     }
 
-    private void init(){
+    private void init(RetrofitPresenter retrofitPresenter){
         retrofitService = retrofit.create(RetrofitService.class);
         persons = new ArrayList<>();
         totalTimes = new ArrayList<>();
+
+        this.retrofitPresenter = retrofitPresenter;
     }
 
     private void connectServer(){
@@ -75,13 +81,15 @@ public class RetrofitCommunication{
                 comment.enqueue(new Callback<JsonObject>() {
                     @Override
                     public void onResponse(retrofit2.Call<JsonObject> call, retrofit2.Response<JsonObject> response) {
-                        if(response.isSuccessful()) {
+                        if (response.isSuccessful()) {
                             Log.v("알림", response.toString());
-                            Log.v("전체",response.body().toString());
+                            Log.v("전체", response.body().toString());
                             JsonObject json = response.body();
-                            TransportInfoList list = new Gson().fromJson(json,TransportInfoList.class);
+                            TransportInfoList list = new Gson().fromJson(json, TransportInfoList.class);
                             Log.v("총 시간 개수", String.valueOf(list.getUserArr().size()));
-                            for(int i=0;i<list.getUserArr().size();i++){
+                            //TODO: Json 좌표 읽어오기 실패시 "~~"String 값 받음
+
+                            for (int i = 0; i < list.getUserArr().size(); i++) {
                                 totalTimes.add(String.valueOf(list.getUserArr().get(i).getTotalTime()));
                             }
                             isGetMessage = true;
@@ -94,10 +102,10 @@ public class RetrofitCommunication{
                     }
                 });
             }
-        }).start();
+        });
 
         try {
-            Thread.sleep(5000);
+            Thread.sleep(3000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

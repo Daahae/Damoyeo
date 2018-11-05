@@ -29,16 +29,24 @@ public class NMapActivityPresenter {
 
     public NMapActivityPresenter(NMapActivity view){
         this.view = view;
+
+        init();
+        setFragmentInitialization();
+
+    }
+    private void init(){
+
         totalTimes = new ArrayList<>();
         person = new ArrayList<>();
+    }
 
+    private void setFragmentInitialization(){
         fragment = new NMapFragment(this);
         fragmentManager = view.getSupportFragmentManager();
         fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace( R.id.fragmentHere, fragment );
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
-
     }
 
     public void backView(Fragment fragment){
@@ -64,6 +72,14 @@ public class NMapActivityPresenter {
         }
     }
 
+    private void setViewFragment(Fragment fragment){
+        view.getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragmentHere, fragment)
+                .addToBackStack(null)
+                .commit();
+    }
+
     public void sendMarkerTimeMessage(ArrayList<Person> person,ArrayList<String> totalTimes){
         this.totalTimes = totalTimes;
         this.person = person;
@@ -77,11 +93,4 @@ public class NMapActivityPresenter {
         return person;
     }
 
-    private void setViewFragment(Fragment fragment){
-        view.getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.fragmentHere, fragment)
-                .addToBackStack(null)
-                .commit();
-    }
 }
