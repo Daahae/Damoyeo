@@ -2,7 +2,6 @@ var request = require('sync-request');
 
 //네이버 api에 장소이름을 보내서 주소를 받아와야함(중간고사 이후)
 
-
 exports.getInfoByCategory = function (lat, lng, radius, type) {
       var key = "AIzaSyBI4jrohgui2UIXOPf-qRmZi8wSbu4GX6Q";
       var url = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=`+lat+`,`+lng+`&radius=` + radius + `&type=`+ type +`&key=` + key;
@@ -12,9 +11,8 @@ exports.getInfoByCategory = function (lat, lng, radius, type) {
       var jsonObject = JSON.parse(res.getBody());
       
       var object = {};
-      //var item = 'Info';
-      //object[item] = [];
-      object.Info = new Array();
+      var item = 'Info';
+      object[item] = [];
       
       var data;
       
@@ -27,8 +25,7 @@ exports.getInfoByCategory = function (lat, lng, radius, type) {
                   lng : jsonObject.results[i].geometry.location.lng
                };
                
-               //object[item].push(data);
-               object.Info.push(data);
+               object[item].push(data);
             }  
          } else {
             data = {
@@ -37,10 +34,9 @@ exports.getInfoByCategory = function (lat, lng, radius, type) {
                lng : jsonObject.results[i].geometry.location.lng
             };
             
-            //object[item].push(data);
-            object.Info.push(data);
+            object[item].push(data);
          }
 	  }
-	  return JSON.stringify(object);
+        return JSON.stringify(object);
    
 }
