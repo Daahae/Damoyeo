@@ -1,16 +1,15 @@
 var request = require('sync-request');
 
-//네이버 api에 장소이름을 보내서 주소를 받아와야함(중간고사 이후)
-
 exports.getInfoByCategory = function (lat, lng, radius, type) {
-      var key = "AIzaSyBI4jrohgui2UIXOPf-qRmZi8wSbu4GX6Q";
-      var url = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=`+lat+`,`+lng+`&radius=` + radius + `&type=`+ type +`&key=` + key;
+      //var key = "AIzaSyBI4jrohgui2UIXOPf-qRmZi8wSbu4GX6Q";
+      var key = "AIzaSyBjmChvkWBs63KJPrp5bu1dCY3H-ON3Idc";
+      var url = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=`+lat+`,`+lng+`&radius=` + radius + `&type=`+ type +`&key=` + key + `&language=ko`;
       
       var res = request('GET', url);
       
       var jsonObject = JSON.parse(res.getBody());
       
-      var object = {};
+      var object = new Object();
       var item = 'Info';
       object[item] = [];
       
