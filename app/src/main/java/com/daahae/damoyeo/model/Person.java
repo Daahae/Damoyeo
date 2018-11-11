@@ -1,6 +1,9 @@
 package com.daahae.damoyeo.model;
 
+import java.util.ArrayList;
+
 public class Person{
+    private static ArrayList<Person> instance = new ArrayList<Person>();
     private int id;
     private String name;
     private String address;
@@ -10,6 +13,10 @@ public class Person{
         this.name = name;
         this.address = address;
         this.addressPosition = addressPosition;
+    }
+
+    public static synchronized ArrayList<Person> getInstance(){
+        return instance;
     }
 
     public int getId() {

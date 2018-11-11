@@ -1,4 +1,4 @@
-package com.daahae.damoyeo.view.activity;
+package com.daahae.damoyeo.view;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
