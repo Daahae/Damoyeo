@@ -1,8 +1,8 @@
 var request = require('sync-request');
 
 exports.getInfoByCategory = function (lat, lng, radius, type) {
-      //var key = "AIzaSyBI4jrohgui2UIXOPf-qRmZi8wSbu4GX6Q";
-      var key = "AIzaSyBjmChvkWBs63KJPrp5bu1dCY3H-ON3Idc";
+      //var key = "";
+      var key = "";
       var url = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=`+lat+`,`+lng+`&radius=` + radius + `&type=`+ type +`&key=` + key + `&language=ko`;
       
       var res = request('GET', url);

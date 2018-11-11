@@ -4,11 +4,11 @@
 var request = require('sync-request');
 
 exports.getDetailInfo = function (name) {
-    //var clientID = "7U_JXot2fhHzfndW5kB7";
-    //var secret = "tC6lfWVZvO";
+    //var clientID = "";
+    //var secret = "";
 
-    var clientID = "jwlrRrud1mg1tJBxdoSh";
-    var secret = "AwskMzduBL";
+    var clientID = "";
+    var secret = "";
     
     var url = `https://openapi.naver.com/v1/search/local.json?query=` + encodeURI(name) + `&display=1&start=1`;
     var options = {
