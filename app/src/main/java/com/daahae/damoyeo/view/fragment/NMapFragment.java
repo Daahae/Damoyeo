@@ -49,7 +49,7 @@ public class NMapFragment extends Fragment implements View.OnClickListener, NMap
         mapContext = new NMapContext(super.getActivity());;
         mapContext.onCreate();
 
-        setPresenter(new NMapFragmentPresenter(this,  mapContext,  parentPresenter));;
+        setPresenter(new NMapFragmentPresenter(this,  mapContext,  parentPresenter));
     }
 
     @Override
@@ -150,7 +150,6 @@ public class NMapFragment extends Fragment implements View.OnClickListener, NMap
                 parentPresenter.sendMarkerTimeMessage(presenter.sendRetrofit());
                 parentPresenter.changeView(Constant.SELECT_MID_PAGE);
                 break;
-
         }
     }
 

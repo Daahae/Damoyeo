@@ -114,6 +114,14 @@ public class NMapFragmentPresenter extends NMapPresenter implements NMapFragment
         poiDataOverlay.selectPOIitem(0, true);
     }
 
+    private final NMapActivity.OnDataProviderListener onDataProviderListener = new NMapActivity.OnDataProviderListener() {
+        @Override
+        public void onReverseGeocoderResponse(NMapPlacemark placeMark, NMapError errInfo) {
+
+            setInstantMarkerAddress(placeMark);
+        }
+    };
+
     @Override
     public void setSavedMarkers(int scale, ArrayList<Person> personList) {
 
@@ -133,6 +141,19 @@ public class NMapFragmentPresenter extends NMapPresenter implements NMapFragment
         poiDataOverlay.setOnStateChangeListener(onPOIdataStateChangeListener);
         poiDataOverlay.selectPOIitem(0, true);
     }
+
+    private final NMapPOIdataOverlay.OnStateChangeListener onPOIdataStateChangeListener = new NMapPOIdataOverlay.OnStateChangeListener() {
+
+        @Override
+        public void onFocusChanged(NMapPOIdataOverlay nMapPOIdataOverlay, NMapPOIitem nMapPOIitem) {
+            if (nMapPOIitem != null)
+                setTargetMarkerById(view, nMapPOIitem.getId(), parentPresenter.getPersonList());
+        }
+
+        @Override
+        public void onCalloutClick(NMapPOIdataOverlay nMapPOIdataOverlay, NMapPOIitem nMapPOIitem) {
+        }
+    };
 
     @Override
     public void getGPSLocation(NMapFragment view, ArrayList<Person> personList) {
@@ -261,25 +282,4 @@ public class NMapFragmentPresenter extends NMapPresenter implements NMapFragment
         else
             Toast.makeText(view.getActivity(), view.getResources().getString(R.string.msg_cannotshow), Toast.LENGTH_SHORT).show();
     }
-
-    private final NMapActivity.OnDataProviderListener onDataProviderListener = new NMapActivity.OnDataProviderListener() {
-        @Override
-        public void onReverseGeocoderResponse(NMapPlacemark placeMark, NMapError errInfo) {
-
-            setInstantMarkerAddress(placeMark);
-        }
-    };
-
-    private final NMapPOIdataOverlay.OnStateChangeListener onPOIdataStateChangeListener = new NMapPOIdataOverlay.OnStateChangeListener() {
-
-        @Override
-        public void onFocusChanged(NMapPOIdataOverlay nMapPOIdataOverlay, NMapPOIitem nMapPOIitem) {
-            if (nMapPOIitem != null)
-                setTargetMarkerById(view, nMapPOIitem.getId(), parentPresenter.getPersonList());
-        }
-
-        @Override
-        public void onCalloutClick(NMapPOIdataOverlay nMapPOIdataOverlay, NMapPOIitem nMapPOIitem) {
-        }
-    };
 }
