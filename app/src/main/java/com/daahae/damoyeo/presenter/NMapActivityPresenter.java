@@ -10,14 +10,17 @@ import com.daahae.damoyeo.model.Building;
 import com.daahae.damoyeo.model.MidInfo;
 import com.daahae.damoyeo.model.Person;
 import com.daahae.damoyeo.model.Position;
+import com.daahae.damoyeo.model.TransportInfoList;
 import com.daahae.damoyeo.presenter.Contract.NMapActivityContract;
 import com.daahae.damoyeo.view.activity.NMapActivity;
 import com.daahae.damoyeo.view.data.Constant;
 import com.daahae.damoyeo.view.fragment.CategoryFragment;
+import com.daahae.damoyeo.view.fragment.DetailFragment;
 import com.daahae.damoyeo.view.fragment.NMapFragment;
 import com.daahae.damoyeo.view.fragment.SelectMidFragment;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class NMapActivityPresenter implements NMapActivityContract.Presenter {
     private FragmentActivity view;
@@ -33,6 +36,10 @@ public class NMapActivityPresenter implements NMapActivityContract.Presenter {
     private FragmentTransaction fragmentTransaction;
 
     private RetrofitPresenter retrofitPresenter;
+
+    private Building targetBuilding;
+
+    private List<TransportInfoList.Data> transportDatas;
 
     public NMapActivityPresenter(NMapActivity view){
         this.view = view;
@@ -89,6 +96,10 @@ public class NMapActivityPresenter implements NMapActivityContract.Presenter {
             case Constant.CATEGORY_PAGE:
                 setViewFragment(new CategoryFragment(this));
                 break;
+
+            case Constant.DETAIL_PAGE:
+                setViewFragment(new DetailFragment(this));
+                break;
         }
     }
 
@@ -105,7 +116,7 @@ public class NMapActivityPresenter implements NMapActivityContract.Presenter {
 
     private void initBuilding() {
         Position pos = new Position(Constant.latitude, Constant.longitude);
-        building = new Building(pos, Constant.address, 0, pos, Constant.name, Constant.address, Constant.tel);
+        building = new Building(Constant.latitude,Constant.longitude,Constant.name, Constant.address, Constant.tel, Constant.description, Constant.distance);
     }
 
     @Override
@@ -137,5 +148,25 @@ public class NMapActivityPresenter implements NMapActivityContract.Presenter {
 
     public void setRetrofitPersonList(){
         retrofitPresenter.setPersonList(personList);
+    }
+
+    public void clickItem(Building building){
+        targetBuilding = building;
+    }
+
+    public Building getTargetBuilding() {
+        return targetBuilding;
+    }
+
+    public void setTransportData(){
+        TransportInfoList list = retrofitPresenter.getList();
+        for (int i = 0; i < list.getUserArr().size(); i++) {
+            transportDatas = list.getUserArr();
+        }
+    }
+
+    public List<TransportInfoList.Data> getTransportData(){
+        setTransportData();
+        return transportDatas;
     }
 }

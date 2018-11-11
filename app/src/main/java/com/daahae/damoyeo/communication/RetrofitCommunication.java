@@ -2,6 +2,10 @@ package com.daahae.damoyeo.communication;
 
 import android.util.Log;
 
+import com.daahae.damoyeo.exception.PositionNumberServices;
+import com.daahae.damoyeo.model.Building;
+import com.daahae.damoyeo.model.BuildingArr;
+import com.daahae.damoyeo.model.BuildingRequest;
 import com.daahae.damoyeo.model.Person;
 import com.daahae.damoyeo.model.Position;
 import com.daahae.damoyeo.model.TransportInfoList;
@@ -32,8 +36,8 @@ public class RetrofitCommunication{
 
     private ArrayList<Person> persons;
     private ArrayList<String> totalTimes;
-
-    private boolean isGetMessage = false;
+    private TransportInfoList TransportList;
+    private BuildingArr buildingList;
 
     private RetrofitPresenter retrofitPresenter;
 
@@ -43,13 +47,11 @@ public class RetrofitCommunication{
 
     }
 
-    public boolean isGetMessage() {
-        return isGetMessage;
-    }
-
     public ArrayList<String> getTotalTimes() {
         return totalTimes;
     }
+
+    public TransportInfoList getList(){return TransportList;}
 
     private void init(RetrofitPresenter retrofitPresenter){
         retrofitService = retrofit.create(RetrofitService.class);
@@ -68,12 +70,11 @@ public class RetrofitCommunication{
     }
 
     public ArrayList<String> sendPersonLocation(ArrayList<Person> persons){
-        isGetMessage = false;
         this.persons = persons;
         String strMessage = makeForm();
         Log.v("메시지",strMessage);
 
-        final retrofit2.Call<JsonObject> comment = retrofitService.getTest(strMessage);
+        final retrofit2.Call<JsonObject> comment = retrofitService.getTransportData(strMessage);
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -84,27 +85,34 @@ public class RetrofitCommunication{
                             Log.v("알림", response.toString());
                             Log.v("전체", response.body().toString());
                             JsonObject json = response.body();
-                            TransportInfoList list = new Gson().fromJson(json, TransportInfoList.class);
-                            Log.v("총 시간 개수", String.valueOf(list.getUserArr().size()));
-                            //TODO: Json 좌표 읽어오기 실패시 "~~"String 값 받음
+                            TransportList = new Gson().fromJson(json, TransportInfoList.class);
+                            Log.v("총 시간 개수", String.valueOf(TransportList.getUserArr().size()));
 
-                            for (int i = 0; i < list.getUserArr().size(); i++) {
-                                totalTimes.add(String.valueOf(list.getUserArr().get(i).getTotalTime()));
+                            PositionNumberServices positionNumberServices = new PositionNumberServices();
+
+                            try{
+                                positionNumberServices.isPosition(TransportList.getUserArr().size());
+                                if(!TransportList.getUserArr().get(0).equals("Wrong Input")){
+                                    for (int i = 0; i < TransportList.getUserArr().size(); i++) {
+                                        totalTimes.add(String.valueOf(TransportList.getUserArr().get(i).getTotalTime()));
+                                    }
+                                }
+                            }catch (Exception e){
+                                e.printStackTrace();
                             }
-                            isGetMessage = true;
+
                         }
                     }
 
                     @Override
                     public void onFailure(retrofit2.Call<JsonObject> call, Throwable t) {
-                        //TODO: 전송실패시
                     }
                 });
             }
         }).start();
 
         try {
-            Thread.sleep(3000);
+            Thread.sleep(5000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -119,5 +127,42 @@ public class RetrofitCommunication{
         }
         strMessage+="]";
         return strMessage;
+    }
+
+
+    public BuildingArr sendBuildingInfo(BuildingRequest request){
+        String message = request.toString();
+        Log.v("메시지",message+"");
+
+        final retrofit2.Call<JsonObject> comment = retrofitService.getBuildingData(message);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                comment.enqueue(new Callback<JsonObject>() {
+                    @Override
+                    public void onResponse(retrofit2.Call<JsonObject> call, retrofit2.Response<JsonObject> response) {
+                        if (response.isSuccessful()) {
+                            Log.v("알림", response.toString());
+                            Log.v("전체", response.body().toString());
+                            JsonObject json = response.body();
+                            buildingList = new Gson().fromJson(json, BuildingArr.class);
+                            Log.v("총 빌딩 개수", String.valueOf(buildingList.getBuildingArr().size()));
+
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(retrofit2.Call<JsonObject> call, Throwable t) {
+                    }
+                });
+            }
+        }).start();
+
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return buildingList;
     }
 }

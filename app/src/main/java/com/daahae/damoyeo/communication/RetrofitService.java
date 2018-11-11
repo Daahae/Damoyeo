@@ -12,5 +12,10 @@ public interface RetrofitService {
     //@Multipart
     @FormUrlEncoded
     @POST("usersToMid")
-    Call<JsonObject> getTest(@Field("userArr") String users);
+    Call<JsonObject> getTransportData(@Field("userArr") String users);
+
+    //@Multipart
+    @FormUrlEncoded
+    @POST("midCategory")
+    Call<JsonObject> getBuildingData(@Field("userRequest") String type);
 }

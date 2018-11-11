@@ -12,8 +12,8 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <!-- WIFI 상태활용시 추가 -->
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
-    <!--retrofit2-->
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <!-- retrofit2 -->
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -25,13 +25,15 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".view.activity.NMapActivity"
-            android:configChanges="keyboardHidden|orientation">
+            android:configChanges="keyboardHidden|orientation"></activity>
+        <activity android:name=".view.activity.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".view.activity.MyPageActivity"></activity>
     </application>
 
 </manifest>

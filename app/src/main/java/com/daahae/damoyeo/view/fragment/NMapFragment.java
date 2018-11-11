@@ -11,8 +11,10 @@ import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.daahae.damoyeo.R;
+import com.daahae.damoyeo.exception.PositionNumberServices;
 import com.daahae.damoyeo.presenter.Contract.NMapFragmentContract;
 import com.daahae.damoyeo.presenter.NMapActivityPresenter;
 import com.daahae.damoyeo.presenter.NMapFragmentPresenter;
@@ -148,7 +150,13 @@ public class NMapFragment extends Fragment implements View.OnClickListener, NMap
                 break;
             case R.id.linear_search_mid:
                 parentPresenter.sendMarkerTimeMessage(presenter.sendRetrofit());
-                parentPresenter.changeView(Constant.SELECT_MID_PAGE);
+                PositionNumberServices positionNumberServices = new PositionNumberServices();
+                try {
+                    positionNumberServices.isPosition(parentPresenter.getTotalTimes().size());
+                    parentPresenter.changeView(Constant.SELECT_MID_PAGE);
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
                 break;
 
         }

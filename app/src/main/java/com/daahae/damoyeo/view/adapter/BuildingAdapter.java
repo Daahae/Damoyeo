@@ -42,12 +42,6 @@ public class BuildingAdapter extends BaseAdapter{
         return 0;
     }
 
-    //TODO: 삭제예정
-    public void addDummy(){
-        Building dummy = new Building(null, null, 0,null, "상호", "주소", null);
-        mItems.add(dummy);
-    }
-
     public void add(Building building){
         mItems.add(building);
     }
@@ -66,15 +60,15 @@ public class BuildingAdapter extends BaseAdapter{
 
         Building myItem = (Building) mItems.get(position);
 
-        setBuildingListText(txtCompanyName, txtAboutAddress, txtDistance, myItem.getName(),myItem.getBuildingAddress(),0);
+        setBuildingListText(txtCompanyName, txtAboutAddress, txtDistance, myItem.getName(),myItem.getBuildingAddress(),myItem.getDistance());
 
         return convertView;
     }
 
-    private void setBuildingListText(TextView companyName, TextView address, TextView distance, String strName, String strAddr,int strDist){
+    private void setBuildingListText(TextView companyName, TextView address, TextView distance, String strName, String strAddr, double strDist){
         companyName.setText(strName);
         address.setText(strAddr);
-        distance.setText(String.valueOf(strDist));
+        distance.setText(String.format("%.2f",strDist));
     }
 
     private void initGetView(View convertView){

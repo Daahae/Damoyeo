@@ -68,12 +68,11 @@ public class SelectMidFragment extends Fragment implements View.OnClickListener,
         initListener();
 
         presenter.initMarkerTime(parentPresenter.getTotalTimes());
-        presenter.setResetList();
+        markerTimeAdapter.resetList();
         presenter.setMarkerTimeList(markerTimeAdapter);
         listMarkerTime.setAdapter(markerTimeAdapter);
         Log.v("mid","뷰 생성");
 
-        listMarkerTime.setOnItemClickListener(this);
 
         return rootView;
     }
@@ -98,6 +97,7 @@ public class SelectMidFragment extends Fragment implements View.OnClickListener,
         btnSelectMidAlgorithm.setOnClickListener(this);
         btnSelectLandmark.setOnClickListener(this);
         btnAllMarkerList.setOnClickListener(this);
+        listMarkerTime.setOnItemClickListener(this);
     }
 
     @Override

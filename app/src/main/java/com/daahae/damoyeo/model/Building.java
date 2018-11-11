@@ -1,38 +1,62 @@
 package com.daahae.damoyeo.model;
 
+import com.google.gson.annotations.SerializedName;
+
 public class Building{
-    private Position pos;
-    private String address;
-    private int type;
-    private Position buildingPos;
+
+    @SerializedName("buildingLat")
+    private double latitude;
+
+    @SerializedName("buildingLng")
+    private double longitude;
+
+    @SerializedName("buildingName")
     private String name;
+
+    @SerializedName("buildingAddress")
     private String buildingAddress;
+
+    @SerializedName("buildingTel")
     private String tel;
 
-    public Building(Position pos, String address, int type, Position buildingPos, String name, String buildingAddress, String tel) {
-        this.pos = pos;
-        this.address = address;
-        this.type = type;
-        this.buildingPos = buildingPos;
+    @SerializedName("buildingDescription")
+    private String description;
+
+    @SerializedName("buildingDistance")
+    private double distance;
+
+    public Building(double latitude, double longitude, String name, String buildingAddress, String tel, String description, double distance) {
+        this.latitude = latitude;
+        this.longitude = longitude;
         this.name = name;
         this.buildingAddress = buildingAddress;
         this.tel = tel;
+        this.description = description;
+        this.distance = distance;
     }
 
-    public int getType() {
-        return type;
+    public String getDescription() {
+        return description;
     }
 
-    public void setType(int type) {
-        this.type = type;
+    public double getDistance() {
+        return distance;
     }
 
-    public Position getBuildingPos() {
-        return buildingPos;
+    public double getLatitude() {
+        return latitude;
     }
 
-    public void setBuildingPos(Position buildingPos) {
-        this.buildingPos = buildingPos;
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
     }
 
     public String getName() {

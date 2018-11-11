@@ -21,6 +21,7 @@ import com.daahae.damoyeo.presenter.CategoryFragmentPresenter;
 import com.daahae.damoyeo.presenter.Contract.CategoryFragmentContract;
 import com.daahae.damoyeo.presenter.NMapActivityPresenter;
 import com.daahae.damoyeo.view.adapter.BuildingAdapter;
+import com.daahae.damoyeo.view.data.Constant;
 import com.nhn.android.maps.NMapContext;
 
 @SuppressLint("ValidFragment")
@@ -174,8 +175,9 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
 
 
     @Override
-    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-        //TODO: 리스트뷰 아이템 클릭시
+    public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+        parentPresenter.changeView(Constant.DETAIL_PAGE);
+        parentPresenter.clickItem(buildingAdapter.getItem(position));
     }
 
 

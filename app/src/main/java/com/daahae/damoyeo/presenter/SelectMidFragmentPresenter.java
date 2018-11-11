@@ -120,7 +120,8 @@ public class SelectMidFragmentPresenter extends NMapPresenter implements SelectM
 
             NMapPOIdata poiData = new NMapPOIdata(id, getResourceProvider());
             poiData.beginPOIdata(id);
-            poiData.addPOIitem(building.getBuildingPos().getY(), building.getBuildingPos().getX(), null, markerId, 0);
+            //수정
+            poiData.addPOIitem(building.getLatitude(), building.getLongitude(), null, markerId, 0);
             for (Person index:personList)
                 poiData.addPOIitem(index.getAddressPosition().getY(), index.getAddressPosition().getX(), null, markerId, index.getId());
 
@@ -142,7 +143,8 @@ public class SelectMidFragmentPresenter extends NMapPresenter implements SelectM
 
         NMapPOIdata poiData = new NMapPOIdata(id, getResourceProvider());
         poiData.beginPOIdata(id);
-        poiData.addPOIitem(building.getBuildingPos().getY(), building.getBuildingPos().getX(), null, markerId, 0);
+        //수정
+        poiData.addPOIitem(building.getLatitude(), building.getLongitude(), null, markerId, 0);
         poiData.addPOIitem(pos.getY(), pos.getX(), null, markerId, 1);
 
         poiData.endPOIdata();
