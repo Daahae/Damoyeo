@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "627171791796",
+    "firebase_url": "https://damoyeo-1538727193380.firebaseio.com",
+    "project_id": "damoyeo-1538727193380",
+    "storage_bucket": "damoyeo-1538727193380.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:627171791796:android:38f0c004d838eacc",
+        "android_client_info": {
+          "package_name": "com.daahae.damoyeo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "627171791796-lt6usm5c3p1k7ll1kt1kp09vfc760ajm.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.daahae.damoyeo",
+            "certificate_hash": "63837d4bce0686fb944e63dbe5a1e28919d577fe"
+          }
+        },
+        {
+          "client_id": "627171791796-am6cdjotid9qotnejvhagpb2bvs66don.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBIRvfVHCPTEwnzrx2PGeuX8L9-pG7pb6Y"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "627171791796-am6cdjotid9qotnejvhagpb2bvs66don.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

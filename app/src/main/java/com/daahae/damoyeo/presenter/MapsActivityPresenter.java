@@ -7,12 +7,16 @@ import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 
 import com.daahae.damoyeo.R;
+import com.daahae.damoyeo.model.Building;
 import com.daahae.damoyeo.model.Person;
+import com.daahae.damoyeo.model.TransportInfoList;
 import com.daahae.damoyeo.view.Constant;
 import com.daahae.damoyeo.view.fragment.CategoryFragment;
+import com.daahae.damoyeo.view.fragment.DetailFragment;
 import com.daahae.damoyeo.view.fragment.MapsFragment;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class MapsActivityPresenter {
     private FragmentActivity view;
@@ -22,6 +26,10 @@ public class MapsActivityPresenter {
     private Fragment fragment;
     private FragmentManager fragmentManager;
     private FragmentTransaction fragmentTransaction;
+
+    private Building targetBuilding;
+
+    private List<TransportInfoList.Data> transportDatas;
 
     public MapsActivityPresenter(FragmentActivity view) {
         this.view = view;
@@ -61,6 +69,10 @@ public class MapsActivityPresenter {
             case Constant.CATEGORY_PAGE:
                 setViewFragment(new CategoryFragment(this));
                 break;
+
+            case Constant.DETAIL_PAGE:
+                setViewFragment(new DetailFragment(this));
+                break;
         }
     }
 
@@ -73,5 +85,25 @@ public class MapsActivityPresenter {
         ArrayList<String> totalTimes = RetrofitPresenter.getInstance().sendPersonMessage();
         Log.v("GMAP", "보냄");
         this.totalTimes = totalTimes;
+    }
+
+    public void clickItem(Building building){
+        targetBuilding = building;
+    }
+
+    public Building getTargetBuilding() {
+        return targetBuilding;
+    }
+
+    public void setTransportData(){
+        TransportInfoList list = RetrofitPresenter.getInstance().getList();
+        for (int i = 0; i < list.getUserArr().size(); i++) {
+            transportDatas = list.getUserArr();
+        }
+    }
+
+    public List<TransportInfoList.Data> getTransportData(){
+        setTransportData();
+        return transportDatas;
     }
 }

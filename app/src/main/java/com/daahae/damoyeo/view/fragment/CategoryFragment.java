@@ -115,7 +115,7 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
 
     private void initView(View rootView){
 
-        mapView = (MapView)rootView.findViewById(R.id.map);
+        mapView = (MapView)rootView.findViewById(R.id.map_category);
         mapView.getMapAsync(this);
         fabMid = rootView.findViewById(R.id.fab_mid);
 
@@ -416,6 +416,7 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         //TODO: 리스트뷰 아이템 클릭시 구분(마커타임 or 빌딩)
+        /*
         if(!isMid) {
             presenter.showEachMarker(position);
             presenter.setCameraState();
@@ -423,11 +424,17 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
             presenter.showLandmarkEachMarker(position);
             presenter.setCameraState();
         }
+        */
+        parentPresenter.changeView(Constant.DETAIL_PAGE);
+        parentPresenter.clickItem(buildingAdapter.getItem(position));
     }
 
     @Override
     public void onClick(View view) {
         switch(view.getId()){
+            case R.id.btn_back_category:
+                parentPresenter.backView(this);
+                break;
             case R.id.btn_all_marker_list:
                 if(!isMid) {
                     presenter.showAllMarkers();
@@ -449,9 +456,6 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
                     fabMid.setImageResource(R.drawable.btn_selected_mid_orange);
                     isMid = true;
                 }
-                break;
-            case R.id.btn_back_category:
-                parentPresenter.backView(this);
                 break;
             case R.id.btn_category_play:
                 btnPlay.setImageResource(R.drawable.btn_category_play_orange);

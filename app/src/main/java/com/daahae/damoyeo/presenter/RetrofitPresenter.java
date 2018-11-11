@@ -1,7 +1,9 @@
 package com.daahae.damoyeo.presenter;
 
 import com.daahae.damoyeo.communication.RetrofitCommunication;
+import com.daahae.damoyeo.model.BuildingRequest;
 import com.daahae.damoyeo.model.Person;
+import com.daahae.damoyeo.model.TransportInfoList;
 
 import java.util.ArrayList;
 
@@ -24,5 +26,11 @@ public class RetrofitPresenter {
 
     public ArrayList<String> sendPersonMessage(){
         return retrofit.sendPersonLocation(persons);
+    }
+
+    public TransportInfoList getList(){return retrofit.getList();}
+
+    public void sendBuildingInfo(BuildingRequest buildingRequest){
+        retrofit.sendBuildingInfo(buildingRequest);
     }
 }

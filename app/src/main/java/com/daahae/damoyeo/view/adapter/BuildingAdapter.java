@@ -42,12 +42,6 @@ public class BuildingAdapter extends BaseAdapter{
         return 0;
     }
 
-    //TODO: 삭제예정
-    public void addDummy(){
-        Building dummy = new Building(null, null, 0,null, "상호", "주소", null);
-        mItems.add(dummy);
-    }
-
     public void add(Building building){
         mItems.add(building);
     }

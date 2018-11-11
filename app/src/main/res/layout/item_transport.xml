@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="100dp">
+
+    <ImageView
+        android:id="@+id/img_profile_photo_transport_item"
+        android:layout_width="45dp"
+        android:layout_height="40dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignStart="@+id/linear_transport_bar_transport_item"
+        android:layout_marginTop="11dp"
+        app:srcCompat="@drawable/ic_guest_profile" />
+
+    <TextView
+        android:id="@+id/txt_name_transport_item"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/img_profile_photo_transport_item"
+        android:layout_toEndOf="@+id/img_profile_photo_transport_item"
+        android:text="guest1"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/txt_view_time_transport_item"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/img_profile_photo_transport_item"
+        android:layout_alignEnd="@+id/txt_total_time_transport_item"
+        android:text="오후 3:30-오후 4:52"
+        android:textColor="@color/colorGray"
+        android:textSize="12sp" />
+
+    <TextView
+        android:id="@+id/txt_total_time_transport_item"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignTop="@+id/img_profile_photo_transport_item"
+        android:layout_marginEnd="20dp"
+        android:text="0시간0분"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/txt_address_transport_item"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/img_profile_photo_transport_item"
+        android:layout_alignStart="@+id/txt_name_transport_item"
+        android:text="Xx광역시 xx구 xxxxx로 "
+        android:textSize="12sp" />
+
+    <LinearLayout
+        android:id="@+id/linear_transport_bar_transport_item"
+        android:layout_width="match_parent"
+        android:layout_height="15dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="26dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:background="@color/colorLightGray"
+        android:orientation="horizontal"/>
+
+</RelativeLayout>
