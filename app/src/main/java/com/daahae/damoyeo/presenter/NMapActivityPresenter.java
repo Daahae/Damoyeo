@@ -6,6 +6,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 
 import com.daahae.damoyeo.R;
+import com.daahae.damoyeo.communication.RetrofitCommunication;
 import com.daahae.damoyeo.model.Building;
 import com.daahae.damoyeo.model.MidInfo;
 import com.daahae.damoyeo.model.Person;
@@ -35,7 +36,7 @@ public class NMapActivityPresenter implements NMapActivityContract.Presenter {
     private FragmentManager fragmentManager;
     private FragmentTransaction fragmentTransaction;
 
-    private RetrofitPresenter retrofitPresenter;
+    private RetrofitCommunication retrofitCommunication;
 
     private Building targetBuilding;
 
@@ -53,8 +54,11 @@ public class NMapActivityPresenter implements NMapActivityContract.Presenter {
         initPersonList();
         initMidinfo();
         initBuilding();
+    }
 
-        retrofitPresenter = new RetrofitPresenter();
+    private void initRetrofit(){
+
+        retrofitCommunication = new RetrofitCommunication();
     }
 
     private void setFragmentInitialization(){
@@ -142,13 +146,18 @@ public class NMapActivityPresenter implements NMapActivityContract.Presenter {
         this.totalTimes = totalTimes;
     }
 
-    public RetrofitPresenter getRetrofitPresenter() {
-        return retrofitPresenter;
+    public RetrofitCommunication getRetrofitCommunication() {
+        return retrofitCommunication;
     }
 
-    public void setRetrofitPersonList(){
-        retrofitPresenter.setPersonList(personList);
+    public void setRetrofitCommunication(RetrofitCommunication retrofitCommunication) {
+        this.retrofitCommunication = retrofitCommunication;
     }
+
+    public ArrayList<String> sendPersonMessage(){
+        return retrofitCommunication.sendPersonLocation(personList);
+    }
+
 
     public void clickItem(Building building){
         targetBuilding = building;
@@ -159,7 +168,7 @@ public class NMapActivityPresenter implements NMapActivityContract.Presenter {
     }
 
     public void setTransportData(){
-        TransportInfoList list = retrofitPresenter.getList();
+        TransportInfoList list = retrofitCommunication.getList();
         for (int i = 0; i < list.getUserArr().size(); i++) {
             transportDatas = list.getUserArr();
         }
@@ -169,4 +178,5 @@ public class NMapActivityPresenter implements NMapActivityContract.Presenter {
         setTransportData();
         return transportDatas;
     }
+
 }

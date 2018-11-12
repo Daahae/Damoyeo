@@ -18,7 +18,6 @@ import com.daahae.damoyeo.exception.PositionNumberServices;
 import com.daahae.damoyeo.presenter.Contract.NMapFragmentContract;
 import com.daahae.damoyeo.presenter.NMapActivityPresenter;
 import com.daahae.damoyeo.presenter.NMapFragmentPresenter;
-import com.daahae.damoyeo.presenter.RetrofitPresenter;
 import com.daahae.damoyeo.view.data.Constant;
 import com.daahae.damoyeo.view.data.FloatingActionBtn;
 import com.nhn.android.maps.NMapContext;

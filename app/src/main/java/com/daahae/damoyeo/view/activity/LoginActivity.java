@@ -11,7 +11,6 @@ import com.daahae.damoyeo.R;
 import com.daahae.damoyeo.communication.RetrofitCommunication;
 import com.daahae.damoyeo.model.BuildingRequest;
 import com.daahae.damoyeo.presenter.LoginActivityPresenter;
-import com.daahae.damoyeo.presenter.RetrofitPresenter;
 import com.daahae.damoyeo.view.data.Constant;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener{

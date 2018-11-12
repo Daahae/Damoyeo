@@ -9,7 +9,6 @@ import com.daahae.damoyeo.model.BuildingRequest;
 import com.daahae.damoyeo.model.Person;
 import com.daahae.damoyeo.model.Position;
 import com.daahae.damoyeo.model.TransportInfoList;
-import com.daahae.damoyeo.presenter.RetrofitPresenter;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -44,11 +43,8 @@ public class RetrofitCommunication{
     private TransportInfoList TransportList;
     private BuildingArr buildingList;
 
-    private RetrofitPresenter retrofitPresenter;
-
-    public RetrofitCommunication(RetrofitPresenter retrofitPresenter){
+    public RetrofitCommunication(){
         connectServer();
-        init(retrofitPresenter);
 
     }
 
@@ -58,12 +54,11 @@ public class RetrofitCommunication{
 
     public TransportInfoList getList(){return TransportList;}
 
-    private void init(RetrofitPresenter retrofitPresenter){
+    private void init(){
         retrofitService = retrofit.create(RetrofitService.class);
         persons = new ArrayList<>();
         totalTimes = new ArrayList<>();
 
-        this.retrofitPresenter = retrofitPresenter;
     }
 
     private void connectServer(){

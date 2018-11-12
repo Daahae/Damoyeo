@@ -5,6 +5,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.daahae.damoyeo.R;
+import com.daahae.damoyeo.communication.RetrofitCommunication;
 import com.daahae.damoyeo.model.Person;
 import com.daahae.damoyeo.model.Position;
 import com.daahae.damoyeo.presenter.Contract.NMapFragmentContract;
@@ -29,18 +30,18 @@ public class NMapFragmentPresenter extends NMapPresenter implements NMapFragment
     private NMapPlacemark instantMarker;
     private Person targetMarker;
 
-    private RetrofitPresenter retrofitPresenter;
+    private RetrofitCommunication retrofitCommunication;
 
     public NMapFragmentPresenter(Fragment view, NMapContext mapContext, NMapActivityPresenter parentPresenter) {
         super(view, mapContext);
         this.view = (NMapFragment) view;
         this.parentPresenter = parentPresenter;
-        retrofitPresenter = parentPresenter.getRetrofitPresenter();
+        retrofitCommunication = parentPresenter.getRetrofitCommunication();
     }
 
     public ArrayList<String> sendRetrofit(){
-        parentPresenter.setRetrofitPersonList();
-        ArrayList<String> totalTimes = retrofitPresenter.sendPersonMessage();
+
+        ArrayList<String> totalTimes = parentPresenter.sendPersonMessage();
         Log.v("NMAP", "보냄");
 
         return totalTimes;

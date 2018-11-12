@@ -13,10 +13,6 @@ public class RetrofitPresenter {
 
     private ArrayList<Person> persons;
 
-    public RetrofitPresenter(){
-        retrofit = new RetrofitCommunication(this);
-    }
-
     public void setPersonList(ArrayList<Person> person){
         persons = person;
     }
