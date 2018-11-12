@@ -29,5 +29,6 @@ public class RetrofitPresenter {
 
     public void sendBuildingInfo(BuildingRequest buildingRequest){
         retrofit.sendBuildingInfo(buildingRequest);
+
     }
 }

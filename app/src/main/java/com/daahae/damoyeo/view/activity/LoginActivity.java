@@ -32,10 +32,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         initView();
         initListener();
 
+        /*
         BuildingRequest test = new BuildingRequest();
         test.setType(Constant.CAFE);
         RetrofitPresenter retrofitPresenter = new RetrofitPresenter();
         retrofitPresenter.sendBuildingInfo(test);
+        */
     }
 
     private void initView(){

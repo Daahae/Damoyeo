@@ -11,7 +11,12 @@ import com.daahae.damoyeo.model.Position;
 import com.daahae.damoyeo.model.TransportInfoList;
 import com.daahae.damoyeo.presenter.RetrofitPresenter;
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -130,9 +135,9 @@ public class RetrofitCommunication{
     }
 
 
-    public BuildingArr sendBuildingInfo(BuildingRequest request){
+    public BuildingArr sendBuildingInfo(BuildingRequest request)  {
         String message = request.toString();
-        Log.v("메시지",message+"");
+        Log.v("빌딩 메시지", message);
 
         final retrofit2.Call<JsonObject> comment = retrofitService.getBuildingData(message);
         new Thread(new Runnable() {
@@ -146,7 +151,9 @@ public class RetrofitCommunication{
                             Log.v("전체", response.body().toString());
                             JsonObject json = response.body();
                             buildingList = new Gson().fromJson(json, BuildingArr.class);
-                            Log.v("총 빌딩 개수", String.valueOf(buildingList.getBuildingArr().size()));
+                            for(int i=0;i<buildingList.getBuildingArr().size();i++)
+                                Log.v("총 빌딩 개수", String.valueOf(buildingList.getBuildingArr().get(i).toString()));
+
 
                         }
                     }
@@ -159,10 +166,13 @@ public class RetrofitCommunication{
         }).start();
 
         try {
-            Thread.sleep(3000);
+            Thread.sleep(10000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+
         return buildingList;
     }
+
 }
+
