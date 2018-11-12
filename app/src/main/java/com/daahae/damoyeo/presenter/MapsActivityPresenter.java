@@ -36,7 +36,7 @@ public class MapsActivityPresenter {
         setFragmentInitialization();
     }
 
-    private void setFragmentInitialization(){
+    public void setFragmentInitialization(){
         fragment = new MapsFragment(this);
         fragmentManager = view.getSupportFragmentManager();
         fragmentTransaction = fragmentManager.beginTransaction();

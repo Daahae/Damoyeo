@@ -18,7 +18,7 @@ public class BuildingRequest {
     @Override
     public String toString() {
         return "{" +
-                "type=" + type +
-                '}';
+                "\"type\":" + type +
+                "}";
     }
 }

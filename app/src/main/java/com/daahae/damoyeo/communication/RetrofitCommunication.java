@@ -136,7 +136,7 @@ public class RetrofitCommunication{
                             Log.v("전체", response.body().toString());
                             JsonObject json = response.body();
                             buildingList = new Gson().fromJson(json, BuildingArr.class);
-                            Log.v("총 빌딩 개수", String.valueOf(buildingList.getBuildingArr().size()));
+                            //Log.v("총 빌딩 개수", String.valueOf(buildingList.getBuildingArr().size()));
 
                         }
                     }

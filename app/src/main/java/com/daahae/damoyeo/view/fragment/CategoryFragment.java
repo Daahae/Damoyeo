@@ -415,25 +415,26 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        //TODO: 리스트뷰 아이템 클릭시 구분(마커타임 or 빌딩)
-        /*
-        if(!isMid) {
-            presenter.showEachMarker(position);
-            presenter.setCameraState();
+
+        if(parent.equals(listMarkerTime)){
+            if(!isMid) {
+                presenter.showEachMarker(position);
+                presenter.setCameraState();
+            } else {
+                presenter.showLandmarkEachMarker(position);
+                presenter.setCameraState();
+            }
         } else {
-            presenter.showLandmarkEachMarker(position);
-            presenter.setCameraState();
+            parentPresenter.changeView(Constant.DETAIL_PAGE);
+            parentPresenter.clickItem(buildingAdapter.getItem(position));
         }
-        */
-        parentPresenter.changeView(Constant.DETAIL_PAGE);
-        parentPresenter.clickItem(buildingAdapter.getItem(position));
     }
 
     @Override
     public void onClick(View view) {
         switch(view.getId()){
             case R.id.btn_back_category:
-                parentPresenter.backView(this);
+                parentPresenter.changeView(Constant.NMAP_PAGE);
                 break;
             case R.id.btn_all_marker_list:
                 if(!isMid) {

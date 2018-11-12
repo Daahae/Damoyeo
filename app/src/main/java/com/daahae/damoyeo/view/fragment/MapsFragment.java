@@ -19,8 +19,6 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
@@ -49,15 +47,12 @@ import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
 import com.google.android.gms.location.places.ui.PlaceSelectionListener;
-import com.google.android.gms.location.places.ui.SupportPlaceAutocompleteFragment;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
@@ -89,8 +84,6 @@ public class MapsFragment extends Fragment implements View.OnClickListener, OnMa
     private GPSInfo gps;
     private Geocoder geocoder;
 
-    private SupportPlaceAutocompleteFragment autocompleteFragment;
-
     public MapsFragment(MapsActivityPresenter parentPresenter) {
         this.parentPresenter = parentPresenter;
     }
@@ -109,12 +102,12 @@ public class MapsFragment extends Fragment implements View.OnClickListener, OnMa
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        setPlaceAutoComplete();
         View rootView = inflater.inflate(R.layout.fragment_maps, container, false);
 
         mapView = (MapView)rootView.findViewById(R.id.map);
         mapView.getMapAsync(this);
 
+        setPlaceAutoComplete();
 
         fabtn.setFabOpen(AnimationUtils.loadAnimation(getActivity(), R.anim.fab_open));
         fabtn.setFabClose(AnimationUtils.loadAnimation(getActivity(), R.anim.fab_close));
@@ -142,18 +135,8 @@ public class MapsFragment extends Fragment implements View.OnClickListener, OnMa
     // 검색 자동완성
     private void setPlaceAutoComplete(){
 
-        FragmentManager     fm = getActivity().getSupportFragmentManager();
-        FragmentTransaction ft = fm.beginTransaction();
-
-        autocompleteFragment = (SupportPlaceAutocompleteFragment)
-                getChildFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
-
-        if(autocompleteFragment==null)
-            autocompleteFragment = (SupportPlaceAutocompleteFragment) SupportPlaceAutocompleteFragment.instantiate(getContext(), "com.google.android.gms.location.places.ui.SupportPlaceAutocompleteFragment");
-
-        ft.add(autocompleteFragment, "autocomplete");
-
-        ft.commit();
+        PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)
+                getActivity().getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
 
         autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
@@ -228,16 +211,6 @@ public class MapsFragment extends Fragment implements View.OnClickListener, OnMa
     public void onLowMemory() {
         super.onLowMemory();
         mapView.onLowMemory();
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-
-        FragmentManager     fm = getActivity().getSupportFragmentManager();
-        FragmentTransaction ft = fm.beginTransaction();
-        ft.remove(autocompleteFragment);
-        ft.commit();
     }
 
     @Override

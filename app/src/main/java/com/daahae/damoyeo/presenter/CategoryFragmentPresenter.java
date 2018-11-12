@@ -31,7 +31,7 @@ public class CategoryFragmentPresenter {
     }
 
     public void setMarkerTimeList(MarkerTimeAdapter markerTimeAdapter) {
-
+        markerTimeAdapter.resetList();
         for(int i=0; i < totalTimes.size();i++)
             markerTimeAdapter.add(Person.getInstance().get(i).getName(), totalTimes.get(i));
     }

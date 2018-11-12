@@ -81,4 +81,17 @@ public class Building{
     public void setTel(String tel) {
         this.tel = tel;
     }
+
+    @Override
+    public String toString() {
+        return "Building{" +
+                "latitude=" + latitude +
+                ", longitude=" + longitude +
+                ", name='" + name + '\'' +
+                ", buildingAddress='" + buildingAddress + '\'' +
+                ", tel='" + tel + '\'' +
+                ", description='" + description + '\'' +
+                ", distance=" + distance +
+                '}';
+    }
 }

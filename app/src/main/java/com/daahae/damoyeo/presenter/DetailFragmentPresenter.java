@@ -18,7 +18,6 @@ public class DetailFragmentPresenter {
 
     public DetailFragmentPresenter(DetailFragment view) {
         this.view = view;
-
     }
 
     public void initData(ArrayList<Person> person, List<TransportInfoList.Data> transport){
