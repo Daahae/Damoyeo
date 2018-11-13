@@ -90,24 +90,28 @@
             android:id="@+id/list_friend"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
+
         <EditText
-            android:id="@+id/editText3"
+            android:visibility="gone"
+            android:id="@+id/edit_search_friends_my_page"
             android:layout_width="wrap_content"
             android:layout_height="50dp"
-            android:layout_alignParentBottom="true"
+            android:layout_alignTop="@+id/btn_search_friends_my_page"
             android:layout_centerHorizontal="true"
-            android:layout_marginBottom="16dp"
             android:background="@drawable/edge_orange_box"
             android:ems="18"
             android:hint="찾을 친구의 이름을 입력하세요."
             android:inputType="textPersonName"
+            android:paddingLeft="10dp"
             android:textSize="14sp" />
+
         <ImageButton
-            android:id="@+id/imageButton3"
+            android:id="@+id/btn_search_friends_my_page"
             android:layout_width="50dp"
             android:layout_height="50dp"
+            android:layout_alignParentBottom="true"
             android:layout_alignParentEnd="true"
-            android:layout_alignTop="@+id/editText3"
+            android:layout_marginBottom="22dp"
             android:layout_marginEnd="25dp"
             android:background="@null"
             android:scaleType="centerInside"

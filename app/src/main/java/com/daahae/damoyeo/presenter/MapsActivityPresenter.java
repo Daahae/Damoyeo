@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 
 import com.daahae.damoyeo.R;
+import com.daahae.damoyeo.communication.RetrofitCommunication;
 import com.daahae.damoyeo.model.Building;
 import com.daahae.damoyeo.model.Person;
 import com.daahae.damoyeo.model.TransportInfoList;
@@ -81,8 +82,8 @@ public class MapsActivityPresenter {
     }
 
     public void sendMarkerTimeMessage(){
-        RetrofitPresenter.getInstance().setPersonList(Person.getInstance());
-        ArrayList<String> totalTimes = RetrofitPresenter.getInstance().sendPersonMessage();
+        RetrofitCommunication.getInstance().setPersonList(Person.getInstance());
+        ArrayList<String> totalTimes = RetrofitCommunication.getInstance().sendPersonLocation();
         Log.v("GMAP", "보냄");
         this.totalTimes = totalTimes;
     }
@@ -96,7 +97,7 @@ public class MapsActivityPresenter {
     }
 
     public void setTransportData(){
-        TransportInfoList list = RetrofitPresenter.getInstance().getList();
+        TransportInfoList list = RetrofitCommunication.getInstance().getList();
         for (int i = 0; i < list.getUserArr().size(); i++) {
             transportDatas = list.getUserArr();
         }

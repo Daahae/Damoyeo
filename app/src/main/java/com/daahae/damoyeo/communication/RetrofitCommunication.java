@@ -7,7 +7,6 @@ import com.daahae.damoyeo.model.BuildingArr;
 import com.daahae.damoyeo.model.BuildingRequest;
 import com.daahae.damoyeo.model.Person;
 import com.daahae.damoyeo.model.TransportInfoList;
-import com.daahae.damoyeo.presenter.RetrofitPresenter;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
@@ -29,11 +28,10 @@ public class RetrofitCommunication{
     private TransportInfoList TransportList;
     private BuildingArr buildingList;
 
-    private RetrofitPresenter retrofitPresenter;
 
-    public RetrofitCommunication(RetrofitPresenter retrofitPresenter){
+    public RetrofitCommunication(){
         connectServer();
-        init(retrofitPresenter);
+        init();
 
     }
 
@@ -43,12 +41,11 @@ public class RetrofitCommunication{
 
     public TransportInfoList getList(){return TransportList;}
 
-    private void init(RetrofitPresenter retrofitPresenter){
+    private void init(){
         retrofitService = retrofit.create(RetrofitService.class);
         persons = new ArrayList<>();
         totalTimes = new ArrayList<>();
 
-        this.retrofitPresenter = retrofitPresenter;
     }
 
     private void connectServer(){
@@ -59,8 +56,7 @@ public class RetrofitCommunication{
                 .build();
     }
 
-    public ArrayList<String> sendPersonLocation(ArrayList<Person> persons){
-        this.persons = persons;
+    public ArrayList<String> sendPersonLocation(){
         String strMessage = makeForm();
         Log.v("메시지",strMessage);
 
@@ -102,7 +98,7 @@ public class RetrofitCommunication{
         }).start();
 
         try {
-            Thread.sleep(5000);
+            Thread.sleep(10000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -118,7 +114,6 @@ public class RetrofitCommunication{
         strMessage+="]";
         return strMessage;
     }
-
 
     public BuildingArr sendBuildingInfo(BuildingRequest request){
         String message = request.toString();
@@ -155,4 +150,13 @@ public class RetrofitCommunication{
         }
         return buildingList;
     }
+
+    private static RetrofitCommunication instance = new RetrofitCommunication();
+
+    public static synchronized RetrofitCommunication getInstance() {return instance;}
+
+    public void setPersonList(ArrayList<Person> person){
+        persons = person;
+    }
+
 }

@@ -47,7 +47,7 @@ public class DetailFragment extends Fragment implements View.OnClickListener{
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         presenter = new DetailFragmentPresenter(this);
-        transportAdapter = new TransportAdapter(parentPresenter.getTransportData(), Person.getInstance());
+        transportAdapter = new TransportAdapter(parentPresenter.getTransportData(), Person.getInstance(),getContext());
     }
 
     @Nullable
@@ -121,4 +121,5 @@ public class DetailFragment extends Fragment implements View.OnClickListener{
                 break;
         }
     }
+
 }

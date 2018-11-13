@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.daahae.damoyeo.R;
 import com.daahae.damoyeo.model.Person;
 import com.daahae.damoyeo.model.TransportInfoList;
+import com.daahae.damoyeo.view.activity.MapsActivity;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -26,9 +27,11 @@ public class TransportAdapter extends BaseAdapter {
     private List<TransportInfoList.Data> mItems;
     private ArrayList<Person> people;
     private LinearLayout linearTransportBar;
-    public TransportAdapter(List<TransportInfoList.Data> list, ArrayList<Person> people){
+    private Context context;
+    public TransportAdapter(List<TransportInfoList.Data> list, ArrayList<Person> people,Context context){
         mItems = list;
         this.people = people;
+        this.context = context;
         Log.v("어뎁터","데이터 삽입");
     }
 
@@ -136,7 +139,16 @@ public class TransportAdapter extends BaseAdapter {
         linearTransportBar = convertView.findViewById(R.id.linear_transport_bar_transport_item);
     }
 
-    private void createViewBar(){
-        //TODO: view동적으로 추가하는 기능
+    private void createViewBar(int size){
+        for(int i=0; i<size;i++) {
+            //TODO: view동적으로 추가하는 기능
+            TextView txt = new TextView(context);
+            txt.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+            txt.setBackgroundResource(R.color.colorBlack);
+            txt.setTextColor(context.getResources().getColor(R.color.colorWhite));
+            txt.setTextSize(13);
+            txt.setText("13분");
+            linearTransportBar.addView(txt);
+        }
     }
 }

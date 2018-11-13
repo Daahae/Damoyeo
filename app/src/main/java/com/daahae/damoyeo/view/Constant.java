@@ -48,4 +48,7 @@ public class Constant {
     public static final int CAFE = 30;
     public static final int BAR = 40;
     public static final int RESTAURANT = 50;
+
+    public static final int SEARCH_FRIENDS_MODE = 1000;
+    public static final int FRIENDS_LIST_MODE = 2000;
 }

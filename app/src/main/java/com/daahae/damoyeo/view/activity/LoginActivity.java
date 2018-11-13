@@ -11,8 +11,6 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.daahae.damoyeo.R;
-import com.daahae.damoyeo.model.BuildingRequest;
-import com.daahae.damoyeo.presenter.RetrofitPresenter;
 import com.daahae.damoyeo.view.Constant;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -57,10 +55,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         initView();
         initListener();
 
-        BuildingRequest test = new BuildingRequest();
-        test.setType(Constant.CAFE);
-        RetrofitPresenter retrofitPresenter = new RetrofitPresenter();
-        retrofitPresenter.sendBuildingInfo(test);
     }
 
     private void initView(){

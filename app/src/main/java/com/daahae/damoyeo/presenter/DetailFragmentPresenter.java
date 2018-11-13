@@ -24,4 +24,5 @@ public class DetailFragmentPresenter {
         this.person = person;
         this.transport = transport;
     }
+
 }
