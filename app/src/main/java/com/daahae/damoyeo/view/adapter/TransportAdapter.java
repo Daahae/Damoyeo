@@ -80,6 +80,8 @@ public class TransportAdapter extends BaseAdapter {
 
         setBuildingListText(null,person.getName(),person.getAddress(),formTime(myItem.getTotalTime()),strViewTime);
 
+        //createViewBar(myItem.);
+
         return convertView;
     }
 

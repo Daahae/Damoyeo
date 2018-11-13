@@ -26,6 +26,12 @@ public class TransportInfoList {
         private int timeByBus;
         @SerializedName("timeByWalk")
         private int timeByWalk;
+        @SerializedName("landmark")
+        private ArrayList<Landmark> landmark;
+        @SerializedName("midLat")
+        private double midLat;
+        @SerializedName("midLng")
+        private double midLng;
 
 
         public ArrayList<Transport> getTransportInfo() {
@@ -48,5 +54,16 @@ public class TransportInfoList {
             return timeByWalk;
         }
 
+        public ArrayList<Landmark>  getLandmark() {
+            return landmark;
+        }
+
+        public double getMidLat() {
+            return midLat;
+        }
+
+        public double getMidLng() {
+            return midLng;
+        }
     }
 }
