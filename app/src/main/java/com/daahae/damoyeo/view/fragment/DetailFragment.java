@@ -1,10 +1,12 @@
 package com.daahae.damoyeo.view.fragment;
 
 import android.annotation.SuppressLint;
+import android.graphics.Point;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -55,6 +57,7 @@ public class DetailFragment extends Fragment implements View.OnClickListener{
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = (View) inflater.inflate(R.layout.fragment_detail, container, false);
 
+
         initView(view);
         initListener();
 
@@ -96,8 +99,6 @@ public class DetailFragment extends Fragment implements View.OnClickListener{
     private void setBuildingInfo(){
         txtBuildingName.setText(building.getName());
         txtBuildingAddress.setText(building.getBuildingAddress());
-        txtBuildingTel.setText(building.getTel());
-        txtDescription.setText(building.getDescription());
         txtBuildingDistance.setText(String.format("%.2f",building.getDistance()));
     }
 

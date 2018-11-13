@@ -4,7 +4,9 @@ import android.util.Log;
 
 import com.daahae.damoyeo.exception.PositionNumberServices;
 import com.daahae.damoyeo.model.BuildingArr;
+import com.daahae.damoyeo.model.BuildingDetail;
 import com.daahae.damoyeo.model.BuildingRequest;
+import com.daahae.damoyeo.model.UserRequest;
 import com.daahae.damoyeo.model.Person;
 import com.daahae.damoyeo.model.TransportInfoList;
 import com.google.gson.Gson;
@@ -27,6 +29,7 @@ public class RetrofitCommunication{
     private ArrayList<String> totalTimes;
     private TransportInfoList TransportList;
     private BuildingArr buildingList;
+    private BuildingDetail buildingDetail;
 
 
     public RetrofitCommunication(){
@@ -115,7 +118,7 @@ public class RetrofitCommunication{
         return strMessage;
     }
 
-    public BuildingArr sendBuildingInfo(BuildingRequest request){
+    public BuildingArr sendBuildingInfo(UserRequest request){
         String message = request.toString();
         Log.v("메시지",message+"");
 
@@ -131,7 +134,7 @@ public class RetrofitCommunication{
                             Log.v("전체", response.body().toString());
                             JsonObject json = response.body();
                             buildingList = new Gson().fromJson(json, BuildingArr.class);
-                            //Log.v("총 빌딩 개수", String.valueOf(buildingList.getBuildingArr().size()));
+                            Log.v("총 빌딩 개수", String.valueOf(buildingList.getBuildingArr().size()));
 
                         }
                     }
@@ -150,6 +153,42 @@ public class RetrofitCommunication{
         }
         return buildingList;
     }
+
+
+    public BuildingDetail sendBuildingDetail(BuildingRequest request){
+        String message = request.toString();
+        Log.v("메시지",message+"");
+
+        final retrofit2.Call<JsonObject> comment = retrofitService.getBuildingDetail(message);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                comment.enqueue(new Callback<JsonObject>() {
+                    @Override
+                    public void onResponse(retrofit2.Call<JsonObject> call, retrofit2.Response<JsonObject> response) {
+                        if (response.isSuccessful()) {
+                            Log.v("알림", response.toString());
+                            Log.v("전체", response.body().toString());
+                            JsonObject json = response.body();
+                            buildingDetail = new Gson().fromJson(json, BuildingDetail.class);
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(retrofit2.Call<JsonObject> call, Throwable t) {
+                    }
+                });
+            }
+        }).start();
+
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return buildingDetail;
+    }
+
 
     private static RetrofitCommunication instance = new RetrofitCommunication();
 

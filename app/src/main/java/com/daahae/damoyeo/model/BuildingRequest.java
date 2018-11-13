@@ -3,22 +3,43 @@ package com.daahae.damoyeo.model;
 import com.google.gson.annotations.SerializedName;
 
 public class BuildingRequest {
+    @SerializedName("name")
+    private String name;
+    @SerializedName("lat")
+    private double latitude;
+    @SerializedName("lng")
+    private double longitude;
 
-    @SerializedName("type")
-    private int type;
-
-    public int getType() {
-        return type;
+    public String getName() {
+        return name;
     }
 
-    public void setType(int type) {
-        this.type = type;
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
     }
 
     @Override
     public String toString() {
         return "{" +
-                "\"type\":" + type +
+                "\"name\":\"" + name + "\""+
+                ", \"lat\":" + latitude +
+                ", \"lng\":" + longitude +
                 "}";
     }
 }

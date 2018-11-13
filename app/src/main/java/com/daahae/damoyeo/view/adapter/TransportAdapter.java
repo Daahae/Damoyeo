@@ -2,6 +2,8 @@ package com.daahae.damoyeo.view.adapter;
 
 import android.content.Context;
 import android.util.Log;
+import android.view.Display;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +14,9 @@ import android.widget.TextView;
 
 import com.daahae.damoyeo.R;
 import com.daahae.damoyeo.model.Person;
+import com.daahae.damoyeo.model.Transport;
 import com.daahae.damoyeo.model.TransportInfoList;
+import com.daahae.damoyeo.view.Constant;
 import com.daahae.damoyeo.view.activity.MapsActivity;
 
 import java.util.ArrayList;
@@ -78,10 +82,9 @@ public class TransportAdapter extends BaseAdapter {
 
         String strViewTime = getViewTime(getTime(), myItem.getTotalTime());
 
-        setBuildingListText(null,person.getName(),person.getAddress(),formTime(myItem.getTotalTime()),strViewTime);
+        setBuildingListText(null,person.getName(),formAddress(person.getAddress()),formTakenTime(myItem.getTotalTime()),strViewTime);
 
-        //createViewBar(myItem.);
-
+        createViewBar(myItem);
         return convertView;
     }
 
@@ -100,11 +103,45 @@ public class TransportAdapter extends BaseAdapter {
         return viewTime;
     }
 
+    private String formAddress(String address){
+        String[] words = address.split("\\s");
+        String formAddress="";
+        boolean isEnter=false;
+        for(String str:words){
+            formAddress += str+" ";
+            if(formAddress.length()>10&&isEnter==false){
+                formAddress +="\n";
+                isEnter=true;
+            }
+        }
+        return formAddress;
+    }
+
+    private String formTakenTime(int time){
+        String strTime;
+
+        int timeHour = time/60;
+        int timeMin = time%60;
+
+        if(timeMin==0){
+            strTime = timeHour+"시간";
+        }else if(timeHour==0){
+            strTime = timeMin+"분";
+        }else{
+            strTime = timeHour+"시간"+timeMin + "분";
+        }
+
+        return strTime;
+    }
+
     private String formTime(int time){
         int timeHour = time/60;
         int timeMin = time%60;
         String strTime;
-        if(timeHour>12){
+        if(timeHour==12){
+            strTime = "오후"+timeHour+"시"+timeMin + "분";
+        }
+        else if(timeHour>12){
             timeHour -=12;
             strTime = "오후"+timeHour+"시"+timeMin + "분";
         }
@@ -123,11 +160,7 @@ public class TransportAdapter extends BaseAdapter {
     private void setBuildingListText(ImageView profile, String name, String address, String totalTime, String viewTime){
         imgProfile.setImageResource(R.drawable.ic_guest_profile);
         txtName.setText(name);
-        if(address.length()>18) {
-            String shortAddr = address.substring(0,17);
-            shortAddr += "...";
-            txtAddress.setText(shortAddr);
-        } else txtAddress.setText(address);
+        txtAddress.setText(address);
         txtTotalTime.setText(totalTime);
         txtViewTime.setText(viewTime);
     }
@@ -141,16 +174,32 @@ public class TransportAdapter extends BaseAdapter {
         linearTransportBar = convertView.findViewById(R.id.linear_transport_bar_transport_item);
     }
 
-    private void createViewBar(int size){
-        for(int i=0; i<size;i++) {
-            //TODO: view동적으로 추가하는 기능
+    private void createViewBar(TransportInfoList.Data myItem){
+
+        int totalLength = Constant.displayWidth;
+        int size = myItem.getTransportInfo().size();
+        double partOfLength = (double)totalLength/myItem.getTotalTime();
+
+        Log.v("사이즈",size+"");
+        for(int i=0;i<size;i++) {
+            Transport transport = myItem.getTransportInfo().get(i);
+
+            int width = (int)partOfLength*transport.getSectionTime();
+            if(width<100) width=100;
+            else if(width>400) width -= 50;
+            Log.v("width",width+"");
             TextView txt = new TextView(context);
-            txt.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
-            txt.setBackgroundResource(R.color.colorBlack);
+            txt.setLayoutParams(new LinearLayout.LayoutParams(width, LinearLayout.LayoutParams.MATCH_PARENT));
+            if(transport.getTrafficType()==Constant.SUBWAY) txt.setBackgroundResource(R.color.colorGreen);
+            else if(transport.getTrafficType()==Constant.BUS) txt.setBackgroundResource(R.color.colorOrange);
             txt.setTextColor(context.getResources().getColor(R.color.colorWhite));
+            txt.setGravity(Gravity.CENTER);
             txt.setTextSize(13);
-            txt.setText("13분");
+            txt.setText(formTakenTime(transport.getSectionTime()));
             linearTransportBar.addView(txt);
         }
+
     }
+
+
 }

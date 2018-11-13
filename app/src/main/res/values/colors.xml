@@ -9,4 +9,6 @@
     <color name="colorBlack">#000</color>
     <color name="colorGray">#b7b7b7</color>
     <color name="colorLightGray">#F2F2F2</color>
+    <color name="colorGreen">#9BBB59</color>
+    <color name="colorOrange">#F79646</color>
 </resources>

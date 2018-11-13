@@ -29,6 +29,7 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SlidingDrawer;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.daahae.damoyeo.R;
@@ -61,8 +62,6 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
     private GoogleApiClient googleApiClient = null;
 
     private ImageButton btnBack;
-    private ImageButton btnPlayNon, btnFoodNon, btnCafeNon, btnDrinkNon;
-    private ImageButton btnPlay, btnFood, btnCafe, btnDrink;
 
     private MarkerTimeAdapter markerTimeAdapter;
     private ListView listMarkerTime;
@@ -73,9 +72,6 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
     private LinearLayout linearContent;
     private LinearLayout linearHandleMenu;
     private LinearLayout linearCategoryMenu;
-    private LinearLayout linearSmallCategory;
-
-    private Button btnSmallCategory1, btnSmallCategory2, btnSmallCategory3;
 
     private BuildingAdapter buildingAdapter;
     private ListView listCategory;
@@ -83,6 +79,10 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
     private FloatingActionButton fabMid;
     private boolean isMid = false;
 
+    private ImageButton btnDownSlidingDrawer;
+    private ImageButton btnDepartment, btnShopping, btnStadium, btnZoo, btnMuseum, btnTheater, btnAquarium, btnCafe, btnDrink, btnRestaurant;
+
+    private TextView txtSelectedCategory;
     public CategoryFragment(MapsActivityPresenter parentPresenter) {
         this.parentPresenter = parentPresenter;
     }
@@ -123,22 +123,6 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
         listMarkerTime = rootView.findViewById(R.id.list_marker_time);
         btnAllMarkerList = rootView.findViewById(R.id.btn_all_marker_list);
 
-        btnPlay = rootView.findViewById(R.id.btn_category_play);
-        btnFood = rootView.findViewById(R.id.btn_category_food);
-        btnCafe = rootView.findViewById(R.id.btn_category_cafe);
-        btnDrink = rootView.findViewById(R.id.btn_category_drink);
-
-        btnPlayNon = rootView.findViewById(R.id.btn_category_play_dummy);
-        btnFoodNon = rootView.findViewById(R.id.btn_category_food_dummy);
-        btnCafeNon = rootView.findViewById(R.id.btn_category_cafe_dummy);
-        btnDrinkNon = rootView.findViewById(R.id.btn_category_drink_dummy);
-
-        linearSmallCategory = rootView.findViewById(R.id.linear_small_category);
-
-        btnSmallCategory1 = rootView.findViewById(R.id.btn_small_category_1);
-        btnSmallCategory2 = rootView.findViewById(R.id.btn_small_category_2);
-        btnSmallCategory3 = rootView.findViewById(R.id.btn_small_category_3);
-
         listCategory = rootView.findViewById(R.id.list_category);
 
         linearContent = rootView.findViewById(R.id.content);
@@ -147,6 +131,20 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
         linearCategoryMenu = rootView.findViewById(R.id.linear_category_menu);
 
         slidingDrawer = rootView.findViewById(R.id.slide);
+
+        btnDownSlidingDrawer = rootView.findViewById(R.id.btn_down_sliding_drawer_category);
+        btnDepartment = rootView.findViewById(R.id.btn_department_store_category);
+        btnShopping = rootView.findViewById(R.id.btn_shopping_category);
+        btnStadium = rootView.findViewById(R.id.btn_stadium_category);
+        btnZoo = rootView.findViewById(R.id.btn_zoo_category);
+        btnMuseum = rootView.findViewById(R.id.btn_museum_category);
+        btnTheater = rootView.findViewById(R.id.btn_theater_category);
+        btnAquarium = rootView.findViewById(R.id.btn_aquarium_store_category);
+        btnCafe = rootView.findViewById(R.id.btn_cafe_category);
+        btnDrink = rootView.findViewById(R.id.btn_drink_category);
+        btnRestaurant = rootView.findViewById(R.id.btn_restaurant_store_category);
+
+        txtSelectedCategory = rootView.findViewById(R.id.txt_selected_category);
     }
 
     private void initListener(){
@@ -156,27 +154,31 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
         btnAllMarkerList.setOnClickListener(this);
         fabMid.setOnClickListener(this);
 
-        btnPlay.setOnClickListener(this);
-        btnFood.setOnClickListener(this);
-        btnCafe.setOnClickListener(this);
-        btnDrink.setOnClickListener(this);
-
-        btnSmallCategory1.setOnClickListener(this);
-        btnSmallCategory2.setOnClickListener(this);
-        btnSmallCategory3.setOnClickListener(this);
-
         //각 리스트 아이템 클릭
         listMarkerTime.setOnItemClickListener(this);
         listCategory.setOnItemClickListener(this);
 
         //SlidingDrawer 내려가는 기능
         linearContent.setOnTouchListener(this);
+        btnDownSlidingDrawer.setOnTouchListener(this);
+        btnDownSlidingDrawer.setOnClickListener(this);
 
         //SlidingDrawer 내려갔을때 view
         slidingDrawer.setOnDrawerCloseListener(this);
 
         //SlidingDrawer 올라갔을때 view
         slidingDrawer.setOnDrawerOpenListener(this);
+
+        btnDepartment.setOnClickListener(this);
+        btnShopping .setOnClickListener(this);
+        btnStadium.setOnClickListener(this);
+        btnZoo.setOnClickListener(this);
+        btnMuseum.setOnClickListener(this);
+        btnTheater.setOnClickListener(this);
+        btnAquarium.setOnClickListener(this);
+        btnCafe .setOnClickListener(this);
+        btnDrink.setOnClickListener(this);
+        btnRestaurant.setOnClickListener(this);
     }
 
     private void connectAdapter(){
@@ -386,20 +388,20 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
     @Override
     public void onDrawerClosed() {
         linearHandleMenu.setVisibility(View.VISIBLE);
-        linearCategoryMenu.setVisibility(View.GONE);
     }
 
     @Override
     public void onDrawerOpened() {
         linearHandleMenu.setVisibility(View.GONE);
-        linearCategoryMenu.setVisibility(View.VISIBLE);
     }
 
     @Override
     public boolean onTouch(View view, MotionEvent motionEvent) {
         int id = view.getId();
         switch (id){
+            case R.id.btn_down_sliding_drawer_category:
             case R.id.content:
+            case R.id.list_category:
                 int action = motionEvent.getAction();
 
                 switch (action){
@@ -458,83 +460,147 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
                     isMid = true;
                 }
                 break;
-            case R.id.btn_category_play:
-                btnPlay.setImageResource(R.drawable.btn_category_play_orange);
-                btnFood.setImageResource(R.drawable.btn_category_food_gray);
-                btnCafe.setImageResource(R.drawable.btn_category_cafe_gray);
-                btnDrink.setImageResource(R.drawable.btn_category_drink_gray);
 
-                btnPlayNon.setImageResource(R.drawable.btn_category_play_orange);
-                btnFoodNon.setImageResource(R.drawable.btn_category_food_gray);
-                btnCafeNon.setImageResource(R.drawable.btn_category_cafe_gray);
-                btnDrinkNon.setImageResource(R.drawable.btn_category_drink_gray);
-
-                presenter.setClickFirstButton(btnSmallCategory1);
-                linearSmallCategory.setVisibility(View.VISIBLE);
-                btnSmallCategory1.setText("쇼핑");
-                btnSmallCategory2.setText("관람");
-                btnSmallCategory3.setVisibility(View.VISIBLE);
-                btnSmallCategory3.setText("힐링");
-                break;
-            case R.id.btn_category_food:
-                btnPlay.setImageResource(R.drawable.btn_category_play_gray);
-                btnFood.setImageResource(R.drawable.btn_category_food_orange);
-                btnCafe.setImageResource(R.drawable.btn_category_cafe_gray);
-                btnDrink.setImageResource(R.drawable.btn_category_drink_gray);
-
-                btnPlayNon.setImageResource(R.drawable.btn_category_play_gray);
-                btnFoodNon.setImageResource(R.drawable.btn_category_food_orange);
-                btnCafeNon.setImageResource(R.drawable.btn_category_cafe_gray);
-                btnDrinkNon.setImageResource(R.drawable.btn_category_drink_gray);
-
-                linearSmallCategory.setVisibility(View.GONE);
-                break;
-            case R.id.btn_category_cafe:
-                btnPlay.setImageResource(R.drawable.btn_category_play_gray);
-                btnFood.setImageResource(R.drawable.btn_category_food_gray);
-                btnCafe.setImageResource(R.drawable.btn_category_cafe_orange);
-                btnDrink.setImageResource(R.drawable.btn_category_drink_gray);
-
-                btnPlayNon.setImageResource(R.drawable.btn_category_play_gray);
-                btnFoodNon.setImageResource(R.drawable.btn_category_food_gray);
-                btnCafeNon.setImageResource(R.drawable.btn_category_cafe_orange);
-                btnDrinkNon.setImageResource(R.drawable.btn_category_drink_gray);
-
-                presenter.setClickFirstButton(btnSmallCategory1);
-                linearSmallCategory.setVisibility(View.VISIBLE);
-                btnSmallCategory1.setText("카페");
-                btnSmallCategory2.setText("베이커리");
-                btnSmallCategory3.setVisibility(View.GONE);
-                break;
-            case R.id.btn_category_drink:
-                btnPlay.setImageResource(R.drawable.btn_category_play_gray);
-                btnFood.setImageResource(R.drawable.btn_category_food_gray);
-                btnCafe.setImageResource(R.drawable.btn_category_cafe_gray);
-                btnDrink.setImageResource(R.drawable.btn_category_drink_orange);
-
-                btnPlayNon.setImageResource(R.drawable.btn_category_play_gray);
-                btnFoodNon.setImageResource(R.drawable.btn_category_food_gray);
-                btnCafeNon.setImageResource(R.drawable.btn_category_cafe_gray);
-                btnDrinkNon.setImageResource(R.drawable.btn_category_drink_orange);
-
-                linearSmallCategory.setVisibility(View.GONE);
+            case R.id.btn_down_sliding_drawer_category:
+                slidingDrawer.animateClose();
                 break;
 
-            case R.id.btn_small_category_1:
-                btnSmallCategory1.setBackgroundResource(R.color.colorWhite);
-                btnSmallCategory2.setBackgroundResource(R.color.colorLightGray);
-                btnSmallCategory3.setBackgroundResource(R.color.colorLightGray);
+                //카테고리 버튼
+                //TODO:각 카테고리 상세 retrofit 받아오기
+            case R.id.btn_department_store_category:
+                btnDepartment.setImageResource(R.drawable.ic_department_store_orange);
+                btnShopping .setImageResource(R.drawable.ic_shopping_gray);
+                btnStadium.setImageResource(R.drawable.ic_stadium_gray);
+                btnZoo.setImageResource(R.drawable.ic_zoo_gray);
+                btnMuseum.setImageResource(R.drawable.ic_museum_gray);
+                btnTheater.setImageResource(R.drawable.ic_theater_gray);
+                btnAquarium.setImageResource(R.drawable.ic_aquarium_gray);
+                btnCafe.setImageResource(R.drawable.ic_cafe_gray);
+                btnDrink.setImageResource(R.drawable.ic_drink_gray);
+                btnRestaurant.setImageResource(R.drawable.ic_restaurant_gray);
+
+                txtSelectedCategory.setText("Department Store");
                 break;
-            case R.id.btn_small_category_2:
-                btnSmallCategory1.setBackgroundResource(R.color.colorLightGray);
-                btnSmallCategory2.setBackgroundResource(R.color.colorWhite);
-                btnSmallCategory3.setBackgroundResource(R.color.colorLightGray);
+            case R.id.btn_shopping_category:
+                btnDepartment.setImageResource(R.drawable.ic_department_store_gray);
+                btnShopping .setImageResource(R.drawable.ic_shopping_mall_orange);
+                btnStadium.setImageResource(R.drawable.ic_stadium_gray);
+                btnZoo.setImageResource(R.drawable.ic_zoo_gray);
+                btnMuseum.setImageResource(R.drawable.ic_museum_gray);
+                btnTheater.setImageResource(R.drawable.ic_theater_gray);
+                btnAquarium.setImageResource(R.drawable.ic_aquarium_gray);
+                btnCafe.setImageResource(R.drawable.ic_cafe_gray);
+                btnDrink.setImageResource(R.drawable.ic_drink_gray);
+                btnRestaurant.setImageResource(R.drawable.ic_restaurant_gray);
+
+                txtSelectedCategory.setText("Shopping Mall");
                 break;
-            case R.id.btn_small_category_3:
-                btnSmallCategory1.setBackgroundResource(R.color.colorLightGray);
-                btnSmallCategory2.setBackgroundResource(R.color.colorLightGray);
-                btnSmallCategory3.setBackgroundResource(R.color.colorWhite);
+            case R.id.btn_stadium_category:
+                btnDepartment.setImageResource(R.drawable.ic_department_store_gray);
+                btnShopping .setImageResource(R.drawable.ic_shopping_gray);
+                btnStadium.setImageResource(R.drawable.ic_stadium_orange);
+                btnZoo.setImageResource(R.drawable.ic_zoo_gray);
+                btnMuseum.setImageResource(R.drawable.ic_museum_gray);
+                btnTheater.setImageResource(R.drawable.ic_theater_gray);
+                btnAquarium.setImageResource(R.drawable.ic_aquarium_gray);
+                btnCafe.setImageResource(R.drawable.ic_cafe_gray);
+                btnDrink.setImageResource(R.drawable.ic_drink_gray);
+                btnRestaurant.setImageResource(R.drawable.ic_restaurant_gray);
+
+                txtSelectedCategory.setText("Stadium");
                 break;
+            case R.id.btn_zoo_category:
+                btnDepartment.setImageResource(R.drawable.ic_department_store_gray);
+                btnShopping .setImageResource(R.drawable.ic_shopping_gray);
+                btnStadium.setImageResource(R.drawable.ic_stadium_gray);
+                btnZoo.setImageResource(R.drawable.ic_zoo_orange);
+                btnMuseum.setImageResource(R.drawable.ic_museum_gray);
+                btnTheater.setImageResource(R.drawable.ic_theater_gray);
+                btnAquarium.setImageResource(R.drawable.ic_aquarium_gray);
+                btnCafe.setImageResource(R.drawable.ic_cafe_gray);
+                btnDrink.setImageResource(R.drawable.ic_drink_gray);
+                btnRestaurant.setImageResource(R.drawable.ic_restaurant_gray);
+                txtSelectedCategory.setText("Zoo");
+                break;
+            case R.id.btn_museum_category:
+                btnDepartment.setImageResource(R.drawable.ic_department_store_gray);
+                btnShopping .setImageResource(R.drawable.ic_shopping_gray);
+                btnStadium.setImageResource(R.drawable.ic_stadium_gray);
+                btnZoo.setImageResource(R.drawable.ic_zoo_gray);
+                btnMuseum.setImageResource(R.drawable.ic_museum_orange);
+                btnTheater.setImageResource(R.drawable.ic_theater_gray);
+                btnAquarium.setImageResource(R.drawable.ic_aquarium_gray);
+                btnCafe.setImageResource(R.drawable.ic_cafe_gray);
+                btnDrink.setImageResource(R.drawable.ic_drink_gray);
+                btnRestaurant.setImageResource(R.drawable.ic_restaurant_gray);
+                txtSelectedCategory.setText("Museum");
+                break;
+            case R.id.btn_theater_category:
+                btnDepartment.setImageResource(R.drawable.ic_department_store_gray);
+                btnShopping .setImageResource(R.drawable.ic_shopping_gray);
+                btnStadium.setImageResource(R.drawable.ic_stadium_gray);
+                btnZoo.setImageResource(R.drawable.ic_zoo_gray);
+                btnMuseum.setImageResource(R.drawable.ic_museum_gray);
+                btnTheater.setImageResource(R.drawable.ic_theater_orange);
+                btnAquarium.setImageResource(R.drawable.ic_aquarium_gray);
+                btnCafe.setImageResource(R.drawable.ic_cafe_gray);
+                btnDrink.setImageResource(R.drawable.ic_drink_gray);
+                btnRestaurant.setImageResource(R.drawable.ic_restaurant_gray);
+                txtSelectedCategory.setText("Theater");
+                break;
+            case R.id.btn_aquarium_store_category:
+                btnDepartment.setImageResource(R.drawable.ic_department_store_gray);
+                btnShopping .setImageResource(R.drawable.ic_shopping_gray);
+                btnStadium.setImageResource(R.drawable.ic_stadium_gray);
+                btnZoo.setImageResource(R.drawable.ic_zoo_gray);
+                btnMuseum.setImageResource(R.drawable.ic_museum_gray);
+                btnTheater.setImageResource(R.drawable.ic_theater_gray);
+                btnAquarium.setImageResource(R.drawable.ic_aquarium_orange);
+                btnCafe.setImageResource(R.drawable.ic_cafe_gray);
+                btnDrink.setImageResource(R.drawable.ic_drink_gray);
+                btnRestaurant.setImageResource(R.drawable.ic_restaurant_gray);
+                txtSelectedCategory.setText("Aquarium");
+                break;
+            case R.id.btn_cafe_category:
+                btnDepartment.setImageResource(R.drawable.ic_department_store_gray);
+                btnShopping .setImageResource(R.drawable.ic_shopping_gray);
+                btnStadium.setImageResource(R.drawable.ic_stadium_gray);
+                btnZoo.setImageResource(R.drawable.ic_zoo_gray);
+                btnMuseum.setImageResource(R.drawable.ic_museum_gray);
+                btnTheater.setImageResource(R.drawable.ic_theater_gray);
+                btnAquarium.setImageResource(R.drawable.ic_aquarium_gray);
+                btnCafe.setImageResource(R.drawable.ic_cafe_orange);
+                btnDrink.setImageResource(R.drawable.ic_drink_gray);
+                btnRestaurant.setImageResource(R.drawable.ic_restaurant_gray);
+                txtSelectedCategory.setText("Cafe");
+                break;
+            case R.id.btn_drink_category:
+                btnDepartment.setImageResource(R.drawable.ic_department_store_gray);
+                btnShopping .setImageResource(R.drawable.ic_shopping_gray);
+                btnStadium.setImageResource(R.drawable.ic_stadium_gray);
+                btnZoo.setImageResource(R.drawable.ic_zoo_gray);
+                btnMuseum.setImageResource(R.drawable.ic_museum_gray);
+                btnTheater.setImageResource(R.drawable.ic_theater_gray);
+                btnAquarium.setImageResource(R.drawable.ic_aquarium_gray);
+                btnCafe.setImageResource(R.drawable.ic_cafe_gray);
+                btnDrink.setImageResource(R.drawable.ic_drink_orange);
+                btnRestaurant.setImageResource(R.drawable.ic_restaurant_gray);
+                txtSelectedCategory.setText("Drink");
+                break;
+            case R.id.btn_restaurant_store_category:
+                btnDepartment.setImageResource(R.drawable.ic_department_store_gray);
+                btnShopping .setImageResource(R.drawable.ic_shopping_gray);
+                btnStadium.setImageResource(R.drawable.ic_stadium_gray);
+                btnZoo.setImageResource(R.drawable.ic_zoo_gray);
+                btnMuseum.setImageResource(R.drawable.ic_museum_gray);
+                btnTheater.setImageResource(R.drawable.ic_theater_gray);
+                btnAquarium.setImageResource(R.drawable.ic_aquarium_gray);
+                btnCafe.setImageResource(R.drawable.ic_cafe_gray);
+                btnDrink.setImageResource(R.drawable.ic_drink_gray);
+                btnRestaurant.setImageResource(R.drawable.ic_restaurant_orange);
+                txtSelectedCategory.setText("Restaurant");
+                break;
+
         }
     }
 }

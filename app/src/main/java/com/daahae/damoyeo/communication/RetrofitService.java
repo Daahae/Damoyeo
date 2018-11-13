@@ -18,4 +18,11 @@ public interface RetrofitService {
     @FormUrlEncoded
     @POST("midCategory")
     Call<JsonObject> getBuildingData(@Field("userRequest") String type);
+
+    //@Multipart
+    @FormUrlEncoded
+    @POST("midDetailCategory")
+    Call<JsonObject> getBuildingDetail(@Field("buildingRequest") String name);
+
+
 }

@@ -15,27 +15,16 @@ public class Building{
     @SerializedName("buildingAddress")
     private String buildingAddress;
 
-    @SerializedName("buildingTel")
-    private String tel;
-
-    @SerializedName("buildingDescription")
-    private String description;
 
     @SerializedName("buildingDistance")
     private double distance;
 
-    public Building(double latitude, double longitude, String name, String buildingAddress, String tel, String description, double distance) {
+    public Building(double latitude, double longitude, String name, String buildingAddress, double distance) {
         this.latitude = latitude;
         this.longitude = longitude;
         this.name = name;
         this.buildingAddress = buildingAddress;
-        this.tel = tel;
-        this.description = description;
         this.distance = distance;
-    }
-
-    public String getDescription() {
-        return description;
     }
 
     public double getDistance() {
@@ -74,13 +63,6 @@ public class Building{
         this.buildingAddress = buildingAddress;
     }
 
-    public String getTel() {
-        return tel;
-    }
-
-    public void setTel(String tel) {
-        this.tel = tel;
-    }
 
     @Override
     public String toString() {
@@ -89,8 +71,6 @@ public class Building{
                 ", longitude=" + longitude +
                 ", name='" + name + '\'' +
                 ", buildingAddress='" + buildingAddress + '\'' +
-                ", tel='" + tel + '\'' +
-                ", description='" + description + '\'' +
                 ", distance=" + distance +
                 '}';
     }

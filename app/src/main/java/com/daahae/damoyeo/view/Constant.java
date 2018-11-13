@@ -51,4 +51,10 @@ public class Constant {
 
     public static final int SEARCH_FRIENDS_MODE = 1000;
     public static final int FRIENDS_LIST_MODE = 2000;
+
+    public static final int SUBWAY = 1;
+    public static final int BUS = 2;
+    public static final int WALK = 3;
+
+    public static int displayWidth;
 }

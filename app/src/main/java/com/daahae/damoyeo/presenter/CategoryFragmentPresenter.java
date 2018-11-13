@@ -49,9 +49,9 @@ public class CategoryFragmentPresenter {
 
     //TODO: 삭제예정
     private void makeDummy(){
-        buildingAdapter.add(new Building(0,0,"상호", "서울광역시 광진구 군자동", "010-0000-0000","가게에 대한 상세 설명란",0.86767676767));
-        buildingAdapter.add(new Building(0,0,"상호2", "서울광역시 광진구 군자동", "010-1111-1111","가게에 대한 상세 설명란",20));
-        buildingAdapter.add(new Building(0,0,"상호3", "서울광역시 광진구 군자동", "010-3333-3333","가게에 대한 상세 설명란",30));
+        buildingAdapter.add(new Building(0,0,"상호", "서울광역시 광진구 군자동",0.86767676767));
+        buildingAdapter.add(new Building(0,0,"상호2", "서울광역시 광진구 군자동", 20));
+        buildingAdapter.add(new Building(0,0,"상호3", "서울광역시 광진구 군자동", 30));
     }
 
     public void setGMapSetting(GoogleMap googleMap) {

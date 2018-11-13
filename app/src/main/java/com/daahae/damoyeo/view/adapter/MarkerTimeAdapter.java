@@ -1,6 +1,7 @@
 package com.daahae.damoyeo.view.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -64,7 +65,7 @@ public class MarkerTimeAdapter extends BaseAdapter{
         myItem = (MarkerTime) mItems.get(position);
 
         //TODO: GetTotal 수정
-        setMarkerListText(txtMarkerName,txtMarkerTime,myItem.getName(),myItem.getTotalTime());
+        setMarkerListText(txtMarkerName,txtMarkerTime,myItem.getName(),formTakenTime(myItem.getTotalTime()));
 
         return convertView;
     }
@@ -77,5 +78,23 @@ public class MarkerTimeAdapter extends BaseAdapter{
     private void setMarkerListText(TextView MarkerNameView, TextView MarkerTime, String nameText, String timeText){
         MarkerNameView.setText(nameText);
         MarkerTime.setText(timeText);
+    }
+
+
+    private String formTakenTime(String time){
+        String strTime;
+        int nTime = Integer.parseInt(time);
+        int timeHour = nTime/60;
+        int timeMin = nTime%60;
+
+        if(timeMin==0){
+            strTime = timeHour+"시간";
+        }else if(timeHour==0){
+            strTime = timeMin+"분";
+        }else{
+            strTime = timeHour+"시간"+timeMin + "분";
+        }
+
+        return strTime;
     }
 }

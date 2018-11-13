@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="100dp">
+    android:layout_height="120dp">
 
     <ImageView
         android:id="@+id/img_profile_photo_transport_item"
@@ -10,7 +10,7 @@
         android:layout_height="40dp"
         android:layout_alignParentTop="true"
         android:layout_alignStart="@+id/linear_transport_bar_transport_item"
-        android:layout_marginTop="11dp"
+        android:layout_marginTop="5dp"
         app:srcCompat="@drawable/ic_guest_profile" />
 
     <TextView
@@ -28,7 +28,7 @@
         android:layout_height="wrap_content"
         android:layout_alignBottom="@+id/img_profile_photo_transport_item"
         android:layout_alignEnd="@+id/txt_total_time_transport_item"
-        android:text="오후 3:30-오후 4:52"
+        android:text="오후 12:30-오후 12:52"
         android:textColor="@color/colorGray"
         android:textSize="12sp" />
 
@@ -44,11 +44,12 @@
 
     <TextView
         android:id="@+id/txt_address_transport_item"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="200dp"
+        android:layout_height="41dp"
         android:layout_alignBottom="@+id/img_profile_photo_transport_item"
         android:layout_alignStart="@+id/txt_name_transport_item"
-        android:text="Xx광역시 xx구 xxxxx로 "
+        android:layout_marginBottom="-25dp"
+        android:text="Xx광역시 xx구 xxxxx로 \n 상세주소"
         android:textSize="12sp" />
 
     <LinearLayout
@@ -57,10 +58,8 @@
         android:layout_height="15dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"
-        android:layout_marginBottom="26dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:background="@color/colorLightGray"
-        android:orientation="horizontal"/>
+        android:layout_marginBottom="30dp"
+        android:background="@color/colorGray"
+        android:orientation="horizontal" />
 
 </RelativeLayout>

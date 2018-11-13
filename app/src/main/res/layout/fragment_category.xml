@@ -116,46 +116,30 @@
                 android:background="@color/colorWhite"
                 android:orientation="horizontal">
 
-
-                <ImageButton
-                    android:id="@+id/btn_category_play_dummy"
-                    android:layout_width="0dp"
-                    android:layout_height="60dp"
-                    android:layout_margin="10dp"
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:background="@null"
-                    android:scaleType="centerInside"
-                    android:src="@drawable/btn_category_play_gray" />
+                    android:orientation="vertical">
 
-                <ImageButton
-                    android:id="@+id/btn_category_food_dummy"
-                    android:layout_width="0dp"
-                    android:layout_height="60dp"
-                    android:layout_margin="10dp"
-                    android:layout_weight="1"
-                    android:background="@null"
-                    android:scaleType="centerInside"
-                    android:src="@drawable/btn_category_food_gray" />
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="30dp"
+                        android:background="@drawable/top_round_white_box"
+                        android:src="@drawable/ic_arrow_up" />
 
-                <ImageButton
-                    android:id="@+id/btn_category_cafe_dummy"
-                    android:layout_width="0dp"
-                    android:layout_height="60dp"
-                    android:layout_margin="10dp"
-                    android:layout_weight="1"
-                    android:background="@null"
-                    android:scaleType="centerInside"
-                    android:src="@drawable/btn_category_cafe_gray" />
+                    <TextView
+                        android:id="@+id/txt_selected_category"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:gravity="center"
+                        android:text="카테고리"
+                        android:textColor="@color/appMainColor"
+                        android:background="@color/colorWhite"
+                        android:textSize="20sp" />
 
-                <ImageButton
-                    android:id="@+id/btn_category_drink_dummy"
-                    android:layout_width="0dp"
-                    android:layout_height="60dp"
-                    android:layout_margin="10dp"
-                    android:layout_weight="1"
-                    android:background="@null"
-                    android:scaleType="centerInside"
-                    android:src="@drawable/btn_category_drink_gray" />
+                </LinearLayout>
 
             </LinearLayout>
         </LinearLayout>
@@ -166,95 +150,131 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="#FFFFFFFF"
-            android:orientation="vertical"
-            >
+            android:orientation="vertical">
 
-            <LinearLayout
-                android:visibility="gone"
-                android:id="@+id/linear_category_menu"
+
+            <ImageButton
+                android:id="@+id/btn_down_sliding_drawer_category"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:background="@color/colorWhite">
+                android:layout_height="30dp"
+                android:background="@drawable/top_round_white_box"
+                android:src="@drawable/ic_arrow_down"/>
 
-                <ImageButton
-                    android:id="@+id/btn_category_play"
-                    android:layout_width="0dp"
-                    android:layout_height="60dp"
-                    android:layout_margin="10dp"
-                    android:layout_weight="1"
-                    android:background="@null"
-                    android:scaleType="centerInside"
-                    android:src="@drawable/btn_category_play_orange" />
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-                <ImageButton
-                    android:id="@+id/btn_category_food"
-                    android:layout_width="0dp"
-                    android:layout_height="60dp"
-                    android:layout_margin="10dp"
-                    android:layout_weight="1"
-                    android:background="@null"
-                    android:scaleType="centerInside"
-                    android:src="@drawable/btn_category_food_gray" />
+                <LinearLayout
+                    android:id="@+id/linear_category_menu"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:background="@color/colorWhite"
+                    android:orientation="horizontal">
 
-                <ImageButton
-                    android:id="@+id/btn_category_cafe"
-                    android:layout_width="0dp"
-                    android:layout_height="60dp"
-                    android:layout_margin="10dp"
-                    android:layout_weight="1"
-                    android:background="@null"
-                    android:scaleType="centerInside"
-                    android:src="@drawable/btn_category_cafe_gray" />
 
-                <ImageButton
-                    android:id="@+id/btn_category_drink"
-                    android:layout_width="0dp"
-                    android:layout_height="60dp"
-                    android:layout_margin="10dp"
-                    android:layout_weight="1"
-                    android:background="@null"
-                    android:scaleType="centerInside"
-                    android:src="@drawable/btn_category_drink_gray" />
-            </LinearLayout>
+                    <ImageButton
+                        android:id="@+id/btn_department_store_category"
+                        android:layout_width="65dp"
+                        android:layout_height="65dp"
+                        android:layout_margin="10dp"
+                        android:background="@null"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/ic_department_store_orange" />
+
+                    <ImageButton
+                        android:id="@+id/btn_shopping_category"
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:layout_margin="10dp"
+                        android:background="@null"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/ic_shopping_gray" />
+
+                    <ImageButton
+                        android:id="@+id/btn_stadium_category"
+                        android:layout_width="62dp"
+                        android:layout_height="62dp"
+                        android:layout_margin="10dp"
+                        android:background="@null"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/ic_stadium_gray" />
+
+                    <ImageButton
+                        android:id="@+id/btn_zoo_category"
+                        android:layout_width="62dp"
+                        android:layout_height="62dp"
+                        android:layout_margin="10dp"
+                        android:background="@null"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/ic_zoo_gray" />
+
+                    <ImageButton
+                        android:id="@+id/btn_museum_category"
+                        android:layout_width="65dp"
+                        android:layout_height="65dp"
+                        android:layout_margin="10dp"
+                        android:background="@null"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/ic_museum_gray" />
+
+                    <ImageButton
+                        android:id="@+id/btn_theater_category"
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:layout_margin="10dp"
+                        android:background="@null"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/ic_theater_gray" />
+
+                    <ImageButton
+                        android:id="@+id/btn_aquarium_store_category"
+                        android:layout_width="70dp"
+                        android:layout_height="70dp"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginBottom="10dp"
+                        android:layout_marginRight="10dp"
+                        android:layout_marginLeft="10dp"
+                        android:background="@null"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/ic_aquarium_gray" />
+
+                    <ImageButton
+                        android:id="@+id/btn_cafe_category"
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:layout_margin="10dp"
+                        android:background="@null"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/ic_cafe_gray" />
+
+                    <ImageButton
+                        android:id="@+id/btn_drink_category"
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:layout_margin="10dp"
+                        android:background="@null"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/ic_drink_gray" />
+
+                    <ImageButton
+                        android:id="@+id/btn_restaurant_store_category"
+                        android:layout_width="70dp"
+                        android:layout_height="70dp"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginBottom="10dp"
+                        android:layout_marginRight="10dp"
+                        android:layout_marginLeft="10dp"
+                        android:background="@null"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/ic_restaurant_gray" />
+
+                </LinearLayout>
+            </HorizontalScrollView>
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="@color/colorGray"
-                />
-
-            <LinearLayout
-                android:id="@+id/linear_small_category"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <Button
-                    android:id="@+id/btn_small_category_1"
-                    android:layout_width="0dp"
-                    android:layout_height="50dp"
-                    android:layout_weight="1"
-                    android:background="@color/colorWhite"
-                    android:text="쇼핑" />
-
-                <Button
-                    android:id="@+id/btn_small_category_2"
-                    android:layout_width="0dp"
-                    android:layout_height="50dp"
-                    android:layout_weight="1"
-                    android:background="@color/colorLightGray"
-                    android:text="관람" />
-
-                <Button
-                    android:id="@+id/btn_small_category_3"
-                    android:layout_width="0dp"
-                    android:layout_height="50dp"
-                    android:layout_weight="1"
-                    android:background="@color/colorLightGray"
-                    android:text="힐링" />
-
-            </LinearLayout>
+                android:background="@color/colorGray" />
 
             <ListView
                 android:id="@+id/list_category"
