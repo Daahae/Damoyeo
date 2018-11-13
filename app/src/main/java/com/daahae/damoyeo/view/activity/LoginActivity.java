@@ -16,6 +16,7 @@ import com.daahae.damoyeo.view.Constant;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
@@ -37,6 +38,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     private SignInButton signInButton;
     private GoogleApiClient googleApiClient;
+    private GoogleSignInClient googleSignInClient;
 
     private static final int RC_SIGN_IN = 9001;
 
@@ -58,6 +60,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 .build();
 
         mAuth = FirebaseAuth.getInstance();
+        googleSignInClient = GoogleSignIn.getClient(this, gso);;
+        //GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
 
         googleApiClient = new GoogleApiClient.Builder(this)
                 .enableAutoManage(this, this).addApi(Auth.GOOGLE_SIGN_IN_API, gso)
@@ -98,7 +102,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private void signIn() {
-        Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(googleApiClient);
+        Intent signInIntent = googleSignInClient.getSignInIntent();
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
 
@@ -149,7 +153,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             // If sign in fails, display a message to the user.
                             Log.w(Constant.TAG, "signInWithCredential:failure", task.getException());
                             //Snackbar.make(findViewById(R.id.main_layout), "Authentication Failed.", Snackbar.LENGTH_SHORT).show();
-
                         }
                     }
                 });
