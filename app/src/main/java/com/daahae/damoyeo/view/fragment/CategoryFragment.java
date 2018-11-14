@@ -72,6 +72,7 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
     private LinearLayout linearContent;
     private LinearLayout linearHandleMenu;
     private LinearLayout linearCategoryMenu;
+    private LinearLayout linearMarkerTime;
 
     private BuildingAdapter buildingAdapter;
     private ListView listCategory;
@@ -129,7 +130,7 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
 
         linearHandleMenu = rootView.findViewById(R.id.linear_handle_menu);
         linearCategoryMenu = rootView.findViewById(R.id.linear_category_menu);
-
+        linearMarkerTime = rootView.findViewById(R.id.linear_marker_time);
         slidingDrawer = rootView.findViewById(R.id.slide);
 
         btnDownSlidingDrawer = rootView.findViewById(R.id.btn_down_sliding_drawer_category);
@@ -388,11 +389,13 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
     @Override
     public void onDrawerClosed() {
         linearHandleMenu.setVisibility(View.VISIBLE);
+        linearMarkerTime.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void onDrawerOpened() {
         linearHandleMenu.setVisibility(View.GONE);
+        linearMarkerTime.setVisibility(View.GONE);
     }
 
     @Override

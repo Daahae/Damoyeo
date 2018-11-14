@@ -147,7 +147,7 @@ public class RetrofitCommunication{
         }).start();
 
         try {
-            Thread.sleep(3000);
+            Thread.sleep(10000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -182,7 +182,7 @@ public class RetrofitCommunication{
         }).start();
 
         try {
-            Thread.sleep(3000);
+            Thread.sleep(000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

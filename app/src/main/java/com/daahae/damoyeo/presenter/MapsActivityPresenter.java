@@ -10,6 +10,9 @@ import com.daahae.damoyeo.R;
 import com.daahae.damoyeo.communication.RetrofitCommunication;
 import com.daahae.damoyeo.model.Building;
 import com.daahae.damoyeo.model.BuildingArr;
+import com.daahae.damoyeo.model.BuildingDetail;
+import com.daahae.damoyeo.model.BuildingRequest;
+import com.daahae.damoyeo.model.Position;
 import com.daahae.damoyeo.model.UserRequest;
 import com.daahae.damoyeo.model.Person;
 import com.daahae.damoyeo.model.TransportInfoList;
@@ -35,6 +38,7 @@ public class MapsActivityPresenter {
     private List<TransportInfoList.Data> transportData;
     private List<Building> buildings;
 
+    private BuildingDetail detail;
 
 
     public MapsActivityPresenter(FragmentActivity view) {
@@ -119,7 +123,12 @@ public class MapsActivityPresenter {
         return buildings;
     }
 
-    public void setBuildingsData(int buildingType){
+    public BuildingDetail getBuildingDetail(String name, Position position){
+        setBuildingDetail(name, position);
+        return detail;
+    }
+
+    private void setBuildingsData(int buildingType){
         UserRequest request = new UserRequest();
         request.setType(buildingType);
         BuildingArr arr = RetrofitCommunication.getInstance().sendBuildingInfo(request);
@@ -127,4 +136,14 @@ public class MapsActivityPresenter {
             buildings = arr.getBuildingArr();
         }
     }
+
+    public void setBuildingDetail(String name, Position position){
+        BuildingRequest buildingRequest = new BuildingRequest();
+        buildingRequest.setName(name);
+        buildingRequest.setLatitude(position.getX());
+        buildingRequest.setLongitude(position.getY());
+        BuildingDetail detail = RetrofitCommunication.getInstance().sendBuildingDetail(buildingRequest);
+        this.detail = detail;
+    }
+
 }

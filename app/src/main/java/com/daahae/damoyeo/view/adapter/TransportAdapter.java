@@ -30,7 +30,7 @@ public class TransportAdapter extends BaseAdapter {
     private TextView txtName,txtAddress,txtTotalTime,txtViewTime;
     private List<TransportInfoList.Data> mItems;
     private ArrayList<Person> people;
-    private LinearLayout linearTransportBar;
+    private LinearLayout linearTransportBar, linearTransportItem;
     private Context context;
     public TransportAdapter(List<TransportInfoList.Data> list, ArrayList<Person> people,Context context){
         mItems = list;
@@ -171,7 +171,9 @@ public class TransportAdapter extends BaseAdapter {
         txtAddress = convertView.findViewById(R.id.txt_address_transport_item);
         txtTotalTime = convertView.findViewById(R.id.txt_total_time_transport_item);
         txtViewTime = convertView.findViewById(R.id.txt_view_time_transport_item);
+
         linearTransportBar = convertView.findViewById(R.id.linear_transport_bar_transport_item);
+        linearTransportItem = convertView.findViewById(R.id.linear_transport_way_transport_item);
     }
 
     private void createViewBar(TransportInfoList.Data myItem){
@@ -181,25 +183,79 @@ public class TransportAdapter extends BaseAdapter {
         double partOfLength = (double)totalLength/myItem.getTotalTime();
 
         Log.v("사이즈",size+"");
+
+        addMargin();
+
         for(int i=0;i<size;i++) {
             Transport transport = myItem.getTransportInfo().get(i);
 
             int width = (int)partOfLength*transport.getSectionTime();
-            if(width<100) width=100;
-            else if(width>400) width -= 50;
-            Log.v("width",width+"");
+            width = getWidth(width,size);
+
             TextView txt = new TextView(context);
             txt.setLayoutParams(new LinearLayout.LayoutParams(width, LinearLayout.LayoutParams.MATCH_PARENT));
             if(transport.getTrafficType()==Constant.SUBWAY) txt.setBackgroundResource(R.color.colorGreen);
             else if(transport.getTrafficType()==Constant.BUS) txt.setBackgroundResource(R.color.colorOrange);
             txt.setTextColor(context.getResources().getColor(R.color.colorWhite));
             txt.setGravity(Gravity.CENTER);
-            txt.setTextSize(13);
+            txt.setTextSize(12);
+            if(transport.getSectionTime()==0) continue;
             txt.setText(formTakenTime(transport.getSectionTime()));
             linearTransportBar.addView(txt);
+            Log.v("시간",formTakenTime(transport.getSectionTime()));
+
+            if(transport.getTrafficType()==Constant.SUBWAY || transport.getTrafficType()==Constant.BUS) {
+                TextView txt2 = new TextView(context);
+                txt2.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+                txt2.setBackgroundResource(R.color.colorWhite);
+                if (transport.getTrafficType() == Constant.SUBWAY)
+                    txt2.setTextColor(context.getResources().getColor(R.color.colorGreen));
+                else if (transport.getTrafficType() == Constant.BUS)
+                    txt2.setTextColor(context.getResources().getColor(R.color.colorOrange));
+                txt2.setGravity(Gravity.CENTER);
+                txt2.setTextSize(12);
+                txt2.setText(transport.getTransportNumber());
+                linearTransportItem.addView(txt2);
+
+
+                 ImageView img = new ImageView(context);
+                 img.setLayoutParams(new LinearLayout.LayoutParams(50, ViewGroup.LayoutParams.MATCH_PARENT));
+                 img.setBackgroundColor(context.getResources().getColor(R.color.colorWhite));
+                 img.setImageResource(R.drawable.ic_arrow_gray);
+                 img.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+                 linearTransportItem.addView(img);
+                 Log.v("화살표", "add");
+            }
+
+            if(i == size-1){
+                TextView txt3 = new TextView(context);
+                txt3.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+                txt3.setBackgroundResource(R.color.colorWhite);
+                txt3.setTextColor(context.getResources().getColor(R.color.colorGray));
+                txt3.setGravity(Gravity.CENTER);
+                txt3.setTextSize(12);
+                txt3.setText("목적지");
+                linearTransportItem.addView(txt3);
+            }
         }
 
     }
 
+    private int getWidth(int width,int size){
+        if(width<100) width=100;
+        else if(width>400&&size<5) width -= 100;
+        else if(width>300&&size<6) width -= 100;
+        else if(width>200) width -=50;
+
+        return width;
+
+    }
+    private void addMargin(){
+        TextView margin = new TextView(context);
+        margin.setLayoutParams(new LinearLayout.LayoutParams(30, LinearLayout.LayoutParams.MATCH_PARENT));
+        margin.setBackgroundResource(R.color.colorWhite);
+        linearTransportItem.addView(margin);
+
+    }
 
 }

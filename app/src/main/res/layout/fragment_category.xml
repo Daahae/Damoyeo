@@ -68,25 +68,26 @@
         </RelativeLayout>
 
         <LinearLayout
+            android:id="@+id/linear_marker_time"
             android:layout_width="100dp"
             android:layout_height="match_parent"
             android:layout_gravity="end"
             android:orientation="vertical">
 
-                <Button
-                    android:id="@+id/btn_all_marker_list"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@color/colorWhite"
+            <Button
+                android:id="@+id/btn_all_marker_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/colorWhite"
 
-                    android:text="전체보기" />
+                android:text="전체보기" />
 
-                <ListView
-                    android:id="@+id/list_marker_time"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="end" />
-            </LinearLayout>
+            <ListView
+                android:id="@+id/list_marker_time"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="end" />
+        </LinearLayout>
     </LinearLayout>
 
     <SlidingDrawer
@@ -133,10 +134,10 @@
                         android:id="@+id/txt_selected_category"
                         android:layout_width="match_parent"
                         android:layout_height="50dp"
-                        android:gravity="center"
-                        android:text="카테고리"
-                        android:textColor="@color/appMainColor"
                         android:background="@color/colorWhite"
+                        android:gravity="center"
+                        android:text="Department Store"
+                        android:textColor="@color/appMainColor"
                         android:textSize="20sp" />
 
                 </LinearLayout>
