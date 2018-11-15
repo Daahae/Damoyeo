@@ -414,7 +414,6 @@ public class MapsFragment extends Fragment implements View.OnClickListener, OnMa
                 break;
             case R.id.linear_search_mid:
                 parentPresenter.sendMarkerTimeMessage();
-                //parentPresenter.getBuildings(Constant.DEPARTMENT_STORE);
                 PositionNumberServices positionNumberServices = new PositionNumberServices();
                 try {
                     positionNumberServices.isPosition(parentPresenter.getTotalTimes().size());

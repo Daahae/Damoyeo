@@ -60,12 +60,12 @@ public class BuildingAdapter extends BaseAdapter{
 
         Building myItem = (Building) mItems.get(position);
 
-        setBuildingListText(txtCompanyName, txtAboutAddress, txtDistance, myItem.getName(),myItem.getBuildingAddress(),0);
+        setBuildingListText(txtCompanyName, txtAboutAddress, txtDistance, myItem.getName(),myItem.getBuildingAddress(),myItem.getDistance());
 
         return convertView;
     }
 
-    private void setBuildingListText(TextView companyName, TextView address, TextView distance, String strName, String strAddr,int strDist){
+    private void setBuildingListText(TextView companyName, TextView address, TextView distance, String strName, String strAddr,double strDist){
         companyName.setText(strName);
         address.setText(strAddr);
         distance.setText(String.valueOf(strDist));

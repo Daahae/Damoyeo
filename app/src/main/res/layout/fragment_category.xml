@@ -284,6 +284,16 @@
                 android:textFilterEnabled="true">
 
             </ListView>
+            <TextView
+                android:visibility="gone"
+                android:id="@+id/txt_list_category_default"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:textColor="@color/colorGray"
+                android:textSize="16sp"
+                android:text="데이터가 존재하지 않습니다."/>
         </LinearLayout>
     </SlidingDrawer>
 
