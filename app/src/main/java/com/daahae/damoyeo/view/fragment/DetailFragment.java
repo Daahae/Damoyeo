@@ -17,11 +17,14 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.daahae.damoyeo.R;
+import com.daahae.damoyeo.communication.RetrofitCommunication;
 import com.daahae.damoyeo.model.Building;
 import com.daahae.damoyeo.model.Person;
 import com.daahae.damoyeo.presenter.DetailFragmentPresenter;
 import com.daahae.damoyeo.presenter.MapsActivityPresenter;
 import com.daahae.damoyeo.view.adapter.TransportAdapter;
+
+import java.util.ArrayList;
 
 @SuppressLint("ValidFragment")
 public class DetailFragment extends Fragment implements View.OnClickListener{
@@ -56,7 +59,6 @@ public class DetailFragment extends Fragment implements View.OnClickListener{
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = (View) inflater.inflate(R.layout.fragment_detail, container, false);
-
 
         initView(view);
         initListener();

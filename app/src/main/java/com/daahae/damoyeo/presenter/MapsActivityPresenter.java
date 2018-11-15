@@ -8,6 +8,8 @@ import android.util.Log;
 
 import com.daahae.damoyeo.R;
 import com.daahae.damoyeo.communication.RetrofitCommunication;
+import com.daahae.damoyeo.communication.RetrofitService;
+import com.daahae.damoyeo.exception.PositionNumberServices;
 import com.daahae.damoyeo.model.Building;
 import com.daahae.damoyeo.model.BuildingArr;
 import com.daahae.damoyeo.model.BuildingDetail;
@@ -20,9 +22,14 @@ import com.daahae.damoyeo.view.Constant;
 import com.daahae.damoyeo.view.fragment.CategoryFragment;
 import com.daahae.damoyeo.view.fragment.DetailFragment;
 import com.daahae.damoyeo.view.fragment.MapsFragment;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import retrofit2.Callback;
+import retrofit2.Retrofit;
 
 public class MapsActivityPresenter {
     private FragmentActivity view;
@@ -37,9 +44,9 @@ public class MapsActivityPresenter {
 
     private List<TransportInfoList.Data> transportData;
     private List<Building> buildings;
+    private ArrayList<Person> persons;
 
     private BuildingDetail detail;
-
 
     public MapsActivityPresenter(FragmentActivity view) {
         this.view = view;
@@ -132,9 +139,6 @@ public class MapsActivityPresenter {
         UserRequest request = new UserRequest();
         request.setType(buildingType);
         BuildingArr arr = RetrofitCommunication.getInstance().sendBuildingInfo(request);
-        for(int i=0;i<arr.getBuildingArr().size();i++){
-            buildings = arr.getBuildingArr();
-        }
     }
 
     public void setBuildingDetail(String name, Position position){

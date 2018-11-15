@@ -33,6 +33,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.daahae.damoyeo.R;
+import com.daahae.damoyeo.communication.RetrofitCommunication;
+import com.daahae.damoyeo.model.BuildingArr;
 import com.daahae.damoyeo.presenter.CategoryFragmentPresenter;
 import com.daahae.damoyeo.presenter.MapsActivityPresenter;
 import com.daahae.damoyeo.view.Constant;
@@ -48,6 +50,8 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
+
+import java.util.ArrayList;
 
 @SuppressLint("ValidFragment")
 public class CategoryFragment extends Fragment implements View.OnClickListener, AdapterView.OnItemClickListener, View.OnTouchListener
@@ -71,7 +75,6 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
 
     private LinearLayout linearContent;
     private LinearLayout linearHandleMenu;
-    private LinearLayout linearCategoryMenu;
     private LinearLayout linearMarkerTime;
 
     private BuildingAdapter buildingAdapter;
@@ -82,6 +85,8 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
 
     private ImageButton btnDownSlidingDrawer;
     private ImageButton btnDepartment, btnShopping, btnStadium, btnZoo, btnMuseum, btnTheater, btnAquarium, btnCafe, btnDrink, btnRestaurant;
+
+    private TextView txtDefault;
 
     private TextView txtSelectedCategory;
     public CategoryFragment(MapsActivityPresenter parentPresenter) {
@@ -103,13 +108,31 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = (View) inflater.inflate(R.layout.fragment_category, container, false);
 
+        parentPresenter.getBuildings(Constant.DEPARTMENT_STORE);
+
         initView(rootView);
         initListener();
-        connectAdapter();
-        setBuildingList();
 
-        presenter.initMarkerTime(parentPresenter.getTotalTimes());
-        presenter.setMarkerTimeList(markerTimeAdapter);
+        RetrofitCommunication.UserCallBack userCallBack = new RetrofitCommunication.UserCallBack() {
+            @Override
+            public void userDataPath(ArrayList<String> totalTimes) {
+                presenter.initMarkerTime(totalTimes);
+                presenter.setMarkerTimeList(markerTimeAdapter);
+                listMarkerTime.setAdapter(markerTimeAdapter);
+                Log.v("데이터","들어감");
+            }
+        };
+
+        RetrofitCommunication.BuildingCallBack buildingCallBack = new RetrofitCommunication.BuildingCallBack() {
+            @Override
+            public void buildingDataPath(BuildingArr buildingArr) {
+                presenter.initBuildingInfo(buildingArr);
+                convertList(presenter.setBuildingInfo(buildingAdapter));
+                listCategory.setAdapter(buildingAdapter);
+            }
+        };
+        RetrofitCommunication.getInstance().setUserData(userCallBack);
+        RetrofitCommunication.getInstance().setBuildingData(buildingCallBack);
 
         return rootView;
     }
@@ -129,7 +152,6 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
         linearContent = rootView.findViewById(R.id.content);
 
         linearHandleMenu = rootView.findViewById(R.id.linear_handle_menu);
-        linearCategoryMenu = rootView.findViewById(R.id.linear_category_menu);
         linearMarkerTime = rootView.findViewById(R.id.linear_marker_time);
         slidingDrawer = rootView.findViewById(R.id.slide);
 
@@ -146,6 +168,7 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
         btnRestaurant = rootView.findViewById(R.id.btn_restaurant_store_category);
 
         txtSelectedCategory = rootView.findViewById(R.id.txt_selected_category);
+        txtDefault = rootView.findViewById(R.id.txt_list_category_default);
     }
 
     private void initListener(){
@@ -182,11 +205,15 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
         btnRestaurant.setOnClickListener(this);
     }
 
-    private void connectAdapter(){
-        listMarkerTime.setAdapter(markerTimeAdapter);
-        listCategory.setAdapter(buildingAdapter);
+    private void convertList(boolean flag){
+        if(flag) {
+            listCategory.setVisibility(View.VISIBLE);
+            txtDefault.setVisibility(View.GONE);
+        }else{
+            txtDefault.setVisibility(View.VISIBLE);
+            listCategory.setVisibility(View.GONE);
+        }
     }
-
     public void setBuildingList(){
         presenter.setBuildingInfo(buildingAdapter); // 빌딩 정보 넣기
     }
@@ -471,6 +498,8 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
                 //카테고리 버튼
                 //TODO:각 카테고리 상세 retrofit 받아오기
             case R.id.btn_department_store_category:
+                parentPresenter.getBuildings(Constant.DEPARTMENT_STORE);
+
                 btnDepartment.setImageResource(R.drawable.ic_department_store_orange);
                 btnShopping .setImageResource(R.drawable.ic_shopping_gray);
                 btnStadium.setImageResource(R.drawable.ic_stadium_gray);
@@ -485,6 +514,8 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
                 txtSelectedCategory.setText("Department Store");
                 break;
             case R.id.btn_shopping_category:
+                parentPresenter.getBuildings(Constant.SHOPPING_MALL);
+
                 btnDepartment.setImageResource(R.drawable.ic_department_store_gray);
                 btnShopping .setImageResource(R.drawable.ic_shopping_mall_orange);
                 btnStadium.setImageResource(R.drawable.ic_stadium_gray);
@@ -499,6 +530,8 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
                 txtSelectedCategory.setText("Shopping Mall");
                 break;
             case R.id.btn_stadium_category:
+                parentPresenter.getBuildings(Constant.STADIUM);
+
                 btnDepartment.setImageResource(R.drawable.ic_department_store_gray);
                 btnShopping .setImageResource(R.drawable.ic_shopping_gray);
                 btnStadium.setImageResource(R.drawable.ic_stadium_orange);
@@ -513,6 +546,8 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
                 txtSelectedCategory.setText("Stadium");
                 break;
             case R.id.btn_zoo_category:
+                parentPresenter.getBuildings(Constant.ZOO);
+
                 btnDepartment.setImageResource(R.drawable.ic_department_store_gray);
                 btnShopping .setImageResource(R.drawable.ic_shopping_gray);
                 btnStadium.setImageResource(R.drawable.ic_stadium_gray);
@@ -526,6 +561,8 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
                 txtSelectedCategory.setText("Zoo");
                 break;
             case R.id.btn_museum_category:
+                parentPresenter.getBuildings(Constant.MUSEUM);
+
                 btnDepartment.setImageResource(R.drawable.ic_department_store_gray);
                 btnShopping .setImageResource(R.drawable.ic_shopping_gray);
                 btnStadium.setImageResource(R.drawable.ic_stadium_gray);
@@ -539,6 +576,8 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
                 txtSelectedCategory.setText("Museum");
                 break;
             case R.id.btn_theater_category:
+                parentPresenter.getBuildings(Constant.MOVIE_THEATER);
+
                 btnDepartment.setImageResource(R.drawable.ic_department_store_gray);
                 btnShopping .setImageResource(R.drawable.ic_shopping_gray);
                 btnStadium.setImageResource(R.drawable.ic_stadium_gray);
@@ -552,6 +591,8 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
                 txtSelectedCategory.setText("Theater");
                 break;
             case R.id.btn_aquarium_store_category:
+                parentPresenter.getBuildings(Constant.AQUARIUM);
+
                 btnDepartment.setImageResource(R.drawable.ic_department_store_gray);
                 btnShopping .setImageResource(R.drawable.ic_shopping_gray);
                 btnStadium.setImageResource(R.drawable.ic_stadium_gray);
@@ -565,6 +606,8 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
                 txtSelectedCategory.setText("Aquarium");
                 break;
             case R.id.btn_cafe_category:
+                parentPresenter.getBuildings(Constant.CAFE);
+
                 btnDepartment.setImageResource(R.drawable.ic_department_store_gray);
                 btnShopping .setImageResource(R.drawable.ic_shopping_gray);
                 btnStadium.setImageResource(R.drawable.ic_stadium_gray);
@@ -578,6 +621,8 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
                 txtSelectedCategory.setText("Cafe");
                 break;
             case R.id.btn_drink_category:
+                parentPresenter.getBuildings(Constant.DRINK);
+
                 btnDepartment.setImageResource(R.drawable.ic_department_store_gray);
                 btnShopping .setImageResource(R.drawable.ic_shopping_gray);
                 btnStadium.setImageResource(R.drawable.ic_stadium_gray);
@@ -591,6 +636,8 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
                 txtSelectedCategory.setText("Drink");
                 break;
             case R.id.btn_restaurant_store_category:
+                parentPresenter.getBuildings(Constant.RESTAURANT);
+
                 btnDepartment.setImageResource(R.drawable.ic_department_store_gray);
                 btnShopping .setImageResource(R.drawable.ic_shopping_gray);
                 btnStadium.setImageResource(R.drawable.ic_stadium_gray);
