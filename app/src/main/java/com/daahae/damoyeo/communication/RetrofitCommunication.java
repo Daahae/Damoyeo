@@ -47,7 +47,7 @@ public class RetrofitCommunication{
     }
 
     public interface BuildingDetailCallBack{
-        void buildingDetialDataPath(BuildingDetail buildingDetail);
+        void buildingDetailDataPath(BuildingDetail buildingDetail);
     }
 
     public RetrofitCommunication(){
@@ -110,7 +110,7 @@ public class RetrofitCommunication{
                                 totalTimes.add(String.valueOf(TransportList.getUserArr().get(i).getTotalTime()));
                             }
                         }
-                        userCallBack.userDataPath(totalTimes);
+                        if(userCallBack!=null) userCallBack.userDataPath(totalTimes);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -149,7 +149,8 @@ public class RetrofitCommunication{
                     JsonObject json = response.body();
                     buildingList = new Gson().fromJson(json, BuildingArr.class);
                     Log.v("총 빌딩 개수", String.valueOf(buildingList.getBuildingArr().size()));
-                    buildingCallBack.buildingDataPath(buildingList);
+
+                    if(buildingCallBack!=null)buildingCallBack.buildingDataPath(buildingList);
                 }
             }
 
@@ -174,6 +175,8 @@ public class RetrofitCommunication{
                     Log.v("전체", response.body().toString());
                     JsonObject json = response.body();
                     buildingDetail = new Gson().fromJson(json, BuildingDetail.class);
+                    buildingDetailCallBack.buildingDetailDataPath(buildingDetail);
+
                 }
             }
 

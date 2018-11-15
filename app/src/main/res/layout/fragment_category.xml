@@ -278,6 +278,7 @@
                 android:background="@color/colorGray" />
 
             <ListView
+                android:visibility="gone"
                 android:id="@+id/list_category"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -293,7 +294,16 @@
                 android:gravity="center"
                 android:textColor="@color/colorGray"
                 android:textSize="16sp"
-                android:text="데이터가 존재하지 않습니다."/>
+                android:text="추천할 가게가 근처에 없습니다."/>
+
+            <ImageView
+                android:id="@+id/img_loading_category"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:scaleType="centerInside"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:src="@drawable/ic_login_logo" />
         </LinearLayout>
     </SlidingDrawer>
 

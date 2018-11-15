@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,6 +20,8 @@ import android.widget.TextView;
 import com.daahae.damoyeo.R;
 import com.daahae.damoyeo.communication.RetrofitCommunication;
 import com.daahae.damoyeo.model.Building;
+import com.daahae.damoyeo.model.BuildingArr;
+import com.daahae.damoyeo.model.BuildingDetail;
 import com.daahae.damoyeo.model.Person;
 import com.daahae.damoyeo.presenter.DetailFragmentPresenter;
 import com.daahae.damoyeo.presenter.MapsActivityPresenter;
@@ -43,6 +46,7 @@ public class DetailFragment extends Fragment implements View.OnClickListener{
     private LinearLayout linearBuildingDetail;
 
     private ImageButton btnBack;
+    private View view;
 
     public DetailFragment(MapsActivityPresenter parentPresenter){
         this.parentPresenter = parentPresenter;
@@ -58,19 +62,37 @@ public class DetailFragment extends Fragment implements View.OnClickListener{
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = (View) inflater.inflate(R.layout.fragment_detail, container, false);
+        view = (View) inflater.inflate(R.layout.fragment_detail, container, false);
 
-        initView(view);
-        initListener();
+        RetrofitCommunication.BuildingDetailCallBack buildingDetailCallBack = new RetrofitCommunication.BuildingDetailCallBack() {
+            @Override
+            public void buildingDetailDataPath(BuildingDetail buildingDetail) {
 
-        getBuildingInfo();
-        setBuildingInfo();
+                initView(view);
+                initListener();
 
-        presenter.initData(Person.getInstance(), parentPresenter.getTransportData());
+                getBuildingInfo();
+                setBuildingInfo();
 
-        listTransport.setAdapter(transportAdapter);
+                setBuildingDetail(buildingDetail);
+                Log.v("상세 데이터",buildingDetail.getBuildingTel());
+                Log.v("상세 데이터",buildingDetail.getBuildingDescription());
+
+                presenter.initData(Person.getInstance(), parentPresenter.getTransportData());
+                listTransport.setAdapter(transportAdapter);
+
+            }
+        };
+        RetrofitCommunication.getInstance().setBuildingDetailData(buildingDetailCallBack);
+
 
         return view;
+    }
+    private void setBuildingDetail(BuildingDetail buildingDetail){
+        if(buildingDetail.getBuildingTel()!=null) txtBuildingTel.setText("tel. "+buildingDetail.getBuildingTel());
+        else txtBuildingTel.setVisibility(View.GONE);
+        txtDescription.setText(buildingDetail.getBuildingDescription());
+
     }
 
     private void initView(View view){
