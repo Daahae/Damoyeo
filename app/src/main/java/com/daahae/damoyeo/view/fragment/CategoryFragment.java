@@ -92,7 +92,7 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        presenter = new CategoryFragmentPresenter();
+        presenter = new CategoryFragmentPresenter(this);
         buildingAdapter = new BuildingAdapter();
         markerTimeAdapter = new MarkerTimeAdapter();
     }

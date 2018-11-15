@@ -11,8 +11,8 @@ public class Constant {
     public static final int FASTEST_UPDATE_INTERVAL_MS = 15000;
 
     // default location
-    public static final double latitude = 37.5666091;
-    public static final double longitude = 126.978371;
+    public static final double latitude = 37.56666056421257;
+    public static final double longitude = 126.97835471481085;
     public static final LatLng DEFAULT_LOCATION = new LatLng(latitude, longitude);
     public static final String name = "세종대로";
     public static final String address = "서울특별시 중구";
@@ -20,8 +20,8 @@ public class Constant {
     public static final String description = null;
     public static final double distance = 0;
 
-    public static final double landmark_latitude = 37.563228;
-    public static final double landmark_longitude = 126.9851932;
+    public static final double landmark_latitude = 37.56318972577066;
+    public static final double landmark_longitude = 126.98734413832425;
     public static final LatLng LANDMARK_LOCATION = new LatLng(landmark_latitude, landmark_longitude);
     public static final String landmark_name = "명동성당";
     public static final String landmark_address = "서울특별시 중구 저동1가 명동길 74";

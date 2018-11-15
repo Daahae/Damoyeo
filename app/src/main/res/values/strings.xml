@@ -7,8 +7,10 @@
     <string name="tv_search">중간지점 탐색</string>
 
     <string name="msg_default">마커를 움직이세요</string>
+    <string name="msg_add">출발지를 지정하려면 +버튼을 누르세요</string>
     <string name="msg_savemarker">"님의 마커가 추가되었습니다."</string>
     <string name="msg_removemarker">"님의 마커가 삭제되었습니다."</string>
     <string name="msg_checkmarker">올바르지 않은 마커가 선택되었습니다.</string>
     <string name="msg_cannotshow">저장된 마커가 없습니다.</string>
+    <string name="msg_gps_disable">GPS 기능을 활성화 해주세요</string>
 </resources>

@@ -1,5 +1,6 @@
 package com.daahae.damoyeo.presenter;
 
+import android.support.v4.app.Fragment;
 import android.widget.Button;
 
 import com.daahae.damoyeo.model.Building;
@@ -18,13 +19,17 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import java.util.ArrayList;
 
 public class CategoryFragmentPresenter {
-
+    private Fragment view;
     private ArrayList<String> totalTimes;
 
     private BuildingAdapter buildingAdapter;
 
     private LatLngBounds.Builder builder;
     private GoogleMap googleMap;
+
+    public CategoryFragmentPresenter(Fragment view) {
+        this.view = view;
+    }
 
     public void initMarkerTime(ArrayList<String> totalTimes){
         this.totalTimes = totalTimes;
@@ -60,7 +65,10 @@ public class CategoryFragmentPresenter {
 
     public void setCameraState() {
         LatLngBounds bounds = builder.build();
-        CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, 0);
+        int width = view.getResources().getDisplayMetrics().widthPixels;
+        int height = view.getResources().getDisplayMetrics().heightPixels;
+        int padding = (int) (width * 0.10);
+        CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, width, height, padding);
         googleMap.animateCamera(cu);
     }
 

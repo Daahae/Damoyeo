@@ -39,7 +39,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private Context context;
 
     private SignInButton signInButton;
-    private GoogleApiClient googleApiClient;
     private GoogleSignInClient googleSignInClient;
 
     private static final int RC_SIGN_IN = 9001;
@@ -65,30 +64,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         googleSignInClient = GoogleSignIn.getClient(this, gso);;
         //GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
 
-        googleApiClient = new GoogleApiClient.Builder(this)
-                .enableAutoManage(this, this).addApi(Auth.GOOGLE_SIGN_IN_API, gso)
-                .build();
-
-        signInButton = (SignInButton) findViewById(R.id.btn_google_login);
-        signInButton.setOnClickListener(this);
-
         initView();
         initListener();
-        /*
-
-        BuildingRequest buildingRequest = new BuildingRequest();
-        buildingRequest.setName("케이이스케이프");
-        buildingRequest.setLatitude(37.547765);
-        buildingRequest.setLongitude(127.06877);
-        RetrofitCommunication.getInstance().sendBuildingDetail(buildingRequest);*/
-
 
         Display display = getWindowManager().getDefaultDisplay();
         Point size = new Point();
 
         display.getSize(size);
         Constant.displayWidth = size.x;
-
     }
 
     @Override
@@ -99,10 +82,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     private void initView(){
         btnGuestLogin = findViewById(R.id.btn_guest_login);
+        signInButton = findViewById(R.id.btn_google_login);
     }
 
     private void initListener(){
         btnGuestLogin.setOnClickListener(this);
+        signInButton.setOnClickListener(this);
     }
 
     @Override
@@ -127,15 +112,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         super.onActivityResult(requestCode, resultCode, data);
         // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
         if (requestCode == RC_SIGN_IN) {
-            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             try {
+                Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
                 // Google Sign In was successful, authenticate with Firebase
                 GoogleSignInAccount account = task.getResult(ApiException.class);
                 firebaseAuthWithGoogle(account);
             } catch (ApiException e) {
                 // Google Sign In failed, update UI appropriately
                 Log.w(Constant.TAG, "Google sign in failed", e);
-                // ...
             }
         }
     }
@@ -162,13 +146,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(Constant.TAG, "signInWithCredential:success");
                             FirebaseUser user = mAuth.getCurrentUser();
-                            Toast.makeText(context, "Hello, "+user.getDisplayName(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(context, "안녕하세요, "+user.getDisplayName() + "님", Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(LoginActivity.this, MapsActivity.class);
                             startActivity(intent);
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(Constant.TAG, "signInWithCredential:failure", task.getException());
-                            //Snackbar.make(findViewById(R.id.main_layout), "Authentication Failed.", Snackbar.LENGTH_SHORT).show();
                         }
                     }
                 });

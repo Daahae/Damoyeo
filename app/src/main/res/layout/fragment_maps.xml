@@ -50,7 +50,6 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
                 android:orientation="horizontal"
-                android:visibility="invisible"
                 android:src="@drawable/ic_fab_plus"
                 app:backgroundTint="@color/colorWhite"
                 app:elevation="6dp"/>

@@ -51,7 +51,8 @@
         <activity
             android:name=".view.activity.MapsActivity"
             android:configChanges="keyboardHidden|orientation"/>
-        <activity android:name=".view.activity.MyPageActivity"></activity>
+        <activity android:name=".view.activity.MyPageActivity"/>
+        <activity android:name=".view.activity.TransportActivity"/>
     </application>
 
 </manifest>
