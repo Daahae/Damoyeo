@@ -38,8 +38,11 @@ public class CategoryFragmentPresenter {
 
     public void setMarkerTimeList(MarkerTimeAdapter markerTimeAdapter) {
         markerTimeAdapter.resetList();
-        for(int i=0; i < totalTimes.size();i++)
-            markerTimeAdapter.add(Person.getInstance().get(i).getName(), totalTimes.get(i));
+        //TODO: Exception 시간 없을때,
+        if(totalTimes!=null){
+            for(int i=0; i < totalTimes.size();i++)
+                markerTimeAdapter.add(Person.getInstance().get(i).getName(), totalTimes.get(i));
+        }
     }
 
     public void initBuildingInfo(BuildingArr buildingArr){

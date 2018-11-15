@@ -10,6 +10,15 @@ public class BuildingRequest {
     @SerializedName("lng")
     private double longitude;
 
+    public BuildingRequest() {
+    }
+
+    public BuildingRequest(String name, double latitude, double longitude) {
+        this.name = name;
+        this.latitude = latitude;
+        this.longitude = longitude;
+    }
+
     public String getName() {
         return name;
     }

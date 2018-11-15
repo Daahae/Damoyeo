@@ -44,9 +44,6 @@ public class MapsActivityPresenter {
 
     private List<TransportInfoList.Data> transportData;
     private List<Building> buildings;
-    private ArrayList<Person> persons;
-
-    private BuildingDetail detail;
 
     public MapsActivityPresenter(FragmentActivity view) {
         this.view = view;
@@ -99,13 +96,19 @@ public class MapsActivityPresenter {
 
     public void sendMarkerTimeMessage(){
         RetrofitCommunication.getInstance().setPersonList(Person.getInstance());
-        ArrayList<String> totalTimes = RetrofitCommunication.getInstance().sendPersonLocation();
+        RetrofitCommunication.getInstance().sendPersonLocation();
         Log.v("GMAP", "보냄");
+    }
+
+    public void setTotalTimes(ArrayList<String> totalTimes) {
         this.totalTimes = totalTimes;
     }
 
+
     public void clickItem(Building building){
         targetBuilding = building;
+        BuildingRequest buildingRequest = new BuildingRequest(building.getName(),building.getLatitude(),building.getLongitude());
+        RetrofitCommunication.getInstance().sendBuildingDetail(buildingRequest);
     }
 
     public Building getTargetBuilding() {
@@ -119,7 +122,6 @@ public class MapsActivityPresenter {
         }
     }
 
-
     public List<TransportInfoList.Data> getTransportData(){
         setTransportData();
         return transportData;
@@ -130,24 +132,15 @@ public class MapsActivityPresenter {
         return buildings;
     }
 
-    public BuildingDetail getBuildingDetail(String name, Position position){
-        setBuildingDetail(name, position);
-        return detail;
+
+    public void setBuildings(BuildingArr buildingArr) {
+        buildings = buildingArr.getBuildingArr();
     }
 
     private void setBuildingsData(int buildingType){
         UserRequest request = new UserRequest();
         request.setType(buildingType);
-        BuildingArr arr = RetrofitCommunication.getInstance().sendBuildingInfo(request);
-    }
-
-    public void setBuildingDetail(String name, Position position){
-        BuildingRequest buildingRequest = new BuildingRequest();
-        buildingRequest.setName(name);
-        buildingRequest.setLatitude(position.getX());
-        buildingRequest.setLongitude(position.getY());
-        BuildingDetail detail = RetrofitCommunication.getInstance().sendBuildingDetail(buildingRequest);
-        this.detail = detail;
+        RetrofitCommunication.getInstance().sendBuildingInfo(request);
     }
 
 }

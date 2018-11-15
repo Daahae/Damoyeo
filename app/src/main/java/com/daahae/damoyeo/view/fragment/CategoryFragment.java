@@ -23,9 +23,12 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SlidingDrawer;
@@ -87,8 +90,11 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
     private ImageButton btnDepartment, btnShopping, btnStadium, btnZoo, btnMuseum, btnTheater, btnAquarium, btnCafe, btnDrink, btnRestaurant;
 
     private TextView txtDefault;
-
     private TextView txtSelectedCategory;
+
+    private ImageView imgLoading;
+    private Animation anim;
+
     public CategoryFragment(MapsActivityPresenter parentPresenter) {
         this.parentPresenter = parentPresenter;
     }
@@ -113,6 +119,13 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
         initView(rootView);
         initListener();
 
+        setLoadingAnimation();
+
+        presenter.initMarkerTime(parentPresenter.getTotalTimes());
+        presenter.setMarkerTimeList(markerTimeAdapter);
+        listMarkerTime.setAdapter(markerTimeAdapter);
+        Log.v("데이터","들어감");
+
         RetrofitCommunication.UserCallBack userCallBack = new RetrofitCommunication.UserCallBack() {
             @Override
             public void userDataPath(ArrayList<String> totalTimes) {
@@ -120,18 +133,19 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
                 presenter.setMarkerTimeList(markerTimeAdapter);
                 listMarkerTime.setAdapter(markerTimeAdapter);
                 Log.v("데이터","들어감");
+                parentPresenter.setTotalTimes(totalTimes);
             }
         };
-
+        RetrofitCommunication.getInstance().setUserData(userCallBack);
         RetrofitCommunication.BuildingCallBack buildingCallBack = new RetrofitCommunication.BuildingCallBack() {
             @Override
             public void buildingDataPath(BuildingArr buildingArr) {
                 presenter.initBuildingInfo(buildingArr);
                 convertList(presenter.setBuildingInfo(buildingAdapter));
                 listCategory.setAdapter(buildingAdapter);
+                parentPresenter.setBuildings(buildingArr);
             }
         };
-        RetrofitCommunication.getInstance().setUserData(userCallBack);
         RetrofitCommunication.getInstance().setBuildingData(buildingCallBack);
 
         return rootView;
@@ -169,6 +183,7 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
 
         txtSelectedCategory = rootView.findViewById(R.id.txt_selected_category);
         txtDefault = rootView.findViewById(R.id.txt_list_category_default);
+        imgLoading = rootView.findViewById(R.id.img_loading_category);
     }
 
     private void initListener(){
@@ -203,17 +218,36 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
         btnCafe .setOnClickListener(this);
         btnDrink.setOnClickListener(this);
         btnRestaurant.setOnClickListener(this);
+
+    }
+
+    private void setLoadingAnimation(){
+        anim = AnimationUtils.loadAnimation(getContext(), R.anim.loading);
+        imgLoading.setAnimation(anim);
     }
 
     private void convertList(boolean flag){
         if(flag) {
             listCategory.setVisibility(View.VISIBLE);
             txtDefault.setVisibility(View.GONE);
+            imgLoading.setVisibility(View.GONE);
+            imgLoading.clearAnimation();
         }else{
             txtDefault.setVisibility(View.VISIBLE);
             listCategory.setVisibility(View.GONE);
+            imgLoading.setVisibility(View.GONE);
+            imgLoading.clearAnimation();
         }
     }
+
+    private void setLoading(){
+        listCategory.setVisibility(View.GONE);
+        txtDefault.setVisibility(View.GONE);
+        imgLoading.setVisibility(View.VISIBLE);
+
+        setLoadingAnimation();
+    }
+
     public void setBuildingList(){
         presenter.setBuildingInfo(buildingAdapter); // 빌딩 정보 넣기
     }
@@ -498,6 +532,7 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
                 //카테고리 버튼
                 //TODO:각 카테고리 상세 retrofit 받아오기
             case R.id.btn_department_store_category:
+                setLoading();
                 parentPresenter.getBuildings(Constant.DEPARTMENT_STORE);
 
                 btnDepartment.setImageResource(R.drawable.ic_department_store_orange);
@@ -515,6 +550,7 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
                 break;
             case R.id.btn_shopping_category:
                 parentPresenter.getBuildings(Constant.SHOPPING_MALL);
+                setLoading();
 
                 btnDepartment.setImageResource(R.drawable.ic_department_store_gray);
                 btnShopping .setImageResource(R.drawable.ic_shopping_mall_orange);
@@ -531,6 +567,7 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
                 break;
             case R.id.btn_stadium_category:
                 parentPresenter.getBuildings(Constant.STADIUM);
+                setLoading();
 
                 btnDepartment.setImageResource(R.drawable.ic_department_store_gray);
                 btnShopping .setImageResource(R.drawable.ic_shopping_gray);
@@ -547,6 +584,7 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
                 break;
             case R.id.btn_zoo_category:
                 parentPresenter.getBuildings(Constant.ZOO);
+                setLoading();
 
                 btnDepartment.setImageResource(R.drawable.ic_department_store_gray);
                 btnShopping .setImageResource(R.drawable.ic_shopping_gray);
@@ -562,6 +600,7 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
                 break;
             case R.id.btn_museum_category:
                 parentPresenter.getBuildings(Constant.MUSEUM);
+                setLoading();
 
                 btnDepartment.setImageResource(R.drawable.ic_department_store_gray);
                 btnShopping .setImageResource(R.drawable.ic_shopping_gray);
@@ -576,6 +615,7 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
                 txtSelectedCategory.setText("Museum");
                 break;
             case R.id.btn_theater_category:
+                setLoading();
                 parentPresenter.getBuildings(Constant.MOVIE_THEATER);
 
                 btnDepartment.setImageResource(R.drawable.ic_department_store_gray);
@@ -591,6 +631,7 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
                 txtSelectedCategory.setText("Theater");
                 break;
             case R.id.btn_aquarium_store_category:
+                setLoading();
                 parentPresenter.getBuildings(Constant.AQUARIUM);
 
                 btnDepartment.setImageResource(R.drawable.ic_department_store_gray);
@@ -607,6 +648,7 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
                 break;
             case R.id.btn_cafe_category:
                 parentPresenter.getBuildings(Constant.CAFE);
+                setLoading();
 
                 btnDepartment.setImageResource(R.drawable.ic_department_store_gray);
                 btnShopping .setImageResource(R.drawable.ic_shopping_gray);
@@ -621,6 +663,7 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
                 txtSelectedCategory.setText("Cafe");
                 break;
             case R.id.btn_drink_category:
+                setLoading();
                 parentPresenter.getBuildings(Constant.DRINK);
 
                 btnDepartment.setImageResource(R.drawable.ic_department_store_gray);
@@ -636,6 +679,7 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
                 txtSelectedCategory.setText("Drink");
                 break;
             case R.id.btn_restaurant_store_category:
+                setLoading();
                 parentPresenter.getBuildings(Constant.RESTAURANT);
 
                 btnDepartment.setImageResource(R.drawable.ic_department_store_gray);

@@ -393,13 +393,7 @@ public class MapsFragment extends Fragment implements View.OnClickListener, OnMa
                 break;
             case R.id.linear_search_mid:
                 parentPresenter.sendMarkerTimeMessage();
-                PositionNumberServices positionNumberServices = new PositionNumberServices();
-                try {
-                    positionNumberServices.isPosition(parentPresenter.getTotalTimes().size());
-                    parentPresenter.changeView(Constant.CATEGORY_PAGE);
-                } catch (Exception e){
-                    e.printStackTrace();
-                }
+                parentPresenter.changeView(Constant.CATEGORY_PAGE);
                 break;
         }
     }
