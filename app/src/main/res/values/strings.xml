@@ -13,4 +13,6 @@
     <string name="msg_checkmarker">올바르지 않은 마커가 선택되었습니다.</string>
     <string name="msg_cannotshow">저장된 마커가 없습니다.</string>
     <string name="msg_gps_disable">GPS 기능을 활성화 해주세요</string>
+
+    <string name="department_store">Department Store</string>
 </resources>

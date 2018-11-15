@@ -511,7 +511,7 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
                 btnDrink.setImageResource(R.drawable.ic_drink_gray);
                 btnRestaurant.setImageResource(R.drawable.ic_restaurant_gray);
 
-                txtSelectedCategory.setText("Department Store");
+                txtSelectedCategory.setText(getResources().getString(R.string.department_store));
                 break;
             case R.id.btn_shopping_category:
                 parentPresenter.getBuildings(Constant.SHOPPING_MALL);
