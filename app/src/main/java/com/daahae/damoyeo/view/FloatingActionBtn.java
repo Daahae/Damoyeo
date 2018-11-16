@@ -8,6 +8,7 @@ public class FloatingActionBtn {
     private boolean isFabOpen = false;
     private FloatingActionButton fabMenu, fabGPS, fabPick, fabClear, fabFull;
     private FloatingActionButton fabFix;
+    private FloatingActionButton fabLogout;
 
     public FloatingActionButton getFabMenu() {
         return fabMenu;
@@ -63,6 +64,14 @@ public class FloatingActionBtn {
 
     public void setFabFix(FloatingActionButton fabFix) {
         this.fabFix = fabFix;
+    }
+
+    public FloatingActionButton getFabLogout() {
+        return fabLogout;
+    }
+
+    public void setFabLogout(FloatingActionButton fabLogout) {
+        this.fabLogout = fabLogout;
     }
 
     public void anim() {

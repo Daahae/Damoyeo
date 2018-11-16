@@ -301,6 +301,7 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
 
         if ( googleApiClient != null && googleApiClient.isConnected()) {
             LocationServices.FusedLocationApi.removeLocationUpdates(googleApiClient, this);
+            googleApiClient.stopAutoManage(getActivity());
             googleApiClient.disconnect();
         }
     }
@@ -421,7 +422,6 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
 
         //런타임 퍼미션 요청 대화상자나 GPS 활성 요청 대화상자 보이기전에 지도의 초기위치를 서울로 이동
         CameraUpdate point = CameraUpdateFactory.newLatLngZoom(Constant.DEFAULT_LOCATION, 15.0f);
-        googleMap.moveCamera(point);
         googleMap.animateCamera(point);
 
         //  API 23 이상이면 런타임 퍼미션 처리 필요
@@ -483,12 +483,17 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(!isMid) {
-            presenter.showEachMarker(resultCode);
-            presenter.setCameraState(relativeMap);
+            if(resultCode == -1)
+                presenter.showAllMarkers();
+            else
+                presenter.showEachMarker(resultCode);
         } else {
-            presenter.showLandmarkEachMarker(resultCode);
-            presenter.setCameraState(relativeMap);
+            if(resultCode == -1)
+                presenter.showLandmarkAllMarkers();
+            else
+                presenter.showLandmarkEachMarker(resultCode);
         }
+        presenter.setCameraState(relativeMap);
     }
 
     @Override
@@ -496,7 +501,7 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
 
         if(parent.equals(listMarkerTime)){
             Intent intent = new Intent(getActivity(), TransportActivity.class);
-            startActivityForResult(intent, 0);
+            startActivityForResult(intent, -1);
         } else {
             parentPresenter.changeView(Constant.DETAIL_PAGE);
             RetrofitCommunication.getInstance().clickItem(buildingAdapter.getItem(position));
@@ -551,7 +556,7 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
                 btnDrink.setImageResource(R.drawable.ic_drink_gray);
                 btnRestaurant.setImageResource(R.drawable.ic_restaurant_gray);
 
-                txtSelectedCategory.setText(getResources().getString(R.string.department_store));
+                txtSelectedCategory.setText(getResources().getString(R.string.category_department_store));
                 break;
             case R.id.btn_shopping_category:
                 RetrofitCommunication.getInstance().setBuildingsData(Constant.SHOPPING_MALL);

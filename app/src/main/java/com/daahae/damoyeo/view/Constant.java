@@ -5,6 +5,9 @@ import com.google.android.gms.maps.model.LatLng;
 public class Constant {
     public static final String TAG = "googlemap_damoyeo";
 
+    public static final int LOG_IN = 9001;
+    public static final int LOG_OUT = 9999;
+
     public static final int GPS_ENABLE_REQUEST_CODE = 2001;
     public static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 2002;
     public static final int UPDATE_INTERVAL_MS = 15000;

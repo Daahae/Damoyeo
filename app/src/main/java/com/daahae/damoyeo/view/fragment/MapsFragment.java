@@ -58,6 +58,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -105,7 +106,7 @@ public class MapsFragment extends Fragment implements View.OnClickListener, OnMa
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_maps, container, false);
 
-        mapView = (MapView)rootView.findViewById(R.id.map);
+        mapView = (MapView)rootView.findViewById(R.id.map_main);
         mapView.getMapAsync(this);
 
         setPlaceAutoComplete();
@@ -119,6 +120,7 @@ public class MapsFragment extends Fragment implements View.OnClickListener, OnMa
         fabtn.setFabClear((FloatingActionButton) rootView.findViewById(R.id.fab_clear));
         fabtn.setFabFull((FloatingActionButton) rootView.findViewById(R.id.fab_full));
         fabtn.setFabFix((FloatingActionButton) rootView.findViewById(R.id.fab_fix));
+        fabtn.setFabLogout((FloatingActionButton) rootView.findViewById(R.id.fab_logout));
 
         fabtn.getFabMenu().setOnClickListener(this);
         fabtn.getFabGPS().setOnClickListener(this);
@@ -126,6 +128,7 @@ public class MapsFragment extends Fragment implements View.OnClickListener, OnMa
         fabtn.getFabClear().setOnClickListener(this);
         fabtn.getFabFull().setOnClickListener(this);
         fabtn.getFabFix().setOnClickListener(this);
+        fabtn.getFabLogout().setOnClickListener(this);
 
         LinearLayout linearBtnSearchMid = rootView.findViewById(R.id.linear_search_mid);
         linearBtnSearchMid.setOnClickListener(this);
@@ -325,7 +328,6 @@ public class MapsFragment extends Fragment implements View.OnClickListener, OnMa
 
         //런타임 퍼미션 요청 대화상자나 GPS 활성 요청 대화상자 보이기전에 지도의 초기위치를 서울로 이동
         CameraUpdate point = CameraUpdateFactory.newLatLngZoom(Constant.DEFAULT_LOCATION, 15.0f);
-        googleMap.moveCamera(point);
         googleMap.animateCamera(point);
 
         //  API 23 이상이면 런타임 퍼미션 처리 필요
@@ -345,8 +347,6 @@ public class MapsFragment extends Fragment implements View.OnClickListener, OnMa
         } else {
             if ( googleApiClient == null)
                 buildGoogleApiClient();
-
-            //googleMap.setMyLocationEnabled(true);
         }
 
         googleMap.setOnMapClickListener(null);
@@ -402,6 +402,11 @@ public class MapsFragment extends Fragment implements View.OnClickListener, OnMa
                 setAddressToPerson();
                 RetrofitCommunication.getInstance().sendMarkerTimeMessage();
                 parentPresenter.changeView(Constant.CATEGORY_PAGE);
+                break;
+            case R.id.fab_logout:
+                FirebaseAuth.getInstance().signOut();
+                getActivity().setResult(Constant.LOG_OUT);
+                getActivity().finish();
                 break;
         }
     }
@@ -475,7 +480,6 @@ public class MapsFragment extends Fragment implements View.OnClickListener, OnMa
         markerList.clear();
         setDataClear();
         CameraUpdate point = CameraUpdateFactory.newLatLngZoom(Constant.DEFAULT_LOCATION, 15.0f);
-        googleMap.moveCamera(point);
         googleMap.animateCamera(point);
         builder = new LatLngBounds.Builder();
     }
@@ -550,7 +554,7 @@ public class MapsFragment extends Fragment implements View.OnClickListener, OnMa
             currentMarker.showInfoWindow();
 
             if(flag)
-                googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+                googleMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
             return;
         }
 
@@ -561,6 +565,6 @@ public class MapsFragment extends Fragment implements View.OnClickListener, OnMa
         markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
         currentMarker = googleMap.addMarker(markerOptions);
 
-        googleMap.moveCamera(CameraUpdateFactory.newLatLng(Constant.DEFAULT_LOCATION));
+        googleMap.animateCamera(CameraUpdateFactory.newLatLng(Constant.DEFAULT_LOCATION));
     }
 }

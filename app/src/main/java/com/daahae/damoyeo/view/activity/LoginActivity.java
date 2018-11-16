@@ -13,18 +13,13 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.daahae.damoyeo.R;
-import com.daahae.damoyeo.communication.RetrofitCommunication;
-import com.daahae.damoyeo.model.BuildingRequest;
 import com.daahae.damoyeo.view.Constant;
-import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
@@ -33,15 +28,13 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 
-public class LoginActivity extends AppCompatActivity implements View.OnClickListener, GoogleApiClient.OnConnectionFailedListener {
+public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
 
     private Button btnGuestLogin;
     private Context context;
 
     private SignInButton signInButton;
     private GoogleSignInClient googleSignInClient;
-
-    private static final int RC_SIGN_IN = 9001;
 
     private FirebaseAuth mAuth;
 
@@ -99,14 +92,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     private void signIn() {
         Intent signInIntent = googleSignInClient.getSignInIntent();
-        startActivityForResult(signInIntent, RC_SIGN_IN);
+        startActivityForResult(signInIntent, Constant.LOG_IN);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
-        if (requestCode == RC_SIGN_IN) {
+        if (requestCode == Constant.LOG_IN) {
             try {
                 Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
                 // Google Sign In was successful, authenticate with Firebase
@@ -116,17 +109,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 // Google Sign In failed, update UI appropriately
                 Log.w(Constant.TAG, "Google sign in failed", e);
             }
-        }
+        } else if(requestCode == Constant.LOG_OUT)
+            Toast.makeText(context, "로그아웃 되었습니다.", Toast.LENGTH_SHORT).show();
     }
 
     private void changeView(){
         Intent intent = new Intent(LoginActivity.this, MapsActivity.class);
         startActivity(intent);
-    }
-
-    @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
     }
 
     private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {

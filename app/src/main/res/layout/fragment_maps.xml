@@ -13,7 +13,7 @@
         android:layout_weight="1">
 
         <com.google.android.gms.maps.MapView
-            android:id="@+id/map"
+            android:id="@+id/map_main"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:name="com.google.android.gms.maps.MapFragment"
@@ -45,10 +45,22 @@
             android:layout_marginTop="70dp">
 
             <android.support.design.widget.FloatingActionButton
+                android:id="@+id/fab_logout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_gravity="end"
+                android:visibility="visible"
+                android:src="@drawable/ic_logout"
+                app:backgroundTint="@color/colorWhite"
+                app:elevation="6dp"/>
+
+            <android.support.design.widget.FloatingActionButton
                 android:id="@+id/fab_fix"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
+                android:layout_marginTop="10dp"
                 android:orientation="horizontal"
                 android:src="@drawable/ic_fab_plus"
                 app:backgroundTint="@color/colorWhite"
