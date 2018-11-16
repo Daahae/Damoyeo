@@ -62,7 +62,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         mAuth = FirebaseAuth.getInstance();
         googleSignInClient = GoogleSignIn.getClient(this, gso);;
-        //GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
+        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
+        firebaseAuthWithGoogle(account);
 
         initView();
         initListener();
@@ -72,12 +73,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         display.getSize(size);
         Constant.displayWidth = size.x;
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        FirebaseUser currentUser = mAuth.getCurrentUser();
     }
 
     private void initView(){

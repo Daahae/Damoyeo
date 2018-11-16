@@ -3,6 +3,17 @@ package com.daahae.damoyeo.model;
 import com.google.gson.annotations.SerializedName;
 
 public class Building{
+    // targetBuilding
+    private static Building instance = null;
+
+    public static synchronized Building getInstance() {
+        return instance;
+    }
+
+    public static void setInstance(Building instance) {
+        Building.instance = instance;
+    }
+
     @SerializedName("buildingLat")
     private double latitude;
 

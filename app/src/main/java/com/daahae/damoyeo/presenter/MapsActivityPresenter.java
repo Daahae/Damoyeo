@@ -4,46 +4,19 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
 
 import com.daahae.damoyeo.R;
-import com.daahae.damoyeo.communication.RetrofitCommunication;
-import com.daahae.damoyeo.communication.RetrofitService;
-import com.daahae.damoyeo.exception.PositionNumberServices;
-import com.daahae.damoyeo.model.Building;
-import com.daahae.damoyeo.model.BuildingArr;
-import com.daahae.damoyeo.model.BuildingDetail;
-import com.daahae.damoyeo.model.BuildingRequest;
-import com.daahae.damoyeo.model.Position;
-import com.daahae.damoyeo.model.UserRequest;
-import com.daahae.damoyeo.model.Person;
-import com.daahae.damoyeo.model.TransportInfoList;
 import com.daahae.damoyeo.view.Constant;
 import com.daahae.damoyeo.view.fragment.CategoryFragment;
 import com.daahae.damoyeo.view.fragment.DetailFragment;
 import com.daahae.damoyeo.view.fragment.MapsFragment;
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import retrofit2.Callback;
-import retrofit2.Retrofit;
 
 public class MapsActivityPresenter {
     private FragmentActivity view;
 
-    private ArrayList<String> totalTimes;
-
     private Fragment fragment;
     private FragmentManager fragmentManager;
     private FragmentTransaction fragmentTransaction;
-
-    private Building targetBuilding;
-
-    private List<TransportInfoList.Data> transportData;
-    private List<Building> buildings;
 
     public MapsActivityPresenter(FragmentActivity view) {
         this.view = view;
@@ -88,59 +61,6 @@ public class MapsActivityPresenter {
                 setViewFragment(new DetailFragment(this));
                 break;
         }
-    }
-
-    public ArrayList<String> getTotalTimes() {
-        return totalTimes;
-    }
-
-    public void sendMarkerTimeMessage(){
-        RetrofitCommunication.getInstance().setPersonList(Person.getInstance());
-        RetrofitCommunication.getInstance().sendPersonLocation();
-        Log.v("GMAP", "보냄");
-    }
-
-    public void setTotalTimes(ArrayList<String> totalTimes) {
-        this.totalTimes = totalTimes;
-    }
-
-
-    public void clickItem(Building building){
-        targetBuilding = building;
-        BuildingRequest buildingRequest = new BuildingRequest(building.getName(),building.getLatitude(),building.getLongitude());
-        RetrofitCommunication.getInstance().sendBuildingDetail(buildingRequest);
-    }
-
-    public Building getTargetBuilding() {
-        return targetBuilding;
-    }
-
-    public void setTransportData(){
-        TransportInfoList list = RetrofitCommunication.getInstance().getList();
-        for (int i = 0; i < list.getUserArr().size(); i++) {
-            transportData = list.getUserArr();
-        }
-    }
-
-    public List<TransportInfoList.Data> getTransportData(){
-        setTransportData();
-        return transportData;
-    }
-
-    public List<Building> getBuildings(int buildingType){
-        setBuildingsData(buildingType);
-        return buildings;
-    }
-
-
-    public void setBuildings(BuildingArr buildingArr) {
-        buildings = buildingArr.getBuildingArr();
-    }
-
-    private void setBuildingsData(int buildingType){
-        UserRequest request = new UserRequest();
-        request.setType(buildingType);
-        RetrofitCommunication.getInstance().sendBuildingInfo(request);
     }
 
 }

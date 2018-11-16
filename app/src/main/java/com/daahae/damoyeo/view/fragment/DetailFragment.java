@@ -23,6 +23,7 @@ import com.daahae.damoyeo.model.Building;
 import com.daahae.damoyeo.model.BuildingArr;
 import com.daahae.damoyeo.model.BuildingDetail;
 import com.daahae.damoyeo.model.Person;
+import com.daahae.damoyeo.model.TransportInfoList;
 import com.daahae.damoyeo.presenter.DetailFragmentPresenter;
 import com.daahae.damoyeo.presenter.MapsActivityPresenter;
 import com.daahae.damoyeo.view.adapter.TransportAdapter;
@@ -32,18 +33,12 @@ import java.util.ArrayList;
 @SuppressLint("ValidFragment")
 public class DetailFragment extends Fragment implements View.OnClickListener{
 
-    private ListView listTransport;
     private DetailFragmentPresenter presenter;
     private MapsActivityPresenter parentPresenter;
-
-    private TransportAdapter transportAdapter;
-
-    private Button btnBuilding, btnTransport;
 
     private Building building;
 
     private TextView txtBuildingName, txtBuildingAddress, txtBuildingTel, txtDescription, txtBuildingDistance;
-    private LinearLayout linearBuildingDetail;
 
     private ImageButton btnBack;
     private View view;
@@ -56,7 +51,6 @@ public class DetailFragment extends Fragment implements View.OnClickListener{
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         presenter = new DetailFragmentPresenter(this);
-        transportAdapter = new TransportAdapter(parentPresenter.getTransportData(), Person.getInstance(),getContext());
     }
 
     @Nullable
@@ -78,13 +72,11 @@ public class DetailFragment extends Fragment implements View.OnClickListener{
                 Log.v("상세 데이터",buildingDetail.getBuildingTel());
                 Log.v("상세 데이터",buildingDetail.getBuildingDescription());
 
-                presenter.initData(Person.getInstance(), parentPresenter.getTransportData());
-                listTransport.setAdapter(transportAdapter);
+                presenter.initData(Person.getInstance());
 
             }
         };
         RetrofitCommunication.getInstance().setBuildingDetailData(buildingDetailCallBack);
-
 
         return view;
     }
@@ -96,8 +88,6 @@ public class DetailFragment extends Fragment implements View.OnClickListener{
     }
 
     private void initView(View view){
-        btnBuilding = view.findViewById(R.id.btn_building_detail);
-        btnTransport = view.findViewById(R.id.btn_transport_detail);
 
         txtBuildingName = view.findViewById(R.id.txt_building_name_detail);
         txtBuildingAddress = view.findViewById(R.id.txt_building_address_datail);
@@ -105,19 +95,15 @@ public class DetailFragment extends Fragment implements View.OnClickListener{
         txtDescription = view.findViewById(R.id.txt_building_description_detail);
         txtBuildingDistance = view.findViewById(R.id.txt_building_distance_detail);
 
-        linearBuildingDetail = view.findViewById(R.id.linear_building_detail);
-        listTransport = view.findViewById(R.id.list_transport_detail);
         btnBack = view.findViewById(R.id.btn_back_building_transport);
     }
 
     private void initListener(){
-        btnBuilding.setOnClickListener(this);
-        btnTransport.setOnClickListener(this);
         btnBack.setOnClickListener(this);
     }
 
     private void getBuildingInfo(){
-        building = parentPresenter.getTargetBuilding();
+        building = Building.getInstance();
     }
 
     private void setBuildingInfo(){
@@ -131,18 +117,6 @@ public class DetailFragment extends Fragment implements View.OnClickListener{
         switch (view.getId()){
             case R.id.btn_back_building_transport:
                 parentPresenter.backView(this);
-                break;
-            case R.id.btn_building_detail:
-                btnBuilding.setBackgroundResource(R.drawable.bottom_edge_orange_box);
-                btnTransport.setBackgroundResource(R.color.colorWhite);
-                linearBuildingDetail.setVisibility(View.VISIBLE);
-                listTransport.setVisibility(View.GONE);
-                break;
-            case R.id.btn_transport_detail:
-                btnTransport.setBackgroundResource(R.drawable.bottom_edge_orange_box);
-                btnBuilding.setBackgroundResource(R.color.colorWhite);
-                linearBuildingDetail.setVisibility(View.GONE);
-                listTransport.setVisibility(View.VISIBLE);
                 break;
         }
     }

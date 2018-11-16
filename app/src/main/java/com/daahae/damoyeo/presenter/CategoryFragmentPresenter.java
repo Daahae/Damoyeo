@@ -2,6 +2,7 @@ package com.daahae.damoyeo.presenter;
 
 import android.support.v4.app.Fragment;
 import android.widget.Button;
+import android.widget.RelativeLayout;
 
 import com.daahae.damoyeo.model.BuildingArr;
 import com.daahae.damoyeo.model.Person;
@@ -22,8 +23,6 @@ public class CategoryFragmentPresenter {
     private Fragment view;
     private ArrayList<String> totalTimes;
     private BuildingArr buildingArr;
-
-    private BuildingAdapter buildingAdapter;
 
     private LatLngBounds.Builder builder;
     private GoogleMap googleMap;
@@ -50,7 +49,6 @@ public class CategoryFragmentPresenter {
     }
 
     public boolean setBuildingInfo(BuildingAdapter buildingAdapter) {
-        this.buildingAdapter = buildingAdapter;
 
         buildingAdapter.resetList();
         //TODO: Exception 데이터 없을때,
@@ -69,11 +67,11 @@ public class CategoryFragmentPresenter {
         this.googleMap = googleMap;
     }
 
-    public void setCameraState() {
+    public void setCameraState(RelativeLayout relativeMap) {
         LatLngBounds bounds = builder.build();
-        int width = view.getResources().getDisplayMetrics().widthPixels;
-        int height = view.getResources().getDisplayMetrics().heightPixels;
-        int padding = (int) (width * 0.10);
+        int width = relativeMap.getWidth();
+        int height = relativeMap.getHeight();
+        int padding = (int) (height * 0.10);
         CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, width, height, padding);
         googleMap.animateCamera(cu);
     }

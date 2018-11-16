@@ -1,17 +1,17 @@
 package com.daahae.damoyeo.communication;
 
-import android.os.Build;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.daahae.damoyeo.exception.PositionNumberServices;
+import com.daahae.damoyeo.model.Building;
 import com.daahae.damoyeo.model.BuildingArr;
 import com.daahae.damoyeo.model.BuildingDetail;
 import com.daahae.damoyeo.model.BuildingRequest;
 import com.daahae.damoyeo.model.UserRequest;
 import com.daahae.damoyeo.model.Person;
 import com.daahae.damoyeo.model.TransportInfoList;
-import com.daahae.damoyeo.presenter.MapsActivityPresenter;
-import com.daahae.damoyeo.view.activity.MapsActivity;
+import com.daahae.damoyeo.view.Constant;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
@@ -23,12 +23,11 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RetrofitCommunication{
 
-    public static final String URL = "http://13.125.192.103/";
+    private static final String URL = "http://13.125.192.103/";
 
     private RetrofitService retrofitService;
     private Retrofit retrofit;
 
-    private ArrayList<Person> persons;
     private ArrayList<String> totalTimes;
     private TransportInfoList TransportList;
     private BuildingArr buildingList;
@@ -37,6 +36,10 @@ public class RetrofitCommunication{
     private UserCallBack userCallBack;
     private BuildingCallBack buildingCallBack;
     private BuildingDetailCallBack buildingDetailCallBack;
+
+    private static RetrofitCommunication instance = new RetrofitCommunication();
+
+    public static synchronized RetrofitCommunication getInstance() {return instance;}
 
     public interface UserCallBack {
         void userDataPath(ArrayList<String> totalTimes);
@@ -50,7 +53,7 @@ public class RetrofitCommunication{
         void buildingDetailDataPath(BuildingDetail buildingDetail);
     }
 
-    public RetrofitCommunication(){
+    private RetrofitCommunication(){
         connectServer();
         init();
     }
@@ -65,17 +68,9 @@ public class RetrofitCommunication{
         this.buildingDetailCallBack = buildingDetailCallBack;
     }
 
-    public ArrayList<String> getTotalTimes() {
-        return totalTimes;
-    }
-
-    public TransportInfoList getList(){return TransportList;}
-
     private void init(){
         retrofitService = retrofit.create(RetrofitService.class);
-        persons = new ArrayList<>();
         totalTimes = new ArrayList<>();
-
     }
 
     private void connectServer(){
@@ -86,14 +81,14 @@ public class RetrofitCommunication{
                 .build();
     }
 
-    public ArrayList<String> sendPersonLocation(){
-        String strMessage = makeForm();
+    private void sendPersonLocation(ArrayList<Person> persons){
+        String strMessage = makeForm(persons);
         Log.v("메시지",strMessage);
 
         final retrofit2.Call<JsonObject> comment = retrofitService.getTransportData(strMessage);
         comment.enqueue(new Callback<JsonObject>() {
             @Override
-            public void onResponse(retrofit2.Call<JsonObject> call, retrofit2.Response<JsonObject> response) {
+            public void onResponse(@NonNull retrofit2.Call<JsonObject> call, @NonNull retrofit2.Response<JsonObject> response) {
                 if (response.isSuccessful()) {
                     Log.v("알림", response.toString());
                     Log.v("전체", response.body().toString());
@@ -101,6 +96,8 @@ public class RetrofitCommunication{
                     TransportList = new Gson().fromJson(json, TransportInfoList.class);
                     Log.v("총 시간 개수", String.valueOf(TransportList.getUserArr().size()));
 
+                    //* set TransportInfo
+                    TransportInfoList.getInstance().setUserArr(TransportList.getUserArr());
                     PositionNumberServices positionNumberServices = new PositionNumberServices();
 
                     try {
@@ -119,30 +116,30 @@ public class RetrofitCommunication{
             }
 
             @Override
-            public void onFailure(retrofit2.Call<JsonObject> call, Throwable t) {
+            public void onFailure(@NonNull retrofit2.Call<JsonObject> call, @NonNull Throwable t) {
             }
         });
-        return totalTimes;
     }
 
-    private String makeForm(){
+    private String makeForm(ArrayList<Person> persons){
         String strMessage="[";
         for(int i=0;i<persons.size();i++){
-            if(i==persons.size()-1) strMessage += persons.get(i).getAddressPosition().toString();
-            else strMessage += persons.get(i).getAddressPosition().toString()+",";
+            strMessage += persons.get(i).getAddressPosition().toString();
+            if(i!=persons.size()-1)
+                strMessage += ",";;
         }
         strMessage+="]";
         return strMessage;
     }
 
-    public BuildingArr sendBuildingInfo(UserRequest request){
+    private void sendBuildingInfo(UserRequest request){
         String message = request.toString();
         Log.v("메시지",message+"");
 
         final retrofit2.Call<JsonObject> comment = retrofitService.getBuildingData(message);
         comment.enqueue(new Callback<JsonObject>() {
             @Override
-            public void onResponse(retrofit2.Call<JsonObject> call, retrofit2.Response<JsonObject> response) {
+            public void onResponse(@NonNull retrofit2.Call<JsonObject> call, @NonNull retrofit2.Response<JsonObject> response) {
                 if (response.isSuccessful()) {
                     Log.v("알림", response.toString());
                     Log.v("전체", response.body().toString());
@@ -155,21 +152,20 @@ public class RetrofitCommunication{
             }
 
             @Override
-            public void onFailure(retrofit2.Call<JsonObject> call, Throwable t) {
+            public void onFailure(@NonNull retrofit2.Call<JsonObject> call, @NonNull Throwable t) {
             }
         });
-        return buildingList;
     }
 
 
-    public BuildingDetail sendBuildingDetail(BuildingRequest request){
+    private void sendBuildingDetail(BuildingRequest request){
         String message = request.toString();
         Log.v("메시지",message+"");
 
         final retrofit2.Call<JsonObject> comment = retrofitService.getBuildingDetail(message);
         comment.enqueue(new Callback<JsonObject>() {
             @Override
-            public void onResponse(retrofit2.Call<JsonObject> call, retrofit2.Response<JsonObject> response) {
+            public void onResponse(@NonNull retrofit2.Call<JsonObject> call, @NonNull retrofit2.Response<JsonObject> response) {
                 if (response.isSuccessful()) {
                     Log.v("알림", response.toString());
                     Log.v("전체", response.body().toString());
@@ -182,18 +178,25 @@ public class RetrofitCommunication{
 
 
             @Override
-            public void onFailure(retrofit2.Call<JsonObject> call, Throwable t) {
+            public void onFailure(@NonNull retrofit2.Call<JsonObject> call, @NonNull Throwable t) {
             }
         });
-        return buildingDetail;
     }
 
-    private static RetrofitCommunication instance = new RetrofitCommunication();
-
-    public static synchronized RetrofitCommunication getInstance() {return instance;}
-
-    public void setPersonList(ArrayList<Person> person){
-        persons = person;
+    public void sendMarkerTimeMessage(){
+        sendPersonLocation(Person.getInstance());
+        Log.v(Constant.TAG, "전송");
     }
 
+    public void clickItem(Building building){
+        Building.setInstance(building);
+        BuildingRequest buildingRequest = new BuildingRequest(building.getName(),building.getLatitude(),building.getLongitude());
+        sendBuildingDetail(buildingRequest);
+    }
+
+    public void setBuildingsData(int buildingType){
+        UserRequest request = new UserRequest();
+        request.setType(buildingType);
+        sendBuildingInfo(request);
+    }
 }

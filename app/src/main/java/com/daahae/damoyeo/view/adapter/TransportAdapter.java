@@ -82,8 +82,7 @@ public class TransportAdapter extends BaseAdapter {
 
         String strViewTime = getViewTime(getTime(), myItem.getTotalTime());
 
-        //TODO: 사용자 주소 지정해서 수정
-        //setBuildingListText(null,person.getName(),formAddress(person.getAddress()),formTakenTime(myItem.getTotalTime()),strViewTime);
+        setBuildingListText(null,person.getName(),formAddress(person.getAddress()),formTakenTime(myItem.getTotalTime()),strViewTime);
         setBuildingListText(null,person.getName(),"주소",formTakenTime(myItem.getTotalTime()),strViewTime);
 
         createViewBar(myItem);
@@ -91,7 +90,6 @@ public class TransportAdapter extends BaseAdapter {
     }
 
     private String getViewTime(Calendar calendar, int totalTime){
-
 
         int hour = calendar.get(Calendar.HOUR_OF_DAY);
         int min = calendar.get(Calendar.MINUTE);
@@ -243,21 +241,21 @@ public class TransportAdapter extends BaseAdapter {
 
     }
 
-    private int getWidth(int width,int size){
+    private int getWidth(int width,int size) {
+
         if(width<100) width=100;
         else if(width>400&&size<5) width -= 100;
         else if(width>300&&size<6) width -= 100;
         else if(width>200) width -=50;
 
         return width;
-
     }
-    private void addMargin(){
+
+    private void addMargin() {
+
         TextView margin = new TextView(context);
         margin.setLayoutParams(new LinearLayout.LayoutParams(30, LinearLayout.LayoutParams.MATCH_PARENT));
         margin.setBackgroundResource(R.color.colorWhite);
         linearTransportItem.addView(margin);
-
     }
-
 }

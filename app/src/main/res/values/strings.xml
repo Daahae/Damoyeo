@@ -14,5 +14,14 @@
     <string name="msg_cannotshow">저장된 마커가 없습니다.</string>
     <string name="msg_gps_disable">GPS 기능을 활성화 해주세요</string>
 
-    <string name="department_store">Department Store</string>
+    <string name="category_department_store">Department Store</string>
+    <string name="category_shopping_mall">Shopping Mall</string>
+    <string name="category_stadium">Stadium</string>
+    <string name="category_zoo">Zoo</string>
+    <string name="category_museum">Museum</string>
+    <string name="category_theater">Theater</string>
+    <string name="category_aquarium">Aquarium</string>
+    <string name="category_cafe">Cafe</string>
+    <string name="category_drink">Drink</string>
+    <string name="category_restaurant">Restaurant</string>
 </resources>

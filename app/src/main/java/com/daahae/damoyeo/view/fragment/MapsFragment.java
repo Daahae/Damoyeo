@@ -7,6 +7,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Point;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Build;
@@ -28,7 +30,7 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.daahae.damoyeo.R;
-import com.daahae.damoyeo.exception.PositionNumberServices;
+import com.daahae.damoyeo.communication.RetrofitCommunication;
 import com.daahae.damoyeo.model.Person;
 import com.daahae.damoyeo.model.Position;
 import com.daahae.damoyeo.presenter.MapsActivityPresenter;
@@ -57,7 +59,9 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 @SuppressLint("ValidFragment")
 public class MapsFragment extends Fragment implements View.OnClickListener, OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks,
@@ -79,6 +83,8 @@ public class MapsFragment extends Fragment implements View.OnClickListener, OnMa
 
     private GPSInfo gps;
 
+    private Geocoder geocoder;
+
     public MapsFragment(MapsActivityPresenter parentPresenter) {
         this.parentPresenter = parentPresenter;
     }
@@ -90,6 +96,7 @@ public class MapsFragment extends Fragment implements View.OnClickListener, OnMa
         markerList = new ArrayList<Marker>();
         fabtn = new FloatingActionBtn();
 
+        geocoder = new Geocoder(getActivity());
         presenter = new MapsFragmentPresenter();
     }
 
@@ -392,10 +399,50 @@ public class MapsFragment extends Fragment implements View.OnClickListener, OnMa
                 fixMarker();
                 break;
             case R.id.linear_search_mid:
-                parentPresenter.sendMarkerTimeMessage();
+                setAddressToPerson();
+                RetrofitCommunication.getInstance().sendMarkerTimeMessage();
                 parentPresenter.changeView(Constant.CATEGORY_PAGE);
                 break;
         }
+    }
+
+    private void setAddressToPerson() {
+        ArrayList<Person> personList = Person.getInstance();
+        for (Person p:personList) {
+            double lat = p.getAddressPosition().getX();
+            double lng = p.getAddressPosition().getY();
+            LatLng latLng = new LatLng(lat, lng);
+            Address address = null;
+            while(address == null) {
+                address = getFromLocationToName(latLng);
+                latLng = new LatLng(lat, lng+=0.0001);
+            }
+            p.setAddress(address.getAddressLine(0));
+        }
+    }
+
+    // 좌표 - 주소 변환
+    private Address getFromLocationToName(LatLng latLng) {
+        List<Address> list = null;
+        Address address = null;
+        try {
+            list = geocoder.getFromLocation(
+                    latLng.latitude, // 위도
+                    latLng.longitude, // 경도
+                    1); // 얻어올 값의 개수
+        } catch (IOException e) {
+            e.printStackTrace();
+            Log.e("test", "입출력 오류 - 서버에서 주소변환시 에러발생");
+        }
+        if (list != null) {
+            if (list.size()==0)
+                Log.d(Constant.TAG, "해당되는 주소 정보는 없습니다");
+            else {
+                address = list.get(0);
+                Log.d(Constant.TAG, list.get(0).toString());
+            }
+        }
+        return address;
     }
 
     private void setGPS() {
@@ -480,7 +527,7 @@ public class MapsFragment extends Fragment implements View.OnClickListener, OnMa
         LatLngBounds bounds = builder.build();
         int width = getResources().getDisplayMetrics().widthPixels;
         int height = getResources().getDisplayMetrics().heightPixels;
-        int padding = (int) (width * 0.10);
+        int padding = (int) (height * 0.10);
         CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, width, height, padding);
         googleMap.animateCamera(cu);
     }

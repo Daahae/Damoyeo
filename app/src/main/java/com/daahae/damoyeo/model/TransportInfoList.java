@@ -6,12 +6,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TransportInfoList {
+    private static TransportInfoList instance = new TransportInfoList();
+
+    public static synchronized TransportInfoList getInstance() {
+        return instance;
+    }
 
     @SerializedName("userArr")
     private List<Data> userArr;
 
     public List<Data> getUserArr() {
         return userArr;
+    }
+
+    public void setUserArr(List<Data> userArr) {
+        this.userArr = userArr;
     }
 
     public class Data{
