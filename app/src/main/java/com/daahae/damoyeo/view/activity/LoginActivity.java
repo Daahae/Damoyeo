@@ -70,6 +70,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         Constant.displayWidth = size.x;
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
     private void initView(){
         btnGuestLogin = findViewById(R.id.btn_guest_login);
         signInButton = findViewById(R.id.btn_google_login);
@@ -146,9 +151,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(Constant.TAG, "signInWithCredential:failure", task.getException());
-                            signInButton.setEnabled(true);
-                            signInButton.setClickable(true);
                         }
+                        signInButton.setEnabled(true);
+                        signInButton.setClickable(true);
                     }
                 });
     }

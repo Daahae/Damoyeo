@@ -1,5 +1,6 @@
 package com.daahae.damoyeo.presenter;
 
+import android.os.Build;
 import android.support.v4.app.Fragment;
 import android.widget.Button;
 import android.widget.RelativeLayout;
@@ -72,8 +73,11 @@ public class CategoryFragmentPresenter {
         int width = relativeMap.getWidth();
         int height = relativeMap.getHeight();
         int padding = (int) (height * 0.10);
-        CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, width, height, padding);
-        googleMap.animateCamera(cu);
+        CameraUpdate point = CameraUpdateFactory.newLatLngBounds(bounds, width, height, padding);
+        if ( Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+            googleMap.animateCamera(point);
+        else
+            googleMap.moveCamera(point);
     }
 
     public void showAllMarkers() {

@@ -301,11 +301,7 @@ public class MapsFragment extends Fragment implements View.OnClickListener, OnMa
         } else {
             LocationServices.FusedLocationApi
                     .requestLocationUpdates(googleApiClient, locationRequest, this);
-
-            this.googleMap.getUiSettings().setCompassEnabled(false);
-            this.googleMap.animateCamera(CameraUpdateFactory.zoomTo(15));
         }
-
     }
 
     @Override
@@ -368,16 +364,17 @@ public class MapsFragment extends Fragment implements View.OnClickListener, OnMa
             if ( googleApiClient == null)
                 buildGoogleApiClient();
         }
-        if(Person.getInstance().size() == 0) {
-            CameraUpdate point = CameraUpdateFactory.newLatLngZoom(Constant.DEFAULT_LOCATION, 15.0f);
-            googleMap.animateCamera(point);
-        } else {
-            showAllMarkersOnState();
-            showAllMarkers();
-        }
         googleMap.setOnMapClickListener(this);
         googleMap.setOnMarkerClickListener(this);
-        builder = new LatLngBounds.Builder();
+
+        CameraUpdate point = CameraUpdateFactory.newLatLngZoom(Constant.DEFAULT_LOCATION, 15.0f);
+        googleMap.moveCamera(point);
+
+        if(Person.getInstance().size() > 0) {
+            showAllMarkersOnState();
+            showAllMarkers();
+        } else
+            builder = new LatLngBounds.Builder();
     }
 
     @Override
@@ -503,8 +500,10 @@ public class MapsFragment extends Fragment implements View.OnClickListener, OnMa
         setMarkerClear();
 
         CameraUpdate point = CameraUpdateFactory.newLatLngZoom(Constant.DEFAULT_LOCATION, 15.0f);
-        googleMap.animateCamera(point);
-
+        if ( Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+            googleMap.animateCamera(point);
+        else
+            googleMap.moveCamera(point);
         builder = new LatLngBounds.Builder();
     }
 
@@ -552,12 +551,17 @@ public class MapsFragment extends Fragment implements View.OnClickListener, OnMa
     }
 
     private void showAllMarkers() {
-        LatLngBounds bounds = builder.build();
-        int width = getResources().getDisplayMetrics().widthPixels;
-        int height = getResources().getDisplayMetrics().heightPixels;
-        int padding = (int) (height * 0.10);
-        CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, width, height, padding);
-        googleMap.animateCamera(cu);
+        if(markerList.size() > 0) {
+            LatLngBounds bounds = builder.build();
+            int width = getResources().getDisplayMetrics().widthPixels;
+            int height = getResources().getDisplayMetrics().heightPixels;
+            int padding = (int) (height * 0.10);
+            CameraUpdate point = CameraUpdateFactory.newLatLngBounds(bounds, width, height, padding);
+            if ( Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+                googleMap.animateCamera(point);
+            else
+                googleMap.moveCamera(point);
+        }
     }
 
     private void setCurrentMarker(boolean flag, LatLng latLng, String markerTitle, String markerSnippet) {
@@ -576,8 +580,12 @@ public class MapsFragment extends Fragment implements View.OnClickListener, OnMa
             currentMarker = googleMap.addMarker(markerOptions);
             currentMarker.showInfoWindow();
 
-            if(flag)
-                googleMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
+            if(flag) {
+                if ( Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+                    googleMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
+                else
+                    googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+            }
             return;
         }
 
@@ -588,12 +596,16 @@ public class MapsFragment extends Fragment implements View.OnClickListener, OnMa
         markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
         currentMarker = googleMap.addMarker(markerOptions);
 
-        googleMap.animateCamera(CameraUpdateFactory.newLatLng(Constant.DEFAULT_LOCATION));
+        if ( Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+            googleMap.animateCamera(CameraUpdateFactory.newLatLng(Constant.DEFAULT_LOCATION));
+        else
+            googleMap.moveCamera(CameraUpdateFactory.newLatLng(Constant.DEFAULT_LOCATION));
     }
 
     public void showAllMarkersOnState() {
         googleMap.clear();
         builder = new LatLngBounds.Builder();
+        markerList.clear();
 
         for (Person person : Person.getInstance()) {
             String markerTitle = person.getName();
@@ -605,7 +617,8 @@ public class MapsFragment extends Fragment implements View.OnClickListener, OnMa
             markerOptions.title(markerTitle);
             markerOptions.snippet(markerSnippet);
             markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
-            googleMap.addMarker(markerOptions);
+            Marker marker = googleMap.addMarker(markerOptions);
+            markerList.add(marker);
 
             builder.include(markerOptions.getPosition());
         }

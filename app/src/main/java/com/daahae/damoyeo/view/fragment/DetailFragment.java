@@ -115,8 +115,10 @@ public class DetailFragment extends Fragment implements View.OnClickListener, On
                 Log.v("상세 데이터",buildingDetail.getBuildingTel());
                 Log.v("상세 데이터",buildingDetail.getBuildingDescription());
 
-                LatLng latLng = new LatLng(building.getLatitude(), building.getLongitude());
-                setLocation(latLng);
+                if(googleMap != null) {
+                    LatLng latLng = new LatLng(building.getLatitude(), building.getLongitude());
+                    setLocation(latLng);
+                }
                 showBuilding(building);
 
                 presenter.initData(Person.getInstance());
@@ -271,9 +273,6 @@ public class DetailFragment extends Fragment implements View.OnClickListener, On
         } else {
             LocationServices.FusedLocationApi
                     .requestLocationUpdates(googleApiClient, locationRequest, this);
-
-            this.googleMap.getUiSettings().setCompassEnabled(false);
-            this.googleMap.animateCamera(CameraUpdateFactory.zoomTo(15));
         }
     }
 
@@ -343,7 +342,6 @@ public class DetailFragment extends Fragment implements View.OnClickListener, On
     private void setLocation(LatLng latLng) {
         CameraUpdate point = CameraUpdateFactory.newLatLngZoom(latLng, 15.0f);
         googleMap.moveCamera(point);
-        googleMap.animateCamera(point);
     }
 
     private void setBuildingDetail(BuildingDetail buildingDetail){
@@ -375,8 +373,11 @@ public class DetailFragment extends Fragment implements View.OnClickListener, On
     }
 
     public void showCurrentMarker() {
-        CameraUpdate c = CameraUpdateFactory.newLatLng(currentMarker.getPosition());
-        googleMap.animateCamera(c);
+        CameraUpdate point = CameraUpdateFactory.newLatLng(currentMarker.getPosition());
+        if ( Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+            googleMap.animateCamera(point);
+        else
+            googleMap.moveCamera(point);
     }
 
     @Override

@@ -60,6 +60,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -380,7 +381,6 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
             LocationServices.FusedLocationApi
                     .requestLocationUpdates(googleApiClient, locationRequest, this);
         }
-
     }
 
     @Override
@@ -441,6 +441,8 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
             if ( googleApiClient == null)
                 buildGoogleApiClient();
         }
+        CameraUpdate point = CameraUpdateFactory.newLatLngZoom(Constant.DEFAULT_LOCATION, 15.0f);
+        googleMap.moveCamera(point);
 
         presenter.setGMapSetting(googleMap);
         presenter.showAllMarkers();
