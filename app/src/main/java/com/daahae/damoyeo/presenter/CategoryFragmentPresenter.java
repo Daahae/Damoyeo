@@ -90,7 +90,6 @@ public class CategoryFragmentPresenter {
 
         builder.include(markerOption.getPosition());
 
-        //현재위치의 위도 경도 가져옴
         for (Person person : Person.getInstance()) {
             String markerTitle = person.getName();
             String markerSnippet = person.getAddress();
@@ -107,7 +106,7 @@ public class CategoryFragmentPresenter {
         }
     }
 
-    public void showEachMarker(int position) {
+    public void showEachMarker(int index) {
         googleMap.clear();
         builder = new LatLngBounds.Builder();
 
@@ -121,8 +120,7 @@ public class CategoryFragmentPresenter {
 
         builder.include(markerOption.getPosition());
 
-        //현재위치의 위도 경도 가져옴
-        Person person = Person.getInstance().get(position);
+        Person person = Person.getInstance().get(index);
         String markerTitle = person.getName();
         String markerSnippet = person.getAddress();
         LatLng latLng = new LatLng(person.getAddressPosition().getX(), person.getAddressPosition().getY());
@@ -151,7 +149,6 @@ public class CategoryFragmentPresenter {
 
         builder.include(markerOption.getPosition());
 
-        //현재위치의 위도 경도 가져옴
         for (Person person : Person.getInstance()) {
             String markerTitle = person.getName();
             String markerSnippet = person.getAddress();
@@ -168,7 +165,7 @@ public class CategoryFragmentPresenter {
         }
     }
 
-    public void showLandmarkEachMarker(int position) {
+    public void showLandmarkEachMarker(int index) {
         googleMap.clear();
         builder = new LatLngBounds.Builder();
 
@@ -182,8 +179,7 @@ public class CategoryFragmentPresenter {
 
         builder.include(markerOption.getPosition());
 
-        //현재위치의 위도 경도 가져옴
-        Person person = Person.getInstance().get(position);
+        Person person = Person.getInstance().get(index);
         String markerTitle = person.getName();
         String markerSnippet = person.getAddress();
         LatLng latLng = new LatLng(person.getAddressPosition().getX(), person.getAddressPosition().getY());

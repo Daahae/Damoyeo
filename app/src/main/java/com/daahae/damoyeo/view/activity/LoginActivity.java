@@ -54,9 +54,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 .build();
 
         mAuth = FirebaseAuth.getInstance();
-        googleSignInClient = GoogleSignIn.getClient(this, gso);;
-        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
-        firebaseAuthWithGoogle(account);
+        googleSignInClient = GoogleSignIn.getClient(this, gso);
+
+        // auto login
+        //GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
+        //firebaseAuthWithGoogle(account);
 
         initView();
         initListener();
@@ -83,6 +85,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         switch (view.getId()){
             case R.id.btn_google_login:
                 signIn();
+                signInButton.setClickable(false);
+                signInButton.setEnabled(false);
                 break;
             case R.id.btn_guest_login:
                 changeView();
@@ -108,14 +112,20 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             } catch (ApiException e) {
                 // Google Sign In failed, update UI appropriately
                 Log.w(Constant.TAG, "Google sign in failed", e);
+                signInButton.setEnabled(true);
+                signInButton.setClickable(true);
             }
-        } else if(requestCode == Constant.LOG_OUT)
-            Toast.makeText(context, "로그아웃 되었습니다.", Toast.LENGTH_SHORT).show();
+        } else if(requestCode == Constant.GOOGLE_LOGIN) {
+            if(resultCode == Constant.LOG_OUT) {
+                FirebaseAuth.getInstance().signOut();
+                Toast.makeText(context, "로그아웃 되었습니다.", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
     private void changeView(){
         Intent intent = new Intent(LoginActivity.this, MapsActivity.class);
-        startActivity(intent);
+        startActivityForResult(intent, Constant.GUEST_LOGIN);
     }
 
     private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
@@ -132,10 +142,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             FirebaseUser user = mAuth.getCurrentUser();
                             Toast.makeText(context, "안녕하세요, "+user.getDisplayName() + "님", Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(LoginActivity.this, MapsActivity.class);
-                            startActivity(intent);
+                            startActivityForResult(intent, Constant.GOOGLE_LOGIN);
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(Constant.TAG, "signInWithCredential:failure", task.getException());
+                            signInButton.setEnabled(true);
+                            signInButton.setClickable(true);
                         }
                     }
                 });

@@ -44,6 +44,7 @@ public class TransportActivity extends AppCompatActivity implements View.OnClick
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.btn_back_transport:
+                setResult(-1);
                 finish();
                 break;
         }
@@ -52,6 +53,12 @@ public class TransportActivity extends AppCompatActivity implements View.OnClick
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         setResult(position);
+        finish();
+    }
+
+    @Override
+    public void onBackPressed() {
+        setResult(-1);
         finish();
     }
 }
