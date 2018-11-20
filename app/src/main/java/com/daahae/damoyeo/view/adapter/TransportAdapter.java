@@ -244,9 +244,10 @@ public class TransportAdapter extends BaseAdapter {
     private int getWidth(int width,int size) {
 
         if(width<100) width=100;
-        else if(width>400&&size<5) width -= 100;
-        else if(width>300&&size<6) width -= 100;
-        else if(width>200) width -=50;
+        else if(width>200&&size>=7) width -= 100;
+        else if(width>300&&size>=6) width -= 100;
+        else if(width>400&&size>=5) width -= 100;
+        else if(width>500&&size>=4) width -=50;
 
         return width;
     }

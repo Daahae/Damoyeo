@@ -16,6 +16,7 @@ public class MapsActivity extends FragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+        Constant.context = this;
         new MapsActivityPresenter(this);
 
     }

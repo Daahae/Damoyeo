@@ -149,6 +149,7 @@ public class MapsFragment extends Fragment implements View.OnClickListener, OnMa
                 Toast.makeText(getContext(), place.getAddress().toString() + place.getPhoneNumber() + "", Toast.LENGTH_SHORT).show();
 
                 setCurrentMarker(true, latLng, place.getName().toString(), place.getAddress().toString());
+                presenter.saveSearchName(place.getName().toString());
             }
 
             @Override

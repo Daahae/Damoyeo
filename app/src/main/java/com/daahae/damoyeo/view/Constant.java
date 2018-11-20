@@ -1,5 +1,7 @@
 package com.daahae.damoyeo.view;
 
+import android.content.Context;
+
 import com.google.android.gms.maps.model.LatLng;
 
 public class Constant {
@@ -60,4 +62,6 @@ public class Constant {
     public static final int WALK = 3;
 
     public static int displayWidth;
+
+    public static Context context;
 }
