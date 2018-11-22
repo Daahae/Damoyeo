@@ -20,7 +20,7 @@ public class ResentSearchDBHelper extends SQLiteOpenHelper {
         String ClosetSQL = "create table tb_resent_search "+
                 "(_id integer primary key autoincrement, "+
                 SEARCH + ")";
-        Log.i("알림 : ","Table 생성됨");
+        Log.v("table 생성","Table 생성됨");
 
         db.execSQL(ClosetSQL);
     }

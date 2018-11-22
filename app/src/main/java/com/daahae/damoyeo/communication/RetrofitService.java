@@ -24,5 +24,4 @@ public interface RetrofitService {
     @POST("midDetailCategory")
     Call<JsonObject> getBuildingDetail(@Field("buildingRequest") String name);
 
-
 }

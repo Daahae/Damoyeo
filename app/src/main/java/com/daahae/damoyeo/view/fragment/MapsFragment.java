@@ -31,6 +31,8 @@ import android.widget.Toast;
 
 import com.daahae.damoyeo.R;
 import com.daahae.damoyeo.communication.RetrofitCommunication;
+import com.daahae.damoyeo.exception.ExceptionHandle;
+import com.daahae.damoyeo.exception.ExceptionService;
 import com.daahae.damoyeo.model.Person;
 import com.daahae.damoyeo.model.Position;
 import com.daahae.damoyeo.presenter.MapsActivityPresenter;
@@ -401,8 +403,16 @@ public class MapsFragment extends Fragment implements View.OnClickListener, OnMa
                 break;
             case R.id.linear_search_mid:
                 setAddressToPerson();
-                RetrofitCommunication.getInstance().sendMarkerTimeMessage();
-                parentPresenter.changeView(Constant.CATEGORY_PAGE);
+                try {
+                    ExceptionService.getInstance().isSetMarker(Person.getInstance().size());
+                } catch (ExceptionHandle exceptionHandle) {
+                    exceptionHandle.printStackTrace();
+                    Toast.makeText(getContext(),exceptionHandle.getMessage(),Toast.LENGTH_SHORT).show();
+                }
+                if(Person.getInstance().size()>1){
+                    RetrofitCommunication.getInstance().sendMarkerTimeMessage();
+                    parentPresenter.changeView(Constant.CATEGORY_PAGE);
+                }
                 break;
             case R.id.fab_logout:
                 FirebaseAuth.getInstance().signOut();

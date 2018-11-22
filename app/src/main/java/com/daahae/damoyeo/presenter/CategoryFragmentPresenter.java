@@ -3,7 +3,10 @@ package com.daahae.damoyeo.presenter;
 import android.support.v4.app.Fragment;
 import android.widget.Button;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
+import com.daahae.damoyeo.exception.ExceptionHandle;
+import com.daahae.damoyeo.exception.ExceptionService;
 import com.daahae.damoyeo.model.BuildingArr;
 import com.daahae.damoyeo.model.Person;
 import com.daahae.damoyeo.view.Constant;
@@ -51,8 +54,12 @@ public class CategoryFragmentPresenter {
     public boolean setBuildingInfo(BuildingAdapter buildingAdapter) {
 
         buildingAdapter.resetList();
-        //TODO: Exception 데이터 없을때,
-        if(buildingArr.getBuildingArr().size()==0) return false;
+        try {
+            ExceptionService.getInstance().isExistBuilding(buildingArr);
+        } catch (ExceptionHandle exceptionHandle) {
+            exceptionHandle.printStackTrace();
+            return false;
+        }
         for(int i=0;i<buildingArr.getBuildingArr().size();i++){
             buildingAdapter.add(buildingArr.getBuildingArr().get(i));
         }

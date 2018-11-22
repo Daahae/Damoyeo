@@ -3,7 +3,8 @@ package com.daahae.damoyeo.communication;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.daahae.damoyeo.exception.PositionNumberServices;
+import com.daahae.damoyeo.exception.ExceptionHandle;
+import com.daahae.damoyeo.exception.ExceptionService;
 import com.daahae.damoyeo.model.Building;
 import com.daahae.damoyeo.model.BuildingArr;
 import com.daahae.damoyeo.model.BuildingDetail;
@@ -29,7 +30,7 @@ public class RetrofitCommunication{
     private Retrofit retrofit;
 
     private ArrayList<String> totalTimes;
-    private TransportInfoList TransportList;
+    private TransportInfoList transportList;
     private BuildingArr buildingList;
     private BuildingDetail buildingDetail;
 
@@ -82,6 +83,12 @@ public class RetrofitCommunication{
     }
 
     private void sendPersonLocation(ArrayList<Person> persons){
+        try{
+            ExceptionService.getInstance().isExistPerson(persons.size());
+        }catch (ExceptionHandle e){
+            e.printStackTrace();
+            return;
+        }
         String strMessage = makeForm(persons);
         Log.v("메시지",strMessage);
 
@@ -93,23 +100,25 @@ public class RetrofitCommunication{
                     Log.v("알림", response.toString());
                     Log.v("전체", response.body().toString());
                     JsonObject json = response.body();
-                    TransportList = new Gson().fromJson(json, TransportInfoList.class);
-                    Log.v("총 시간 개수", String.valueOf(TransportList.getUserArr().size()));
+                    transportList = new Gson().fromJson(json, TransportInfoList.class);
 
-                    //* set TransportInfo
-                    TransportInfoList.getInstance().setUserArr(TransportList.getUserArr());
-                    PositionNumberServices positionNumberServices = new PositionNumberServices();
-
-                    try {
-                        positionNumberServices.isPosition(TransportList.getUserArr().size());
-                        if (!TransportList.getUserArr().get(0).equals("Wrong Input")) {
-                            for (int i = 0; i < TransportList.getUserArr().size(); i++) {
-                                totalTimes.add(String.valueOf(TransportList.getUserArr().get(i).getTotalTime()));
+                    try{
+                        ExceptionService.getInstance().isExistTransportInformation(transportList);
+                    }catch (ExceptionHandle e){
+                        e.printStackTrace();
+                        if (userCallBack != null) userCallBack.userDataPath(null);
+                    }
+                    if(transportList != null) {
+                        Log.v("총 시간 개수", String.valueOf(transportList.getUserArr().size()));
+                        //* set TransportInfo
+                        TransportInfoList.getInstance().setUserArr(transportList.getUserArr());
+                        if (!transportList.getUserArr().get(0).equals("Wrong Input")) {
+                            for (int i = 0; i < transportList.getUserArr().size(); i++) {
+                                totalTimes.add(String.valueOf(transportList.getUserArr().get(i).getTotalTime()));
                             }
                         }
-                        if(userCallBack!=null) userCallBack.userDataPath(totalTimes);
-                    } catch (Exception e) {
-                        e.printStackTrace();
+                        if (userCallBack != null) userCallBack.userDataPath(totalTimes);
+
                     }
 
                 }
@@ -117,6 +126,7 @@ public class RetrofitCommunication{
 
             @Override
             public void onFailure(@NonNull retrofit2.Call<JsonObject> call, @NonNull Throwable t) {
+                Log.e("retrofit","통신 실패");
             }
         });
     }
@@ -126,13 +136,19 @@ public class RetrofitCommunication{
         for(int i=0;i<persons.size();i++){
             strMessage += persons.get(i).getAddressPosition().toString();
             if(i!=persons.size()-1)
-                strMessage += ",";;
+                strMessage += ",";
         }
         strMessage+="]";
         return strMessage;
     }
 
     private void sendBuildingInfo(UserRequest request){
+        try{
+            ExceptionService.getInstance().isCorrectUserRequest(request);
+        }catch (ExceptionHandle e){
+            e.printStackTrace();
+            return;
+        }
         String message = request.toString();
         Log.v("메시지",message+"");
 
@@ -145,20 +161,35 @@ public class RetrofitCommunication{
                     Log.v("전체", response.body().toString());
                     JsonObject json = response.body();
                     buildingList = new Gson().fromJson(json, BuildingArr.class);
-                    Log.v("총 빌딩 개수", String.valueOf(buildingList.getBuildingArr().size()));
 
-                    if(buildingCallBack!=null)buildingCallBack.buildingDataPath(buildingList);
+                    try {
+                        ExceptionService.getInstance().isExistBuilding(buildingList);
+                    } catch (ExceptionHandle exceptionHandle) {
+                        exceptionHandle.printStackTrace();
+                        if(buildingCallBack!=null)buildingCallBack.buildingDataPath(null);
+                    }
+                    if(buildingList!=null){
+                        Log.v("총 빌딩 개수", String.valueOf(buildingList.getBuildingArr().size()));
+                        if(buildingCallBack!=null)buildingCallBack.buildingDataPath(buildingList);
+                    }
                 }
             }
 
             @Override
             public void onFailure(@NonNull retrofit2.Call<JsonObject> call, @NonNull Throwable t) {
+                Log.e("retrofit","통신 실패");
             }
         });
     }
 
 
     private void sendBuildingDetail(BuildingRequest request){
+        try {
+            ExceptionService.getInstance().isCorrectBuildingRequest(request);
+        } catch (ExceptionHandle exceptionHandle) {
+            exceptionHandle.printStackTrace();
+            return;
+        }
         String message = request.toString();
         Log.v("메시지",message+"");
 
@@ -171,14 +202,19 @@ public class RetrofitCommunication{
                     Log.v("전체", response.body().toString());
                     JsonObject json = response.body();
                     buildingDetail = new Gson().fromJson(json, BuildingDetail.class);
+                    try {
+                        ExceptionService.getInstance().isExistBuildingDetail(buildingDetail);
+                    } catch (ExceptionHandle exceptionHandle) {
+                        exceptionHandle.printStackTrace();
+                    }
                     buildingDetailCallBack.buildingDetailDataPath(buildingDetail);
-
                 }
             }
 
 
             @Override
             public void onFailure(@NonNull retrofit2.Call<JsonObject> call, @NonNull Throwable t) {
+                Log.e("retrofit","통신 실패");
             }
         });
     }

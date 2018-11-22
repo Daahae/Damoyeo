@@ -64,7 +64,6 @@ public class MarkerTimeAdapter extends BaseAdapter{
 
         myItem = (MarkerTime) mItems.get(position);
 
-        //TODO: GetTotal 수정
         setMarkerListText(txtMarkerName,txtMarkerTime,myItem.getName(),formTakenTime(myItem.getTotalTime()));
 
         return convertView;
