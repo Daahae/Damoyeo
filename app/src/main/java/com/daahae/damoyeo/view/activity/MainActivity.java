@@ -34,6 +34,11 @@ public class MainActivity extends FragmentActivity {
         LOGIN_FLG = requestCode;
     }
 
+    @Override
+    public void onBackPressed() {
+
+    }
+
     public void setFragmentInitialization(){
 
         fragmentManager = getSupportFragmentManager();
@@ -44,7 +49,6 @@ public class MainActivity extends FragmentActivity {
     }
 
     public void backView(Fragment fragment) {
-
         fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction().remove(fragment).commit();
         fragmentManager.popBackStack();

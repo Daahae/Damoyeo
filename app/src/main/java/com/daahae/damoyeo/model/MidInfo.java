@@ -2,41 +2,41 @@ package com.daahae.damoyeo.model;
 
 import com.daahae.damoyeo.view.Constant;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.gson.annotations.SerializedName;
 
 public class MidInfo{
 
-    private static MidInfo instance = new MidInfo(Constant.DEFAULT_LOCATION, null);
+    private static MidInfo instance = new MidInfo(0,0,null);
 
     public static synchronized MidInfo getInstance() { return instance; }
 
-    private LatLng latLng;
-    private Position pos;
+    @SerializedName("midLat")
+    private double midLat;
+    @SerializedName("midLng")
+    private double midLng;
+    @SerializedName("address")
     private String address;
 
-    private MidInfo(LatLng latLng, String address) {
-        this.latLng = latLng;
+    public MidInfo(double midLat, double midLng, String address) {
+        this.midLat = midLat;
+        this.midLng = midLng;
         this.address = address;
     }
 
-    private MidInfo(Position pos, String address) {
-        this.pos = pos;
-        this.address = address;
+    public double getMidLat() {
+        return midLat;
     }
 
-    public LatLng getLatLng() {
-        return latLng;
+    public void setMidLat(double midLat) {
+        this.midLat = midLat;
     }
 
-    public void setLatLng(LatLng latLng) {
-        this.latLng = latLng;
+    public double getMidLng() {
+        return midLng;
     }
 
-    public Position getPos() {
-        return pos;
-    }
-
-    public void setPos(Position pos) {
-        this.pos = pos;
+    public void setMidLng(double midLng) {
+        this.midLng = midLng;
     }
 
     public String getAddress() {

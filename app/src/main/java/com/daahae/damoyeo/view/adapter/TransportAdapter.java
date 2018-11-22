@@ -83,7 +83,6 @@ public class TransportAdapter extends BaseAdapter {
         String strViewTime = getViewTime(getTime(), myItem.getTotalTime());
 
         setBuildingListText(null,person.getName(),formAddress(person.getAddress()),formTakenTime(myItem.getTotalTime()),strViewTime);
-        setBuildingListText(null,person.getName(),"주소",formTakenTime(myItem.getTotalTime()),strViewTime);
 
         createViewBar(myItem);
         return convertView;

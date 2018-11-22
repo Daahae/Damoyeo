@@ -519,6 +519,7 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
     public void onClick(View view) {
         switch(view.getId()){
             case R.id.btn_back_category:
+                totalTimes.clear();
                 parentView.changeView(Constant.MAPS_PAGE);
                 break;
             case R.id.btn_all_marker_list:
@@ -765,7 +766,8 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
         builder = new LatLngBounds.Builder();
 
         MarkerOptions markerOption = new MarkerOptions();
-        markerOption.position(MidInfo.getInstance().getLatLng());
+        LatLng latLng1 = new LatLng(MidInfo.getInstance().getMidLat(), MidInfo.getInstance().getMidLng());
+        markerOption.position(latLng1);
         markerOption.title(Constant.DEFAULT_MIDINFO_NAME);
         markerOption.snippet(MidInfo.getInstance().getAddress());
         markerOption.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
@@ -794,7 +796,8 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
         builder = new LatLngBounds.Builder();
 
         MarkerOptions markerOption = new MarkerOptions();
-        markerOption.position(MidInfo.getInstance().getLatLng());
+        LatLng latLng1 = new LatLng(MidInfo.getInstance().getMidLat(), MidInfo.getInstance().getMidLng());
+        markerOption.position(latLng1);
         markerOption.title(Constant.DEFAULT_MIDINFO_NAME);
         markerOption.snippet(MidInfo.getInstance().getAddress());
         markerOption.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
