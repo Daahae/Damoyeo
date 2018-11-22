@@ -9,6 +9,8 @@ import com.daahae.damoyeo.model.Building;
 import com.daahae.damoyeo.model.BuildingArr;
 import com.daahae.damoyeo.model.BuildingDetail;
 import com.daahae.damoyeo.model.BuildingRequest;
+import com.daahae.damoyeo.model.MidInfo;
+import com.daahae.damoyeo.model.Position;
 import com.daahae.damoyeo.model.UserRequest;
 import com.daahae.damoyeo.model.Person;
 import com.daahae.damoyeo.model.TransportInfoList;
@@ -22,7 +24,7 @@ import retrofit2.Callback;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class RetrofitCommunication{
+public class RetrofitCommunication {
 
     private static final String URL = "http://13.125.192.103/";
 
@@ -40,7 +42,9 @@ public class RetrofitCommunication{
 
     private static RetrofitCommunication instance = new RetrofitCommunication();
 
-    public static synchronized RetrofitCommunication getInstance() {return instance;}
+    public static synchronized RetrofitCommunication getInstance() {
+        return instance;
+    }
 
     public interface UserCallBack {
         void userDataPath(ArrayList<String> totalTimes);
@@ -69,7 +73,7 @@ public class RetrofitCommunication{
         this.buildingDetailCallBack = buildingDetailCallBack;
     }
 
-    private void init(){
+    private void init() {
         retrofitService = retrofit.create(RetrofitService.class);
         totalTimes = new ArrayList<>();
     }
@@ -110,9 +114,13 @@ public class RetrofitCommunication{
                     }
                     if(transportList != null) {
                         Log.v("총 시간 개수", String.valueOf(transportList.getUserArr().size()));
-                        //* set TransportInfo
                         TransportInfoList.getInstance().setUserArr(transportList.getUserArr());
                         if (!transportList.getUserArr().get(0).equals("Wrong Input")) {
+                            // set MidInfo
+                            Position pos = new Position(transportList.getUserArr().get(0).getMidLat(), transportList.getUserArr().get(0).getMidLng());
+                            MidInfo.getInstance().setPos(pos);
+                            // TODO 좌표 - 주소 변환
+                            //* set TransportInfo
                             for (int i = 0; i < transportList.getUserArr().size(); i++) {
                                 totalTimes.add(String.valueOf(transportList.getUserArr().get(i).getTotalTime()));
                             }

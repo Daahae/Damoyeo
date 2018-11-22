@@ -1,5 +1,7 @@
-package com.daahae.damoyeo.presenter;
+package com.daahae.damoyeo.view.activity;
 
+import android.content.Intent;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -11,35 +13,45 @@ import com.daahae.damoyeo.view.fragment.CategoryFragment;
 import com.daahae.damoyeo.view.fragment.DetailFragment;
 import com.daahae.damoyeo.view.fragment.MapsFragment;
 
-public class MapsActivityPresenter {
-    private FragmentActivity view;
+public class MainActivity extends FragmentActivity {
 
-    private Fragment fragment;
+    public static int LOGIN_FLG = Constant.GUEST_LOGIN;
+
     private FragmentManager fragmentManager;
     private FragmentTransaction fragmentTransaction;
 
-    public MapsActivityPresenter(FragmentActivity view) {
-        this.view = view;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_maps);
+        Constant.context = this;
         setFragmentInitialization();
     }
 
+    @Override
+    public void startActivityForResult(Intent intent, int requestCode) {
+        super.startActivityForResult(intent, requestCode);
+        LOGIN_FLG = requestCode;
+    }
+
     public void setFragmentInitialization(){
-        fragment = new MapsFragment(this);
-        fragmentManager = view.getSupportFragmentManager();
+
+        fragmentManager = getSupportFragmentManager();
         fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.fragmentHere, fragment);
+        fragmentTransaction.replace(R.id.fragmentHere, new MapsFragment(this));
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
     }
 
     public void backView(Fragment fragment) {
-        fragmentManager = view.getSupportFragmentManager();
+
+        fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction().remove(fragment).commit();
         fragmentManager.popBackStack();
     }
 
     private void setViewFragment(Fragment fragment){
-        view.getSupportFragmentManager()
+        getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.fragmentHere, fragment)
                 .addToBackStack(null)
@@ -62,5 +74,4 @@ public class MapsActivityPresenter {
                 break;
         }
     }
-
 }

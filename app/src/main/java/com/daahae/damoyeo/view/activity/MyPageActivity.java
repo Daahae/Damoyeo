@@ -74,7 +74,8 @@ public class MyPageActivity extends AppCompatActivity implements View.OnClickLis
                 //TODO: 프로필 수정 클릭시
                 break;
             case R.id.btn_back_my_page:
-                viewMainPage();
+                // setResult();
+                // viewMainPage();
                 break;
             case R.id.btn_search_friends_my_page:
                 if(viewMode==Constant.FRIENDS_LIST_MODE){
@@ -91,11 +92,10 @@ public class MyPageActivity extends AppCompatActivity implements View.OnClickLis
                 }
                 break;
         }
-
     }
 
     private void viewMainPage(){
-        Intent intent = new Intent(MyPageActivity.this, MapsActivity.class);
+        Intent intent = new Intent(MyPageActivity.this, MainActivity.class);
         startActivity(intent);
     }
 }

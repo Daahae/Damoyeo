@@ -2,6 +2,7 @@ package com.daahae.damoyeo.view;
 
 import android.content.Context;
 
+import com.daahae.damoyeo.model.Position;
 import com.google.android.gms.maps.model.LatLng;
 
 public class Constant {
@@ -21,12 +22,15 @@ public class Constant {
     // default location
     public static final double latitude = 37.56666056421257;
     public static final double longitude = 126.97835471481085;
+    public static final Position DEFAULT_POSITION = new Position(latitude, longitude);
     public static final LatLng DEFAULT_LOCATION = new LatLng(latitude, longitude);
     public static final String name = "세종대로";
     public static final String address = "서울특별시 중구";
     public static final String tel = "02-1234-5678";
     public static final String description = null;
     public static final double distance = 0;
+
+    public static final String DEFAULT_MIDINFO_NAME = "중간지점";
 
     public static final double landmark_latitude = 37.56318972577066;
     public static final double landmark_longitude = 126.98734413832425;
@@ -35,17 +39,13 @@ public class Constant {
     public static final String landmark_address = "서울특별시 중구 저동1가 명동길 74";
     public static final String landmark_tel = "02-774-1784";
 
-    // MapsActivityPresenter
+    // MainActivity
     public static final int MAPS_PAGE = 101;
     public static final int SELECT_MID_PAGE = 102;
     public static final int CATEGORY_PAGE = 103;
     public static final int DETAIL_PAGE = 104;
 
-    // SelectMidFragmentPresenter
-    public static final int MID_ALGORITHM = 111;
-    public static final int LANDMARK = 112;
-
-    // DetailFragmentPresenter
+    // Category
     public static final int DEPARTMENT_STORE = 11;
     public static final int SHOPPING_MALL = 12;
     public static final int STADIUM = 21;
