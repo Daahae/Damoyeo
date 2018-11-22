@@ -1,4 +1,4 @@
-package com.daahae.damoyeo.view;
+package com.daahae.damoyeo.model;
 
 import android.support.design.widget.FloatingActionButton;
 import android.view.animation.Animation;

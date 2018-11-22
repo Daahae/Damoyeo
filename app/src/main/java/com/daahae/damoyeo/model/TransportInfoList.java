@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TransportInfoList {
+
     private static TransportInfoList instance = new TransportInfoList();
 
     public static synchronized TransportInfoList getInstance() {
@@ -41,7 +42,6 @@ public class TransportInfoList {
         private double midLat;
         @SerializedName("midLng")
         private double midLng;
-
 
         public ArrayList<Transport> getTransportInfo() {
             return transportInfo;

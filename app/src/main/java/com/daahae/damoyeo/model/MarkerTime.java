@@ -21,8 +21,4 @@ public class MarkerTime{
     public String getTotalTime() {
         return totalTime;
     }
-
-    public void setTotalTime(String totalTime) {
-        this.totalTime = totalTime;
-    }
 }

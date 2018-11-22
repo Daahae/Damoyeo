@@ -9,6 +9,7 @@ import com.daahae.damoyeo.model.Building;
 import com.daahae.damoyeo.model.BuildingArr;
 import com.daahae.damoyeo.model.BuildingDetail;
 import com.daahae.damoyeo.model.BuildingRequest;
+import com.daahae.damoyeo.model.Landmark;
 import com.daahae.damoyeo.model.MidInfo;
 import com.daahae.damoyeo.model.Position;
 import com.daahae.damoyeo.model.UserRequest;
@@ -25,8 +26,6 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RetrofitCommunication {
-
-    private static final String URL = "http://13.125.192.103/";
 
     private RetrofitService retrofitService;
     private Retrofit retrofit;
@@ -81,7 +80,7 @@ public class RetrofitCommunication {
     private void connectServer(){
         retrofit = new Retrofit
                 .Builder()
-                .baseUrl(URL)
+                .baseUrl(Constant.URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
     }
@@ -108,7 +107,7 @@ public class RetrofitCommunication {
 
                     try{
                         ExceptionService.getInstance().isExistTransportInformation(transportList);
-                    }catch (ExceptionHandle e){
+                    } catch (ExceptionHandle e){
                         e.printStackTrace();
                         if (userCallBack != null) userCallBack.userDataPath(null);
                     }
@@ -119,11 +118,10 @@ public class RetrofitCommunication {
                             // set MidInfo
                             Position pos = new Position(transportList.getUserArr().get(0).getMidLat(), transportList.getUserArr().get(0).getMidLng());
                             MidInfo.getInstance().setPos(pos);
-                            // TODO 좌표 - 주소 변환
+                            Landmark.setLandMark(transportList.getUserArr().get(0).getLandmark().get(0));
                             //* set TransportInfo
-                            for (int i = 0; i < transportList.getUserArr().size(); i++) {
-                                totalTimes.add(String.valueOf(transportList.getUserArr().get(i).getTotalTime()));
-                            }
+                            for (TransportInfoList.Data data:transportList.getUserArr())
+                                totalTimes.add(String.valueOf(data.getTotalTime()));
                         }
                         if (userCallBack != null) userCallBack.userDataPath(totalTimes);
 

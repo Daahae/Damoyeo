@@ -9,6 +9,10 @@ public class MidInfo{
 
     public static synchronized MidInfo getInstance() { return instance; }
 
+    public static void setMidInfo(MidInfo midInfo) {
+        instance = midInfo;
+    }
+
     private LatLng latLng;
     private Position pos;
     private String address;
@@ -25,10 +29,6 @@ public class MidInfo{
 
     public LatLng getLatLng() {
         return latLng;
-    }
-
-    public void setLatLng(LatLng latLng) {
-        this.latLng = latLng;
     }
 
     public Position getPos() {

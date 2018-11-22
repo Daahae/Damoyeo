@@ -40,6 +40,7 @@ import com.daahae.damoyeo.R;
 import com.daahae.damoyeo.communication.RetrofitCommunication;
 import com.daahae.damoyeo.exception.ExceptionHandle;
 import com.daahae.damoyeo.exception.ExceptionService;
+import com.daahae.damoyeo.model.Building;
 import com.daahae.damoyeo.model.BuildingArr;
 import com.daahae.damoyeo.model.MidInfo;
 import com.daahae.damoyeo.model.Person;
@@ -742,9 +743,10 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
             exceptionHandle.printStackTrace();
             return false;
         }
-        for(int i=0;i<buildingArr.getBuildingArr().size();i++){
-            buildingAdapter.add(buildingArr.getBuildingArr().get(i));
-        }
+
+        for (Building data:buildingArr.getBuildingArr())
+            buildingAdapter.add(data);
+
         return true;
     }
 

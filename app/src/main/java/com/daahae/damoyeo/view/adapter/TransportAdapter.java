@@ -17,7 +17,6 @@ import com.daahae.damoyeo.model.Person;
 import com.daahae.damoyeo.model.Transport;
 import com.daahae.damoyeo.model.TransportInfoList;
 import com.daahae.damoyeo.view.Constant;
-import com.daahae.damoyeo.view.activity.MainActivity;
 
 import java.util.ArrayList;
 import java.util.Calendar;

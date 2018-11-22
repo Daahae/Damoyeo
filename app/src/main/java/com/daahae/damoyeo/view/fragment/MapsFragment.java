@@ -36,7 +36,7 @@ import com.daahae.damoyeo.model.Person;
 import com.daahae.damoyeo.model.Position;
 import com.daahae.damoyeo.presenter.MapsPresenter;
 import com.daahae.damoyeo.view.Constant;
-import com.daahae.damoyeo.view.FloatingActionBtn;
+import com.daahae.damoyeo.model.FloatingActionBtn;
 import com.daahae.damoyeo.view.activity.MainActivity;
 import com.daahae.damoyeo.view.function.GPSInfo;
 import com.google.android.gms.common.ConnectionResult;
@@ -158,7 +158,7 @@ public class MapsFragment extends Fragment implements View.OnClickListener, OnMa
         linearBtnSearchMid.setOnClickListener(this);
     }
 
-    private void setPlaceAutoComplete(){
+    private void setPlaceAutoComplete() {
 
         SupportPlaceAutocompleteFragment autocompleteFragment = new SupportPlaceAutocompleteFragment();
         FragmentManager fm = getFragmentManager();

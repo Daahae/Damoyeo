@@ -48,16 +48,8 @@ public class Building{
         return latitude;
     }
 
-    public void setLatitude(double latitude) {
-        this.latitude = latitude;
-    }
-
     public double getLongitude() {
         return longitude;
-    }
-
-    public void setLongitude(double longitude) {
-        this.longitude = longitude;
     }
 
     public String getName() {
@@ -71,11 +63,6 @@ public class Building{
     public String getBuildingAddress() {
         return buildingAddress;
     }
-
-    public void setBuildingAddress(String buildingAddress) {
-        this.buildingAddress = buildingAddress;
-    }
-
 
     @Override
     public String toString() {
