@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import retrofit2.Callback;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.http.HEAD;
 
 public class RetrofitCommunication {
 
@@ -104,7 +105,6 @@ public class RetrofitCommunication {
                     Log.v("전체", response.body().toString());
                     JsonObject json = response.body();
                     transportList = new Gson().fromJson(json, TransportInfoList.class);
-
                     try{
                         ExceptionService.getInstance().isExistTransportInformation(transportList);
                     } catch (ExceptionHandle e){
@@ -116,9 +116,10 @@ public class RetrofitCommunication {
                         TransportInfoList.getInstance().setUserArr(transportList.getUserArr());
                         if (!transportList.getUserArr().get(0).equals("Wrong Input")) {
                             // set MidInfo
-                            Position pos = new Position(transportList.getUserArr().get(0).getMidLat(), transportList.getUserArr().get(0).getMidLng());
-                            MidInfo.getInstance().setPos(pos);
-                            Landmark.setLandMark(transportList.getUserArr().get(0).getLandmark().get(0));
+                            Position pos = new Position(transportList.getMidInfo().getMidLat(),
+                                    transportList.getMidInfo().getMidLng());
+                            MidInfo.getInstance().setMidLat(transportList.getMidInfo().getMidLat());
+                            MidInfo.getInstance().setMidLng(transportList.getMidInfo().getMidLng());
                             //* set TransportInfo
                             for (TransportInfoList.Data data:transportList.getUserArr())
                                 totalTimes.add(String.valueOf(data.getTotalTime()));

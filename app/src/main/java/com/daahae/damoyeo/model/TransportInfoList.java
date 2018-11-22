@@ -15,6 +15,10 @@ public class TransportInfoList {
 
     @SerializedName("userArr")
     private List<Data> userArr;
+    @SerializedName("landmark")
+    private Landmark landmark;
+    @SerializedName("midInfo")
+    private MidInfo midInfo;
 
     public List<Data> getUserArr() {
         return userArr;
@@ -22,6 +26,21 @@ public class TransportInfoList {
 
     public void setUserArr(List<Data> userArr) {
         this.userArr = userArr;
+    }
+    public Landmark getLandmark() {
+        return landmark;
+    }
+
+    public void setLandmark(Landmark landmark) {
+        this.landmark = landmark;
+    }
+
+    public MidInfo getMidInfo() {
+        return midInfo;
+    }
+
+    public void setMidInfo(MidInfo midInfo) {
+        this.midInfo = midInfo;
     }
 
     public class Data{
@@ -36,12 +55,6 @@ public class TransportInfoList {
         private int timeByBus;
         @SerializedName("timeByWalk")
         private int timeByWalk;
-        @SerializedName("landmark")
-        private ArrayList<Landmark> landmark;
-        @SerializedName("midLat")
-        private double midLat;
-        @SerializedName("midLng")
-        private double midLng;
 
         public ArrayList<Transport> getTransportInfo() {
             return transportInfo;
@@ -63,16 +76,5 @@ public class TransportInfoList {
             return timeByWalk;
         }
 
-        public ArrayList<Landmark>  getLandmark() {
-            return landmark;
-        }
-
-        public double getMidLat() {
-            return midLat;
-        }
-
-        public double getMidLng() {
-            return midLng;
-        }
     }
 }
