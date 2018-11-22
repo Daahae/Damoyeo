@@ -1,13 +1,34 @@
 package com.daahae.damoyeo.model;
 
+import com.daahae.damoyeo.view.Constant;
+import com.google.android.gms.maps.model.LatLng;
+
 public class MidInfo{
+
+    private static MidInfo instance = new MidInfo(Constant.DEFAULT_LOCATION, null);
+
+    public static synchronized MidInfo getInstance() { return instance; }
+
+    private LatLng latLng;
     private Position pos;
     private String address;
-    // 구이름(Zone) 찾아내라!
 
-    public MidInfo(Position pos, String address) {
+    private MidInfo(LatLng latLng, String address) {
+        this.latLng = latLng;
+        this.address = address;
+    }
+
+    private MidInfo(Position pos, String address) {
         this.pos = pos;
         this.address = address;
+    }
+
+    public LatLng getLatLng() {
+        return latLng;
+    }
+
+    public void setLatLng(LatLng latLng) {
+        this.latLng = latLng;
     }
 
     public Position getPos() {

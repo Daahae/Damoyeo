@@ -129,7 +129,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private void changeView(){
-        Intent intent = new Intent(LoginActivity.this, MapsActivity.class);
+        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
         startActivityForResult(intent, Constant.GUEST_LOGIN);
     }
 
@@ -146,7 +146,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             Log.d(Constant.TAG, "signInWithCredential:success");
                             FirebaseUser user = mAuth.getCurrentUser();
                             Toast.makeText(context, "안녕하세요, "+user.getDisplayName() + "님", Toast.LENGTH_SHORT).show();
-                            Intent intent = new Intent(LoginActivity.this, MapsActivity.class);
+                            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                             startActivityForResult(intent, Constant.GOOGLE_LOGIN);
                         } else {
                             // If sign in fails, display a message to the user.

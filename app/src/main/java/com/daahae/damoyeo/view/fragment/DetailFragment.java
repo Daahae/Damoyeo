@@ -6,8 +6,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Camera;
-import android.graphics.Point;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Build;
@@ -21,29 +19,19 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
-import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.daahae.damoyeo.R;
-import com.daahae.damoyeo.communication.RetrofitCommunication;
 import com.daahae.damoyeo.model.Building;
-import com.daahae.damoyeo.model.BuildingArr;
 import com.daahae.damoyeo.model.BuildingDetail;
-import com.daahae.damoyeo.model.Person;
-import com.daahae.damoyeo.model.TransportInfoList;
-import com.daahae.damoyeo.presenter.DetailFragmentPresenter;
-import com.daahae.damoyeo.presenter.MapsActivityPresenter;
+import com.daahae.damoyeo.presenter.DetailPresenter;
 import com.daahae.damoyeo.view.Constant;
-import com.daahae.damoyeo.view.activity.MapsActivity;
-import com.daahae.damoyeo.view.adapter.TransportAdapter;
+import com.daahae.damoyeo.view.activity.MainActivity;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationRequest;
@@ -57,83 +45,56 @@ import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-import java.util.ArrayList;
-
 @SuppressLint("ValidFragment")
 public class DetailFragment extends Fragment implements View.OnClickListener, OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener {
 
-    private DetailFragmentPresenter presenter;
-    private MapsActivityPresenter parentPresenter;
+    private DetailPresenter presenter;
+    private MainActivity parentView;
 
     private GoogleMap googleMap = null;
     private MapView mapView = null;
     private GoogleApiClient googleApiClient = null;
     private Marker currentMarker = null;
 
-    private Building building;
-
     private TextView txtBuildingName, txtBuildingAddress, txtBuildingTel, txtDescription, txtBuildingDistance;
 
     private ImageButton btnBack;
-    private View view;
 
     private FloatingActionButton fabReset;
 
-    public DetailFragment(MapsActivityPresenter parentPresenter){
-        this.parentPresenter = parentPresenter;
+    public DetailFragment(MainActivity parentView){
+        this.parentView = parentView;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        presenter = new DetailFragmentPresenter(this);
+        presenter = new DetailPresenter(this);
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        view = (View) inflater.inflate(R.layout.fragment_detail, container, false);
+        View view = (View) inflater.inflate(R.layout.fragment_detail, container, false);
 
-        RetrofitCommunication.BuildingDetailCallBack buildingDetailCallBack = new RetrofitCommunication.BuildingDetailCallBack() {
-            @Override
-            public void buildingDetailDataPath(BuildingDetail buildingDetail) {
+        initView(view);
+        initListener();
 
-                initView(view);
-                initListener();
-
-                getBuildingInfo();
-                setBuildingInfo();
-
-                setBuildingDetail(buildingDetail);
-                Log.v("상세 데이터",buildingDetail.getBuildingTel());
-                Log.v("상세 데이터",buildingDetail.getBuildingDescription());
-
-                if(googleMap != null) {
-                    LatLng latLng = new LatLng(building.getLatitude(), building.getLongitude());
-                    setLocation(latLng);
-                }
-                showBuilding(building);
-
-                presenter.initData(Person.getInstance());
-
-            }
-        };
-        RetrofitCommunication.getInstance().setBuildingDetailData(buildingDetailCallBack);
-
-        mapView = view.findViewById(R.id.map_detail);
-        mapView.getMapAsync(this);
+        presenter.startCallback();
 
         return view;
     }
 
     private void initView(View view){
+
+        mapView = view.findViewById(R.id.map_detail);
+        mapView.getMapAsync(this);
 
         txtBuildingName = view.findViewById(R.id.txt_building_name_detail);
         txtBuildingAddress = view.findViewById(R.id.txt_building_address_datail);
@@ -155,7 +116,6 @@ public class DetailFragment extends Fragment implements View.OnClickListener, On
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        //액티비티가 처음 생성될 때 실행되는 함수
         MapsInitializer.initialize(getActivity().getApplicationContext());
 
         if(mapView != null)
@@ -297,7 +257,7 @@ public class DetailFragment extends Fragment implements View.OnClickListener, On
     public void onLocationChanged(Location location) {
         Log.i(Constant.TAG, "onLocationChanged call..");
 
-        if(MapsActivity.LOGIN_FLG == Constant.GOOGLE_LOGIN) {
+        if(MainActivity.LOGIN_FLG == Constant.GOOGLE_LOGIN) {
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
             if (user == null) {
                 // 다이어로그 로그인 토큰 만료 로 인한 재 로그인 유도
@@ -339,56 +299,63 @@ public class DetailFragment extends Fragment implements View.OnClickListener, On
         }
     }
 
-    private void setLocation(LatLng latLng) {
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()){
+            case R.id.btn_back_building_transport:
+                parentView.backView(this);
+                break;
+            case R.id.fab_reset:
+                showCurrentMarker();
+                break;
+        }
+    }
+
+    public void setBuildingInfo(){
+        txtBuildingName.setText(Building.getInstance().getName());
+        txtBuildingAddress.setText(Building.getInstance().getBuildingAddress());
+        txtBuildingDistance.setText(String.format("%.2f",Building.getInstance().getDistance()));
+    }
+
+    public void setBuildingDetail(BuildingDetail buildingDetail){
+        if(buildingDetail.getBuildingTel()!=null)
+            txtBuildingTel.setText("tel. "+buildingDetail.getBuildingTel());
+        else
+            txtBuildingTel.setVisibility(View.GONE);
+        txtDescription.setText(buildingDetail.getBuildingDescription());
+    }
+
+    public void setLocation(LatLng latLng) {
         CameraUpdate point = CameraUpdateFactory.newLatLngZoom(latLng, 15.0f);
         googleMap.moveCamera(point);
     }
 
-    private void setBuildingDetail(BuildingDetail buildingDetail){
-        if(buildingDetail.getBuildingTel()!=null) txtBuildingTel.setText("tel. "+buildingDetail.getBuildingTel());
-        else txtBuildingTel.setVisibility(View.GONE);
-        txtDescription.setText(buildingDetail.getBuildingDescription());
-
+    public void setBuildingLocation() {
+        if(googleMap != null) {
+            LatLng latLng = new LatLng(Building.getInstance().getLatitude(), Building.getInstance().getLongitude());
+            setLocation(latLng);
+        }
     }
 
-    private void getBuildingInfo(){
-        building = Building.getInstance();
-    }
-
-    private void setBuildingInfo(){
-        txtBuildingName.setText(building.getName());
-        txtBuildingAddress.setText(building.getBuildingAddress());
-        txtBuildingDistance.setText(String.format("%.2f",building.getDistance()));
-    }
-
-    public void showBuilding(Building building) {
+    public void showBuilding() {
 
         MarkerOptions markerOption = new MarkerOptions();
-        LatLng latLng = new LatLng(building.getLatitude(), building.getLongitude());
+        LatLng latLng = new LatLng(Building.getInstance().getLatitude(), Building.getInstance().getLongitude());
         markerOption.position(latLng);
-        markerOption.title(building.getName());
+        markerOption.title(Building.getInstance().getName());
         markerOption.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
         currentMarker = googleMap.addMarker(markerOption);
         currentMarker.showInfoWindow();
     }
 
     public void showCurrentMarker() {
-        CameraUpdate point = CameraUpdateFactory.newLatLng(currentMarker.getPosition());
+
+        CameraUpdate point = CameraUpdateFactory.newLatLngZoom(Constant.DEFAULT_LOCATION, 15.0f);
+        if(currentMarker != null)
+         point = CameraUpdateFactory.newLatLngZoom(currentMarker.getPosition(), 15.0f);
         if ( Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
             googleMap.animateCamera(point);
         else
             googleMap.moveCamera(point);
-    }
-
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()){
-            case R.id.btn_back_building_transport:
-                parentPresenter.backView(this);
-                break;
-            case R.id.fab_reset:
-                showCurrentMarker();
-                break;
-        }
     }
 }

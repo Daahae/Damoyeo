@@ -32,16 +32,12 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.daahae.damoyeo.R;
-import com.daahae.damoyeo.communication.RetrofitCommunication;
-import com.daahae.damoyeo.exception.ExceptionHandle;
-import com.daahae.damoyeo.exception.ExceptionService;
 import com.daahae.damoyeo.model.Person;
 import com.daahae.damoyeo.model.Position;
-import com.daahae.damoyeo.presenter.MapsActivityPresenter;
-import com.daahae.damoyeo.presenter.MapsFragmentPresenter;
+import com.daahae.damoyeo.presenter.MapsPresenter;
 import com.daahae.damoyeo.view.Constant;
 import com.daahae.damoyeo.view.FloatingActionBtn;
-import com.daahae.damoyeo.view.activity.MapsActivity;
+import com.daahae.damoyeo.view.activity.MainActivity;
 import com.daahae.damoyeo.view.function.GPSInfo;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -50,7 +46,6 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.Places;
-import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
 import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 import com.google.android.gms.location.places.ui.SupportPlaceAutocompleteFragment;
 import com.google.android.gms.maps.CameraUpdate;
@@ -75,10 +70,8 @@ import java.util.List;
 public class MapsFragment extends Fragment implements View.OnClickListener, OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener, GoogleMap.OnMapClickListener, GoogleMap.OnMarkerClickListener {
 
-    private MapsActivityPresenter parentPresenter;
-    private MapsFragmentPresenter presenter;
-
-    private SupportPlaceAutocompleteFragment autocompleteFragment;
+    private MainActivity parentView;
+    private MapsPresenter presenter;
 
     private GoogleMap googleMap = null;
     private MapView mapView = null;
@@ -96,8 +89,12 @@ public class MapsFragment extends Fragment implements View.OnClickListener, OnMa
 
     private Geocoder geocoder;
 
-    public MapsFragment(MapsActivityPresenter parentPresenter) {
-        this.parentPresenter = parentPresenter;
+    public MapsFragment(MainActivity parentView) {
+        this.parentView = parentView;
+    }
+
+    public MainActivity getParentView() {
+        return parentView;
     }
 
     @Override
@@ -109,7 +106,7 @@ public class MapsFragment extends Fragment implements View.OnClickListener, OnMa
         fabtn = new FloatingActionBtn();
 
         geocoder = new Geocoder(getActivity());
-        presenter = new MapsFragmentPresenter();
+        presenter = new MapsPresenter(this);
     }
 
     @Nullable
@@ -163,7 +160,7 @@ public class MapsFragment extends Fragment implements View.OnClickListener, OnMa
 
     private void setPlaceAutoComplete(){
 
-        autocompleteFragment = new SupportPlaceAutocompleteFragment();
+        SupportPlaceAutocompleteFragment autocompleteFragment = new SupportPlaceAutocompleteFragment();
         FragmentManager fm = getFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
         ft.replace(R.id.fragment_content, autocompleteFragment);
@@ -328,7 +325,7 @@ public class MapsFragment extends Fragment implements View.OnClickListener, OnMa
     @Override
     public void onLocationChanged(Location location) {
         Log.i(Constant.TAG, "onLocationChanged call..");
-        if(MapsActivity.LOGIN_FLG == Constant.GOOGLE_LOGIN) {
+        if(MainActivity.LOGIN_FLG == Constant.GOOGLE_LOGIN) {
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
             if (user == null) {
                 // 다이어로그 로그인 토큰 만료 로 인한 재 로그인 유도
@@ -425,16 +422,8 @@ public class MapsFragment extends Fragment implements View.OnClickListener, OnMa
                 break;
             case R.id.linear_search_mid:
                 setAddressToPerson();
-                try {
-                    ExceptionService.getInstance().isSetMarker(Person.getInstance().size());
-                } catch (ExceptionHandle exceptionHandle) {
-                    exceptionHandle.printStackTrace();
-                    Toast.makeText(getContext(),exceptionHandle.getMessage(),Toast.LENGTH_SHORT).show();
-                }
-                if(Person.getInstance().size()>1){
-                    RetrofitCommunication.getInstance().sendMarkerTimeMessage();
-                    parentPresenter.changeView(Constant.CATEGORY_PAGE);
-                }
+                // 통신
+                presenter.startSendToServer();
                 break;
             case R.id.fab_logout:
                 getActivity().setResult(Constant.LOG_OUT);

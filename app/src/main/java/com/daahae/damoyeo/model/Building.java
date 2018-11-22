@@ -1,10 +1,12 @@
 package com.daahae.damoyeo.model;
 
+import com.daahae.damoyeo.view.Constant;
 import com.google.gson.annotations.SerializedName;
 
 public class Building{
-    // targetBuilding
-    private static Building instance = null;
+
+    // DetailBuilding
+    private static Building instance = new Building(Constant.landmark_latitude, Constant.landmark_longitude, Constant.landmark_name, Constant.landmark_address, Constant.distance);
 
     public static synchronized Building getInstance() {
         return instance;

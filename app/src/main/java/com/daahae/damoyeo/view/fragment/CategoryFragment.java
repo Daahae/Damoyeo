@@ -38,18 +38,18 @@ import android.widget.Toast;
 
 import com.daahae.damoyeo.R;
 import com.daahae.damoyeo.communication.RetrofitCommunication;
+import com.daahae.damoyeo.exception.ExceptionHandle;
+import com.daahae.damoyeo.exception.ExceptionService;
 import com.daahae.damoyeo.model.BuildingArr;
-import com.daahae.damoyeo.presenter.CategoryFragmentPresenter;
-import com.daahae.damoyeo.presenter.MapsActivityPresenter;
+import com.daahae.damoyeo.model.MidInfo;
+import com.daahae.damoyeo.model.Person;
+import com.daahae.damoyeo.presenter.CategoryPresenter;
 import com.daahae.damoyeo.view.Constant;
-import com.daahae.damoyeo.view.activity.MapsActivity;
+import com.daahae.damoyeo.view.activity.MainActivity;
 import com.daahae.damoyeo.view.activity.TransportActivity;
 import com.daahae.damoyeo.view.adapter.BuildingAdapter;
 import com.daahae.damoyeo.view.adapter.MarkerTimeAdapter;
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
@@ -60,8 +60,10 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
-import com.google.android.gms.tasks.Task;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -72,13 +74,18 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
 ,SlidingDrawer.OnDrawerOpenListener,SlidingDrawer.OnDrawerCloseListener, OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener {
 
-    private CategoryFragmentPresenter presenter;
-    private MapsActivityPresenter parentPresenter;
+    private MainActivity parentView;
+    private CategoryPresenter presenter;
 
     private MapView mapView = null;
+    private GoogleMap googleMap;
     private GoogleApiClient googleApiClient = null;
+    private LatLngBounds.Builder builder;
 
     private ImageButton btnBack;
+
+    private ArrayList<String> totalTimes = null;
+    private BuildingArr buildingArr;
 
     private MarkerTimeAdapter markerTimeAdapter;
     private ListView listMarkerTime;
@@ -105,17 +112,33 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
 
     private ImageView imgLoading;
 
-    public CategoryFragment(MapsActivityPresenter parentPresenter) {
-        this.parentPresenter = parentPresenter;
+    public CategoryFragment(MainActivity parentView) {
+        this.parentView = parentView;
+    }
+
+    public ListView getListMarkerTime() {
+        return listMarkerTime;
+    }
+
+    public ListView getListCategory() {
+        return listCategory;
+    }
+
+    public MarkerTimeAdapter getMarkerTimeAdapter() {
+        return markerTimeAdapter;
+    }
+
+    public BuildingAdapter getBuildingAdapter() {
+        return buildingAdapter;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        presenter = new CategoryFragmentPresenter(this);
-        buildingAdapter = new BuildingAdapter();
+        presenter = new CategoryPresenter(this);
         markerTimeAdapter = new MarkerTimeAdapter();
+        buildingAdapter = new BuildingAdapter();
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -124,43 +147,23 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = (View) inflater.inflate(R.layout.fragment_category, container, false);
 
-        RetrofitCommunication.getInstance().setBuildingsData(Constant.DEPARTMENT_STORE);
-
         initView(rootView);
         initListener();
 
         setLoadingAnimation();
 
-        presenter.setMarkerTimeList(markerTimeAdapter);
+        setMarkerTimeList(markerTimeAdapter);
         listMarkerTime.setAdapter(markerTimeAdapter);
 
-        RetrofitCommunication.UserCallBack userCallBack = new RetrofitCommunication.UserCallBack() {
-            @Override
-            public void userDataPath(ArrayList<String> totalTimes) {
-                presenter.initMarkerTime(totalTimes);
-                presenter.setMarkerTimeList(markerTimeAdapter);
-                listMarkerTime.setAdapter(markerTimeAdapter);
-                Log.v("데이터","들어감");
-            }
-        };
-        RetrofitCommunication.getInstance().setUserData(userCallBack);
-        RetrofitCommunication.BuildingCallBack buildingCallBack = new RetrofitCommunication.BuildingCallBack() {
-            @Override
-            public void buildingDataPath(BuildingArr buildingArr) {
-                presenter.initBuildingInfo(buildingArr);
-                convertList(presenter.setBuildingInfo(buildingAdapter));
-                listCategory.setAdapter(buildingAdapter);
-            }
-        };
-        RetrofitCommunication.getInstance().setBuildingData(buildingCallBack);
-
-        relativeMap = rootView.findViewById(R.id.relative_map);
+        presenter.setDefaultBuilding();
+        presenter.startCallback();
 
         return rootView;
     }
 
     private void initView(View rootView){
 
+        relativeMap = rootView.findViewById(R.id.relative_map);
         mapView = rootView.findViewById(R.id.map_category);
         mapView.getMapAsync(this);
         fabMid = rootView.findViewById(R.id.fab_mid);
@@ -234,7 +237,7 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
         imgLoading.setAnimation(anim);
     }
 
-    private void convertList(boolean flag){
+    public void convertList(boolean flag){
         if(flag) {
             listCategory.setVisibility(View.VISIBLE);
             txtDefault.setVisibility(View.GONE);
@@ -254,10 +257,6 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
         imgLoading.setVisibility(View.VISIBLE);
 
         setLoadingAnimation();
-    }
-
-    public void setBuildingList(){
-        presenter.setBuildingInfo(buildingAdapter); // 빌딩 정보 넣기
     }
 
     @Override
@@ -404,7 +403,7 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
     public void onLocationChanged(Location location) {
         Log.i(Constant.TAG, "onLocationChanged call..");
 
-        if(MapsActivity.LOGIN_FLG == Constant.GOOGLE_LOGIN) {
+        if(MainActivity.LOGIN_FLG == Constant.GOOGLE_LOGIN) {
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
             if (user == null) {
                 // 다이어로그 로그인 토큰 만료 로 인한 재 로그인 유도
@@ -428,6 +427,8 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
     @Override
     public void onMapReady(GoogleMap googleMap) {
 
+        this.googleMap = googleMap;
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             int hasFineLocationPermission = ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION);
 
@@ -444,9 +445,8 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
         CameraUpdate point = CameraUpdateFactory.newLatLngZoom(Constant.DEFAULT_LOCATION, 15.0f);
         googleMap.moveCamera(point);
 
-        presenter.setGMapSetting(googleMap);
-        presenter.showAllMarkers();
-        presenter.setCameraState(relativeMap);
+        showAllMarkers();
+        setCameraState(relativeMap);
     }
 
     @Override
@@ -489,16 +489,16 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
 
                 if(!isMid) {
                     if(resultCode == -1)
-                        presenter.showAllMarkers();
+                        showAllMarkers();
                     else
-                        presenter.showEachMarker(resultCode);
+                        showEachMarker(resultCode);
                 } else {
                     if(resultCode == -1)
-                        presenter.showLandmarkAllMarkers();
+                        showLandmarkAllMarkers();
                     else
-                        presenter.showLandmarkEachMarker(resultCode);
+                        showLandmarkEachMarker(resultCode);
                 }
-                presenter.setCameraState(relativeMap);
+                setCameraState(relativeMap);
                 break;
         }
     }
@@ -510,7 +510,7 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
             Intent intent = new Intent(getActivity(), TransportActivity.class);
             startActivityForResult(intent, Constant.CATEGORY_PAGE);
         } else {
-            parentPresenter.changeView(Constant.DETAIL_PAGE);
+            parentView.changeView(Constant.DETAIL_PAGE);
             RetrofitCommunication.getInstance().clickItem(buildingAdapter.getItem(position));
         }
     }
@@ -519,26 +519,26 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
     public void onClick(View view) {
         switch(view.getId()){
             case R.id.btn_back_category:
-                parentPresenter.changeView(Constant.MAPS_PAGE);
+                parentView.changeView(Constant.MAPS_PAGE);
                 break;
             case R.id.btn_all_marker_list:
                 if(!isMid) {
-                    presenter.showAllMarkers();
-                    presenter.setCameraState(relativeMap);
+                    showAllMarkers();
+                    setCameraState(relativeMap);
                 } else {
-                    presenter.showLandmarkAllMarkers();
-                    presenter.setCameraState(relativeMap);
+                    showLandmarkAllMarkers();
+                    setCameraState(relativeMap);
                 }
                 break;
             case R.id.fab_mid:
                 if(isMid){
-                    presenter.showAllMarkers();
-                    presenter.setCameraState(relativeMap);
+                    showAllMarkers();
+                    setCameraState(relativeMap);
                     fabMid.setImageResource(R.drawable.btn_selected_landmark_orange);
                     isMid = false;
                 } else {
-                    presenter.showLandmarkAllMarkers();
-                    presenter.setCameraState(relativeMap);
+                    showLandmarkAllMarkers();
+                    setCameraState(relativeMap);
                     fabMid.setImageResource(R.drawable.btn_selected_mid_orange);
                     isMid = true;
                 }
@@ -713,5 +713,166 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
                 break;
 
         }
+    }
+
+    public void initMarkerTime(ArrayList<String> totalTimes){
+        this.totalTimes = totalTimes;
+    }
+
+    public void setMarkerTimeList(MarkerTimeAdapter markerTimeAdapter) {
+
+        markerTimeAdapter.resetList();
+        //TODO: Exception 시간 없을때,
+        if(totalTimes!=null){
+            for(int i=0; i < totalTimes.size();i++)
+                markerTimeAdapter.add(Person.getInstance().get(i).getName(), totalTimes.get(i));
+        }
+    }
+
+    public void initBuildingInfo(BuildingArr buildingArr){
+        this.buildingArr = buildingArr;
+    }
+
+    public boolean setBuildingInfo(BuildingAdapter buildingAdapter) {
+
+        buildingAdapter.resetList();
+        try {
+            ExceptionService.getInstance().isExistBuilding(buildingArr);
+        } catch (ExceptionHandle exceptionHandle) {
+            exceptionHandle.printStackTrace();
+            return false;
+        }
+        for(int i=0;i<buildingArr.getBuildingArr().size();i++){
+            buildingAdapter.add(buildingArr.getBuildingArr().get(i));
+        }
+        return true;
+    }
+
+    public void setCameraState(RelativeLayout relativeMap) {
+        LatLngBounds bounds = builder.build();
+        int width = relativeMap.getWidth();
+        int height = relativeMap.getHeight();
+        int padding = (int) (height * 0.10);
+        CameraUpdate point = CameraUpdateFactory.newLatLngBounds(bounds, width, height, padding);
+        if ( Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+            googleMap.animateCamera(point);
+        else
+            googleMap.moveCamera(point);
+    }
+
+    public void showAllMarkers() {
+        googleMap.clear();
+        builder = new LatLngBounds.Builder();
+
+        MarkerOptions markerOption = new MarkerOptions();
+        markerOption.position(MidInfo.getInstance().getLatLng());
+        markerOption.title(Constant.DEFAULT_MIDINFO_NAME);
+        markerOption.snippet(MidInfo.getInstance().getAddress());
+        markerOption.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+        googleMap.addMarker(markerOption).showInfoWindow();
+
+        builder.include(markerOption.getPosition());
+
+        for (Person person : Person.getInstance()) {
+            String markerTitle = person.getName();
+            String markerSnippet = person.getAddress();
+            LatLng latLng = new LatLng(person.getAddressPosition().getX(), person.getAddressPosition().getY());
+
+            MarkerOptions markerOptions = new MarkerOptions();
+            markerOptions.position(latLng);
+            markerOptions.title(markerTitle);
+            markerOptions.snippet(markerSnippet);
+            markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
+            googleMap.addMarker(markerOptions);
+
+            builder.include(markerOptions.getPosition());
+        }
+    }
+
+    public void showEachMarker(int index) {
+        googleMap.clear();
+        builder = new LatLngBounds.Builder();
+
+        MarkerOptions markerOption = new MarkerOptions();
+        markerOption.position(MidInfo.getInstance().getLatLng());
+        markerOption.title(Constant.DEFAULT_MIDINFO_NAME);
+        markerOption.snippet(MidInfo.getInstance().getAddress());
+        markerOption.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+        googleMap.addMarker(markerOption).showInfoWindow();
+
+        builder.include(markerOption.getPosition());
+
+        Person person = Person.getInstance().get(index);
+        String markerTitle = person.getName();
+        String markerSnippet = person.getAddress();
+        LatLng latLng = new LatLng(person.getAddressPosition().getX(), person.getAddressPosition().getY());
+
+        MarkerOptions markerOptions = new MarkerOptions();
+        markerOptions.position(latLng);
+        markerOptions.title(markerTitle);
+        markerOptions.snippet(markerSnippet);
+        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
+        googleMap.addMarker(markerOptions);
+
+        builder.include(markerOptions.getPosition());
+    }
+
+    public void showLandmarkAllMarkers() {
+        googleMap.clear();
+        builder = new LatLngBounds.Builder();
+
+        //TODO 랜드마크 위치
+        MarkerOptions markerOption = new MarkerOptions();
+        markerOption.position(Constant.LANDMARK_LOCATION);
+        markerOption.title(Constant.landmark_name);
+        markerOption.snippet(Constant.landmark_address);
+        markerOption.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+        googleMap.addMarker(markerOption).showInfoWindow();
+
+        builder.include(markerOption.getPosition());
+
+        for (Person person : Person.getInstance()) {
+            String markerTitle = person.getName();
+            String markerSnippet = person.getAddress();
+            LatLng latLng = new LatLng(person.getAddressPosition().getX(), person.getAddressPosition().getY());
+
+            MarkerOptions markerOptions = new MarkerOptions();
+            markerOptions.position(latLng);
+            markerOptions.title(markerTitle);
+            markerOptions.snippet(markerSnippet);
+            markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
+            googleMap.addMarker(markerOptions);
+
+            builder.include(markerOptions.getPosition());
+        }
+    }
+
+    public void showLandmarkEachMarker(int index) {
+        googleMap.clear();
+        builder = new LatLngBounds.Builder();
+
+        //TODO 랜드마크 위치
+        MarkerOptions markerOption = new MarkerOptions();
+        markerOption.position(Constant.LANDMARK_LOCATION);
+        markerOption.title(Constant.landmark_name);
+        markerOption.snippet(Constant.landmark_address);
+        markerOption.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+        googleMap.addMarker(markerOption).showInfoWindow();
+
+        builder.include(markerOption.getPosition());
+
+        Person person = Person.getInstance().get(index);
+        String markerTitle = person.getName();
+        String markerSnippet = person.getAddress();
+        LatLng latLng = new LatLng(person.getAddressPosition().getX(), person.getAddressPosition().getY());
+
+        MarkerOptions markerOptions = new MarkerOptions();
+        markerOptions.position(latLng);
+        markerOptions.title(markerTitle);
+        markerOptions.snippet(markerSnippet);
+        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
+        googleMap.addMarker(markerOptions);
+
+        builder.include(markerOptions.getPosition());
     }
 }
