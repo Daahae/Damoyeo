@@ -10,6 +10,9 @@ public class Constant {
     public static final int LOG_IN = 9001;
     public static final int LOG_OUT = 9999;
 
+    public static final int GOOGLE_LOGIN = 901;
+    public static final int GUEST_LOGIN = 902;
+
     public static final int GPS_ENABLE_REQUEST_CODE = 2001;
     public static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 2002;
     public static final int UPDATE_INTERVAL_MS = 15000;
@@ -33,7 +36,7 @@ public class Constant {
     public static final String landmark_tel = "02-774-1784";
 
     // MapsActivityPresenter
-    public static final int NMAP_PAGE = 101;
+    public static final int MAPS_PAGE = 101;
     public static final int SELECT_MID_PAGE = 102;
     public static final int CATEGORY_PAGE = 103;
     public static final int DETAIL_PAGE = 104;

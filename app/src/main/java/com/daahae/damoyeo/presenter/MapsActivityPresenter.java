@@ -49,7 +49,7 @@ public class MapsActivityPresenter {
     public void changeView(int nextPageNumber){
 
         switch (nextPageNumber){
-            case Constant.NMAP_PAGE:
+            case Constant.MAPS_PAGE:
                 setViewFragment(new MapsFragment(this));
                 break;
 

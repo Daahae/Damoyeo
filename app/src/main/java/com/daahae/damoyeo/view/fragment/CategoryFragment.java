@@ -42,10 +42,14 @@ import com.daahae.damoyeo.model.BuildingArr;
 import com.daahae.damoyeo.presenter.CategoryFragmentPresenter;
 import com.daahae.damoyeo.presenter.MapsActivityPresenter;
 import com.daahae.damoyeo.view.Constant;
+import com.daahae.damoyeo.view.activity.MapsActivity;
 import com.daahae.damoyeo.view.activity.TransportActivity;
 import com.daahae.damoyeo.view.adapter.BuildingAdapter;
 import com.daahae.damoyeo.view.adapter.MarkerTimeAdapter;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
@@ -56,6 +60,10 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
 
@@ -67,7 +75,6 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
     private CategoryFragmentPresenter presenter;
     private MapsActivityPresenter parentPresenter;
 
-    private GoogleMap googleMap = null;
     private MapView mapView = null;
     private GoogleApiClient googleApiClient = null;
 
@@ -257,9 +264,7 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        //액티비티가 처음 생성될 때 실행되는 함수
         MapsInitializer.initialize(getActivity().getApplicationContext());
-
         if(mapView != null)
             mapView.onCreate(savedInstanceState);
     }
@@ -375,11 +380,7 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
         } else {
             LocationServices.FusedLocationApi
                     .requestLocationUpdates(googleApiClient, locationRequest, this);
-
-            this.googleMap.getUiSettings().setCompassEnabled(false);
-            this.googleMap.animateCamera(CameraUpdateFactory.zoomTo(15));
         }
-
     }
 
     @Override
@@ -402,6 +403,15 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
     @Override
     public void onLocationChanged(Location location) {
         Log.i(Constant.TAG, "onLocationChanged call..");
+
+        if(MapsActivity.LOGIN_FLG == Constant.GOOGLE_LOGIN) {
+            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+            if (user == null) {
+                // 다이어로그 로그인 토큰 만료 로 인한 재 로그인 유도
+                getActivity().setResult(Constant.LOG_OUT);
+                getActivity().finish();
+            }
+        }
     }
     private void buildGoogleApiClient() {
         googleApiClient = new GoogleApiClient.Builder(getActivity())
@@ -417,24 +427,13 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        // OnMapReadyCallback implements 해야 mapView.getMapAsync(this); 사용가능. this 가 OnMapReadyCallback
-        this.googleMap = googleMap;
 
-        //런타임 퍼미션 요청 대화상자나 GPS 활성 요청 대화상자 보이기전에 지도의 초기위치를 서울로 이동
-        CameraUpdate point = CameraUpdateFactory.newLatLngZoom(Constant.DEFAULT_LOCATION, 15.0f);
-        googleMap.animateCamera(point);
-
-        //  API 23 이상이면 런타임 퍼미션 처리 필요
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            // 사용권한체크
             int hasFineLocationPermission = ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION);
 
             if ( hasFineLocationPermission == PackageManager.PERMISSION_DENIED) {
-                //사용권한이 없을경우
-                //권한 재요청
                 ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, Constant.PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
             } else {
-                //사용권한이 있는경우
                 if ( googleApiClient == null)
                     buildGoogleApiClient();
             }
@@ -442,6 +441,9 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
             if ( googleApiClient == null)
                 buildGoogleApiClient();
         }
+        CameraUpdate point = CameraUpdateFactory.newLatLngZoom(Constant.DEFAULT_LOCATION, 15.0f);
+        googleMap.moveCamera(point);
+
         presenter.setGMapSetting(googleMap);
         presenter.showAllMarkers();
         presenter.setCameraState(relativeMap);
@@ -482,18 +484,23 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(!isMid) {
-            if(resultCode == -1)
-                presenter.showAllMarkers();
-            else
-                presenter.showEachMarker(resultCode);
-        } else {
-            if(resultCode == -1)
-                presenter.showLandmarkAllMarkers();
-            else
-                presenter.showLandmarkEachMarker(resultCode);
+        switch (requestCode){
+            case Constant.CATEGORY_PAGE:
+
+                if(!isMid) {
+                    if(resultCode == -1)
+                        presenter.showAllMarkers();
+                    else
+                        presenter.showEachMarker(resultCode);
+                } else {
+                    if(resultCode == -1)
+                        presenter.showLandmarkAllMarkers();
+                    else
+                        presenter.showLandmarkEachMarker(resultCode);
+                }
+                presenter.setCameraState(relativeMap);
+                break;
         }
-        presenter.setCameraState(relativeMap);
     }
 
     @Override
@@ -501,7 +508,7 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
 
         if(parent.equals(listMarkerTime)){
             Intent intent = new Intent(getActivity(), TransportActivity.class);
-            startActivityForResult(intent, -1);
+            startActivityForResult(intent, Constant.CATEGORY_PAGE);
         } else {
             parentPresenter.changeView(Constant.DETAIL_PAGE);
             RetrofitCommunication.getInstance().clickItem(buildingAdapter.getItem(position));
@@ -512,7 +519,7 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
     public void onClick(View view) {
         switch(view.getId()){
             case R.id.btn_back_category:
-                parentPresenter.changeView(Constant.NMAP_PAGE);
+                parentPresenter.changeView(Constant.MAPS_PAGE);
                 break;
             case R.id.btn_all_marker_list:
                 if(!isMid) {

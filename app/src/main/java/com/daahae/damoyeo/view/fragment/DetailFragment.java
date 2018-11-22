@@ -42,6 +42,7 @@ import com.daahae.damoyeo.model.TransportInfoList;
 import com.daahae.damoyeo.presenter.DetailFragmentPresenter;
 import com.daahae.damoyeo.presenter.MapsActivityPresenter;
 import com.daahae.damoyeo.view.Constant;
+import com.daahae.damoyeo.view.activity.MapsActivity;
 import com.daahae.damoyeo.view.adapter.TransportAdapter;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -59,6 +60,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
 
@@ -112,8 +115,10 @@ public class DetailFragment extends Fragment implements View.OnClickListener, On
                 Log.v("상세 데이터",buildingDetail.getBuildingTel());
                 Log.v("상세 데이터",buildingDetail.getBuildingDescription());
 
-                LatLng latLng = new LatLng(building.getLatitude(), building.getLongitude());
-                setLocation(latLng);
+                if(googleMap != null) {
+                    LatLng latLng = new LatLng(building.getLatitude(), building.getLongitude());
+                    setLocation(latLng);
+                }
                 showBuilding(building);
 
                 presenter.initData(Person.getInstance());
@@ -268,9 +273,6 @@ public class DetailFragment extends Fragment implements View.OnClickListener, On
         } else {
             LocationServices.FusedLocationApi
                     .requestLocationUpdates(googleApiClient, locationRequest, this);
-
-            this.googleMap.getUiSettings().setCompassEnabled(false);
-            this.googleMap.animateCamera(CameraUpdateFactory.zoomTo(15));
         }
     }
 
@@ -294,6 +296,15 @@ public class DetailFragment extends Fragment implements View.OnClickListener, On
     @Override
     public void onLocationChanged(Location location) {
         Log.i(Constant.TAG, "onLocationChanged call..");
+
+        if(MapsActivity.LOGIN_FLG == Constant.GOOGLE_LOGIN) {
+            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+            if (user == null) {
+                // 다이어로그 로그인 토큰 만료 로 인한 재 로그인 유도
+                getActivity().setResult(Constant.LOG_OUT);
+                getActivity().finish();
+            }
+        }
     }
 
     private void buildGoogleApiClient() {
@@ -331,7 +342,6 @@ public class DetailFragment extends Fragment implements View.OnClickListener, On
     private void setLocation(LatLng latLng) {
         CameraUpdate point = CameraUpdateFactory.newLatLngZoom(latLng, 15.0f);
         googleMap.moveCamera(point);
-        googleMap.animateCamera(point);
     }
 
     private void setBuildingDetail(BuildingDetail buildingDetail){
@@ -363,8 +373,11 @@ public class DetailFragment extends Fragment implements View.OnClickListener, On
     }
 
     public void showCurrentMarker() {
-        CameraUpdate c = CameraUpdateFactory.newLatLng(currentMarker.getPosition());
-        googleMap.animateCamera(c);
+        CameraUpdate point = CameraUpdateFactory.newLatLng(currentMarker.getPosition());
+        if ( Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+            googleMap.animateCamera(point);
+        else
+            googleMap.moveCamera(point);
     }
 
     @Override

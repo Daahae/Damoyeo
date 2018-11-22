@@ -19,6 +19,8 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
@@ -39,6 +41,7 @@ import com.daahae.damoyeo.presenter.MapsActivityPresenter;
 import com.daahae.damoyeo.presenter.MapsFragmentPresenter;
 import com.daahae.damoyeo.view.Constant;
 import com.daahae.damoyeo.view.FloatingActionBtn;
+import com.daahae.damoyeo.view.activity.MapsActivity;
 import com.daahae.damoyeo.view.function.GPSInfo;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -49,6 +52,7 @@ import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
 import com.google.android.gms.location.places.ui.PlaceSelectionListener;
+import com.google.android.gms.location.places.ui.SupportPlaceAutocompleteFragment;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -61,6 +65,7 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -73,6 +78,8 @@ public class MapsFragment extends Fragment implements View.OnClickListener, OnMa
     private MapsActivityPresenter parentPresenter;
     private MapsFragmentPresenter presenter;
 
+    private SupportPlaceAutocompleteFragment autocompleteFragment;
+
     private GoogleMap googleMap = null;
     private MapView mapView = null;
     private GoogleApiClient googleApiClient = null;
@@ -83,6 +90,7 @@ public class MapsFragment extends Fragment implements View.OnClickListener, OnMa
     private ArrayList<Marker> markerList;
 
     private FloatingActionBtn fabtn;
+    private LinearLayout linearBtnSearchMid;
 
     private GPSInfo gps;
 
@@ -95,6 +103,7 @@ public class MapsFragment extends Fragment implements View.OnClickListener, OnMa
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         gps = new GPSInfo(getActivity());
         markerList = new ArrayList<Marker>();
         fabtn = new FloatingActionBtn();
@@ -106,23 +115,40 @@ public class MapsFragment extends Fragment implements View.OnClickListener, OnMa
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_maps, container, false);
+        View view = inflater.inflate(R.layout.fragment_maps, container, false);
 
-        mapView = (MapView)rootView.findViewById(R.id.map_main);
-        mapView.getMapAsync(this);
+        initView(view);
+        initAnimation();
+        initListenter();
 
         setPlaceAutoComplete();
 
+        return view;
+    }
+
+    private void initView(View view) {
+
+        mapView = (MapView) view.findViewById(R.id.map_main);
+        mapView.getMapAsync(this);
+
+        fabtn.setFabMenu((FloatingActionButton) view.findViewById(R.id.fab_menu));
+        fabtn.setFabGPS((FloatingActionButton) view.findViewById(R.id.fab_gps));
+        fabtn.setFabPick((FloatingActionButton) view.findViewById(R.id.fab_pick));
+        fabtn.setFabClear((FloatingActionButton) view.findViewById(R.id.fab_clear));
+        fabtn.setFabFull((FloatingActionButton) view.findViewById(R.id.fab_full));
+        fabtn.setFabFix((FloatingActionButton) view.findViewById(R.id.fab_fix));
+        fabtn.setFabLogout((FloatingActionButton) view.findViewById(R.id.fab_logout));
+
+        linearBtnSearchMid = view.findViewById(R.id.linear_search_mid);
+    }
+
+    private void initAnimation() {
+
         fabtn.setFabOpen(AnimationUtils.loadAnimation(getActivity(), R.anim.fab_open));
         fabtn.setFabClose(AnimationUtils.loadAnimation(getActivity(), R.anim.fab_close));
+    }
 
-        fabtn.setFabMenu((FloatingActionButton) rootView.findViewById(R.id.fab_menu));
-        fabtn.setFabGPS((FloatingActionButton) rootView.findViewById(R.id.fab_gps));
-        fabtn.setFabPick((FloatingActionButton) rootView.findViewById(R.id.fab_pick));
-        fabtn.setFabClear((FloatingActionButton) rootView.findViewById(R.id.fab_clear));
-        fabtn.setFabFull((FloatingActionButton) rootView.findViewById(R.id.fab_full));
-        fabtn.setFabFix((FloatingActionButton) rootView.findViewById(R.id.fab_fix));
-        fabtn.setFabLogout((FloatingActionButton) rootView.findViewById(R.id.fab_logout));
+    private void initListenter() {
 
         fabtn.getFabMenu().setOnClickListener(this);
         fabtn.getFabGPS().setOnClickListener(this);
@@ -132,24 +158,21 @@ public class MapsFragment extends Fragment implements View.OnClickListener, OnMa
         fabtn.getFabFix().setOnClickListener(this);
         fabtn.getFabLogout().setOnClickListener(this);
 
-        LinearLayout linearBtnSearchMid = rootView.findViewById(R.id.linear_search_mid);
         linearBtnSearchMid.setOnClickListener(this);
-
-        return rootView;
     }
 
-    // 검색 자동완성
     private void setPlaceAutoComplete(){
 
-        PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)
-                getActivity().getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
+        autocompleteFragment = new SupportPlaceAutocompleteFragment();
+        FragmentManager fm = getFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
+        ft.replace(R.id.fragment_content, autocompleteFragment);
+        ft.commit();
 
         autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onPlaceSelected(Place place) {
                 LatLng latLng = new LatLng(place.getLatLng().latitude, place.getLatLng().longitude);
-                Toast.makeText(getContext(), place.getAddress().toString() + place.getPhoneNumber() + "", Toast.LENGTH_SHORT).show();
-
                 setCurrentMarker(true, latLng, place.getName().toString(), place.getAddress().toString());
                 presenter.saveSearchName(place.getName().toString());
             }
@@ -165,9 +188,7 @@ public class MapsFragment extends Fragment implements View.OnClickListener, OnMa
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        //액티비티가 처음 생성될 때 실행되는 함수
         MapsInitializer.initialize(getActivity().getApplicationContext());
-
         if(mapView != null)
             mapView.onCreate(savedInstanceState);
     }
@@ -283,11 +304,7 @@ public class MapsFragment extends Fragment implements View.OnClickListener, OnMa
         } else {
             LocationServices.FusedLocationApi
                     .requestLocationUpdates(googleApiClient, locationRequest, this);
-
-            this.googleMap.getUiSettings().setCompassEnabled(false);
-            this.googleMap.animateCamera(CameraUpdateFactory.zoomTo(15));
         }
-
     }
 
     @Override
@@ -311,7 +328,16 @@ public class MapsFragment extends Fragment implements View.OnClickListener, OnMa
     @Override
     public void onLocationChanged(Location location) {
         Log.i(Constant.TAG, "onLocationChanged call..");
+        if(MapsActivity.LOGIN_FLG == Constant.GOOGLE_LOGIN) {
+            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+            if (user == null) {
+                // 다이어로그 로그인 토큰 만료 로 인한 재 로그인 유도
+                getActivity().setResult(Constant.LOG_OUT);
+                getActivity().finish();
+            }
+        }
     }
+
     private void buildGoogleApiClient() {
         googleApiClient = new GoogleApiClient.Builder(getActivity())
                 .addConnectionCallbacks(this)
@@ -326,24 +352,14 @@ public class MapsFragment extends Fragment implements View.OnClickListener, OnMa
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        // OnMapReadyCallback implements 해야 mapView.getMapAsync(this); 사용가능. this 가 OnMapReadyCallback
         this.googleMap = googleMap;
 
-        //런타임 퍼미션 요청 대화상자나 GPS 활성 요청 대화상자 보이기전에 지도의 초기위치를 서울로 이동
-        CameraUpdate point = CameraUpdateFactory.newLatLngZoom(Constant.DEFAULT_LOCATION, 15.0f);
-        googleMap.animateCamera(point);
-
-        //  API 23 이상이면 런타임 퍼미션 처리 필요
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            // 사용권한체크
             int hasFineLocationPermission = ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION);
 
-            if ( hasFineLocationPermission == PackageManager.PERMISSION_DENIED) {
-                //사용권한이 없을경우
-                //권한 재요청
+            if ( hasFineLocationPermission == PackageManager.PERMISSION_DENIED)
                 ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, Constant.PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
-            } else {
-                //사용권한이 있는경우
+            else {
                 if ( googleApiClient == null)
                     buildGoogleApiClient();
             }
@@ -351,10 +367,17 @@ public class MapsFragment extends Fragment implements View.OnClickListener, OnMa
             if ( googleApiClient == null)
                 buildGoogleApiClient();
         }
-
-        googleMap.setOnMapClickListener(null);
+        googleMap.setOnMapClickListener(this);
         googleMap.setOnMarkerClickListener(this);
-        builder = new LatLngBounds.Builder();
+
+        CameraUpdate point = CameraUpdateFactory.newLatLngZoom(Constant.DEFAULT_LOCATION, 15.0f);
+        googleMap.moveCamera(point);
+
+        if(Person.getInstance().size() > 0) {
+            showAllMarkersOnState();
+            showAllMarkers();
+        } else
+            builder = new LatLngBounds.Builder();
     }
 
     @Override
@@ -363,7 +386,6 @@ public class MapsFragment extends Fragment implements View.OnClickListener, OnMa
         Point screenPt = googleMap.getProjection().toScreenLocation(point);
 
         LatLng latLng = googleMap.getProjection().fromScreenLocation(screenPt);
-        Log.d(Constant.TAG, "" + latLng.latitude + latLng.longitude);
 
         setCurrentMarker(false, latLng, getResources().getString(R.string.msg_add), null);
     }
@@ -415,7 +437,6 @@ public class MapsFragment extends Fragment implements View.OnClickListener, OnMa
                 }
                 break;
             case R.id.fab_logout:
-                FirebaseAuth.getInstance().signOut();
                 getActivity().setResult(Constant.LOG_OUT);
                 getActivity().finish();
                 break;
@@ -448,7 +469,7 @@ public class MapsFragment extends Fragment implements View.OnClickListener, OnMa
                     1); // 얻어올 값의 개수
         } catch (IOException e) {
             e.printStackTrace();
-            Log.e("test", "입출력 오류 - 서버에서 주소변환시 에러발생");
+            Log.e(Constant.TAG, "입출력 오류 - 서버에서 주소변환시 에러발생");
         }
         if (list != null) {
             if (list.size()==0)
@@ -473,25 +494,27 @@ public class MapsFragment extends Fragment implements View.OnClickListener, OnMa
     }
 
     private void pickMarker() {
-        googleMap.setOnMapClickListener(this);
         LatLng latLng = googleMap.getCameraPosition().target;
         setCurrentMarker(false, latLng, getResources().getString(R.string.msg_default), null);
     }
 
-    private void setDataClear() {
+    private void setMarkerClear() {
         currentMarker = null;
         clickedMarker = null;
         fabtn.getFabFix().setImageDrawable(getResources().getDrawable(R.drawable.ic_fab_plus, null));
-        googleMap.setOnMapClickListener(null);
     }
 
     private void setGoogleMapClear() {
         googleMap.clear();
-        Person.getInstance().clear();
         markerList.clear();
-        setDataClear();
+        Person.getInstance().clear();
+        setMarkerClear();
+
         CameraUpdate point = CameraUpdateFactory.newLatLngZoom(Constant.DEFAULT_LOCATION, 15.0f);
-        googleMap.animateCamera(point);
+        if ( Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+            googleMap.animateCamera(point);
+        else
+            googleMap.moveCamera(point);
         builder = new LatLngBounds.Builder();
     }
 
@@ -501,7 +524,7 @@ public class MapsFragment extends Fragment implements View.OnClickListener, OnMa
                 removeMarker();
             else
                 saveMarker(clickedMarker);
-            setDataClear();
+            setMarkerClear();
         } else {
             if(currentMarker != null) {
                 saveMarker(currentMarker);
@@ -539,22 +562,26 @@ public class MapsFragment extends Fragment implements View.OnClickListener, OnMa
     }
 
     private void showAllMarkers() {
-        LatLngBounds bounds = builder.build();
-        int width = getResources().getDisplayMetrics().widthPixels;
-        int height = getResources().getDisplayMetrics().heightPixels;
-        int padding = (int) (height * 0.10);
-        CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, width, height, padding);
-        googleMap.animateCamera(cu);
+        if(markerList.size() > 0) {
+            LatLngBounds bounds = builder.build();
+            int width = getResources().getDisplayMetrics().widthPixels;
+            int height = getResources().getDisplayMetrics().heightPixels;
+            int padding = (int) (height * 0.10);
+            CameraUpdate point = CameraUpdateFactory.newLatLngBounds(bounds, width, height, padding);
+            if ( Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+                googleMap.animateCamera(point);
+            else
+                googleMap.moveCamera(point);
+        }
     }
 
-    // 마커 찍기
     private void setCurrentMarker(boolean flag, LatLng latLng, String markerTitle, String markerSnippet) {
-        clickedMarker = null;
-        fabtn.getFabFix().setImageDrawable(getResources().getDrawable(R.drawable.ic_fab_plus, null));
+
         if ( currentMarker != null ) currentMarker.remove();
 
+        setMarkerClear();
+
         if ( latLng != null) {
-            //현재위치의 위도 경도 가져옴
 
             MarkerOptions markerOptions = new MarkerOptions();
             markerOptions.position(latLng);
@@ -564,8 +591,12 @@ public class MapsFragment extends Fragment implements View.OnClickListener, OnMa
             currentMarker = googleMap.addMarker(markerOptions);
             currentMarker.showInfoWindow();
 
-            if(flag)
-                googleMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
+            if(flag) {
+                if ( Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+                    googleMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
+                else
+                    googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+            }
             return;
         }
 
@@ -576,6 +607,31 @@ public class MapsFragment extends Fragment implements View.OnClickListener, OnMa
         markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
         currentMarker = googleMap.addMarker(markerOptions);
 
-        googleMap.animateCamera(CameraUpdateFactory.newLatLng(Constant.DEFAULT_LOCATION));
+        if ( Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+            googleMap.animateCamera(CameraUpdateFactory.newLatLng(Constant.DEFAULT_LOCATION));
+        else
+            googleMap.moveCamera(CameraUpdateFactory.newLatLng(Constant.DEFAULT_LOCATION));
+    }
+
+    public void showAllMarkersOnState() {
+        googleMap.clear();
+        builder = new LatLngBounds.Builder();
+        markerList.clear();
+
+        for (Person person : Person.getInstance()) {
+            String markerTitle = person.getName();
+            String markerSnippet = person.getAddress();
+            LatLng latLng = new LatLng(person.getAddressPosition().getX(), person.getAddressPosition().getY());
+
+            MarkerOptions markerOptions = new MarkerOptions();
+            markerOptions.position(latLng);
+            markerOptions.title(markerTitle);
+            markerOptions.snippet(markerSnippet);
+            markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
+            Marker marker = googleMap.addMarker(markerOptions);
+            markerList.add(marker);
+
+            builder.include(markerOptions.getPosition());
+        }
     }
 }

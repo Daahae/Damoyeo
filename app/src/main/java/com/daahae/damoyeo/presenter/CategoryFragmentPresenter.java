@@ -1,5 +1,6 @@
 package com.daahae.damoyeo.presenter;
 
+import android.os.Build;
 import android.support.v4.app.Fragment;
 import android.widget.Button;
 import android.widget.RelativeLayout;
@@ -79,8 +80,11 @@ public class CategoryFragmentPresenter {
         int width = relativeMap.getWidth();
         int height = relativeMap.getHeight();
         int padding = (int) (height * 0.10);
-        CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, width, height, padding);
-        googleMap.animateCamera(cu);
+        CameraUpdate point = CameraUpdateFactory.newLatLngBounds(bounds, width, height, padding);
+        if ( Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+            googleMap.animateCamera(point);
+        else
+            googleMap.moveCamera(point);
     }
 
     public void showAllMarkers() {
@@ -97,7 +101,6 @@ public class CategoryFragmentPresenter {
 
         builder.include(markerOption.getPosition());
 
-        //현재위치의 위도 경도 가져옴
         for (Person person : Person.getInstance()) {
             String markerTitle = person.getName();
             String markerSnippet = person.getAddress();
@@ -114,7 +117,7 @@ public class CategoryFragmentPresenter {
         }
     }
 
-    public void showEachMarker(int position) {
+    public void showEachMarker(int index) {
         googleMap.clear();
         builder = new LatLngBounds.Builder();
 
@@ -128,8 +131,7 @@ public class CategoryFragmentPresenter {
 
         builder.include(markerOption.getPosition());
 
-        //현재위치의 위도 경도 가져옴
-        Person person = Person.getInstance().get(position);
+        Person person = Person.getInstance().get(index);
         String markerTitle = person.getName();
         String markerSnippet = person.getAddress();
         LatLng latLng = new LatLng(person.getAddressPosition().getX(), person.getAddressPosition().getY());
@@ -158,7 +160,6 @@ public class CategoryFragmentPresenter {
 
         builder.include(markerOption.getPosition());
 
-        //현재위치의 위도 경도 가져옴
         for (Person person : Person.getInstance()) {
             String markerTitle = person.getName();
             String markerSnippet = person.getAddress();
@@ -175,7 +176,7 @@ public class CategoryFragmentPresenter {
         }
     }
 
-    public void showLandmarkEachMarker(int position) {
+    public void showLandmarkEachMarker(int index) {
         googleMap.clear();
         builder = new LatLngBounds.Builder();
 
@@ -189,8 +190,7 @@ public class CategoryFragmentPresenter {
 
         builder.include(markerOption.getPosition());
 
-        //현재위치의 위도 경도 가져옴
-        Person person = Person.getInstance().get(position);
+        Person person = Person.getInstance().get(index);
         String markerTitle = person.getName();
         String markerSnippet = person.getAddress();
         LatLng latLng = new LatLng(person.getAddressPosition().getX(), person.getAddressPosition().getY());
