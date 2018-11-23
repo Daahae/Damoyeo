@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName;
 
 public class MidInfo{
 
-    private static MidInfo instance = new MidInfo(Constant.latitude,Constant.longitude,null);
+    private static MidInfo instance = new MidInfo(Constant.DEFAULT_LOCATION,Constant.address);
 
     public static synchronized MidInfo getInstance() { return instance; }
 
@@ -23,10 +23,19 @@ public class MidInfo{
     @SerializedName("address")
     private String address;
 
+    public MidInfo(LatLng latLng, String address) {
+        this.latLng = latLng;
+        this.address = address;
+    }
+
     public MidInfo(double midLat, double midLng, String address) {
         this.midLat = midLat;
         this.midLng = midLng;
         this.address = address;
+    }
+
+    public LatLng getLatLng() {
+        return latLng;
     }
 
     public double getMidLat() {

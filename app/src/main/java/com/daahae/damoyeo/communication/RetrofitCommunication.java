@@ -16,9 +16,11 @@ import com.daahae.damoyeo.model.UserRequest;
 import com.daahae.damoyeo.model.Person;
 import com.daahae.damoyeo.model.TransportInfoList;
 import com.daahae.damoyeo.view.Constant;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import retrofit2.Callback;
@@ -116,16 +118,20 @@ public class RetrofitCommunication {
                         TransportInfoList.getInstance().setUserArr(transportList.getUserArr());
                         if (!transportList.getUserArr().get(0).equals("Wrong Input")) {
                             // set MidInfo
-                            Position pos = new Position(transportList.getMidInfo().getMidLat(),
-                                    transportList.getMidInfo().getMidLng());
-                            MidInfo.getInstance().setMidLat(transportList.getMidInfo().getMidLat());
-                            MidInfo.getInstance().setMidLng(transportList.getMidInfo().getMidLng());
+                            LatLng latLng = new LatLng(transportList.getMidInfo().getMidLat(), transportList.getMidInfo().getMidLng());
+                            MidInfo midInfo = new MidInfo(latLng, transportList.getMidInfo().getAddress());
+                            MidInfo.setMidInfo(midInfo);
+                            // set Landmark
+                            LatLng lmlatlng = new LatLng(transportList.getLandmark().getLatitude(), transportList.getLandmark().getLongitude());
+                            Landmark landmark = new Landmark(lmlatlng, transportList.getLandmark().getName(), transportList.getLandmark().getAddress());
+                            Landmark.setLandMark(landmark);
                             //* set TransportInfo
                             for (TransportInfoList.Data data:transportList.getUserArr())
                                 totalTimes.add(String.valueOf(data.getTotalTime()));
                         }
                         if (userCallBack != null) userCallBack.userDataPath(totalTimes);
 
+                        Log.d("end1", new SimpleDateFormat("yyyy-MM-dd HH-mm-ss.SSS").format(System.currentTimeMillis()));
                     }
 
                 }
@@ -179,6 +185,8 @@ public class RetrofitCommunication {
                         Log.v("총 빌딩 개수", String.valueOf(buildingList.getBuildingArr().size()));
                         if(buildingCallBack!=null)buildingCallBack.buildingDataPath(buildingList);
                     }
+
+                    Log.d("end2", new SimpleDateFormat("yyyy-MM-dd HH-mm-ss.SSS").format(System.currentTimeMillis()));
                 }
             }
 

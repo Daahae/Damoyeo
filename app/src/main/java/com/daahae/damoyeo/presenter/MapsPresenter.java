@@ -1,5 +1,6 @@
 package com.daahae.damoyeo.presenter;
 
+import android.util.Log;
 import android.widget.Toast;
 
 import com.daahae.damoyeo.SQL.ResentSearchDBHelper;
@@ -9,6 +10,8 @@ import com.daahae.damoyeo.exception.ExceptionService;
 import com.daahae.damoyeo.model.Person;
 import com.daahae.damoyeo.view.Constant;
 import com.daahae.damoyeo.view.fragment.MapsFragment;
+
+import java.text.SimpleDateFormat;
 
 public class MapsPresenter {
 
@@ -25,6 +28,7 @@ public class MapsPresenter {
     }
 
     public void startSendToServer() {
+        Log.d("start1", new SimpleDateFormat("yyyy-MM-dd HH-mm-ss.SSS").format(System.currentTimeMillis()));
         try {
             ExceptionService.getInstance().isSetMarker(Person.getInstance().size());
         } catch (ExceptionHandle exceptionHandle) {

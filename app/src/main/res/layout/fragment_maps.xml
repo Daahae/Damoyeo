@@ -46,90 +46,114 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
+            android:orientation="horizontal"
             android:layout_marginEnd="15dp"
             android:layout_marginStart="15dp"
-            android:layout_marginTop="70dp">
+            android:layout_marginTop="70dp"
+            android:weightSum="1">
 
-            <android.support.design.widget.FloatingActionButton
-                android:id="@+id/fab_logout"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_gravity="end"
-                android:visibility="visible"
-                android:src="@drawable/ic_logout"
-                app:backgroundTint="@color/colorWhite"
-                app:elevation="6dp"/>
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.5"
+                android:orientation="vertical">
 
-            <android.support.design.widget.FloatingActionButton
-                android:id="@+id/fab_fix"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end"
-                android:layout_marginTop="10dp"
-                android:orientation="horizontal"
-                android:src="@drawable/ic_fab_plus"
-                app:backgroundTint="@color/colorWhite"
-                app:elevation="6dp"/>
+                <android.support.design.widget.FloatingActionButton
+                    android:id="@+id/fab_logout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:visibility="visible"
+                    android:src="@drawable/ic_logout"
+                    app:backgroundTint="@color/colorWhite"
+                    app:elevation="6dp"/>
 
-            <android.support.design.widget.FloatingActionButton
-                android:id="@+id/fab_menu"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end"
-                android:layout_marginTop="10dp"
-                android:src="@drawable/ic_fab_menu"
-                app:backgroundTint="@color/colorWhite"
-                app:elevation="6dp" />
+                <android.support.design.widget.FloatingActionButton
+                    android:id="@+id/fab_mypage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:orientation="horizontal"
+                    android:src="@drawable/ic_my_profile"
+                    app:backgroundTint="@color/colorWhite"
+                    app:elevation="6dp"/>
+            </LinearLayout>
 
-            <android.support.design.widget.FloatingActionButton
-                android:id="@+id/fab_gps"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end"
-                android:layout_marginTop="10dp"
-                android:src="@drawable/ic_fab_gps"
-                android:visibility="invisible"
-                app:backgroundTint="@color/colorWhite"
-                app:elevation="6dp"
-                app:pressedTranslationZ="12dp" />
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.5"
+                android:orientation="vertical">
 
-            <android.support.design.widget.FloatingActionButton
-                android:id="@+id/fab_pick"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end"
-                android:layout_marginTop="10dp"
-                android:src="@drawable/ic_fab_pick"
-                android:visibility="invisible"
-                app:backgroundTint="@color/colorWhite"
-                app:elevation="6dp"
-                app:pressedTranslationZ="12dp" />
+                <android.support.design.widget.FloatingActionButton
+                    android:id="@+id/fab_fix"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:orientation="horizontal"
+                    android:src="@drawable/ic_fab_plus"
+                    app:backgroundTint="@color/colorWhite"
+                    app:elevation="6dp"/>
 
-            <android.support.design.widget.FloatingActionButton
-                android:id="@+id/fab_clear"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end"
-                android:layout_marginTop="10dp"
-                android:src="@drawable/ic_fab_clear"
-                android:visibility="invisible"
-                app:backgroundTint="@color/colorWhite"
-                app:elevation="6dp"
-                app:pressedTranslationZ="12dp" />
+                <android.support.design.widget.FloatingActionButton
+                    android:id="@+id/fab_menu"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:layout_marginTop="10dp"
+                    android:src="@drawable/ic_fab_menu"
+                    app:backgroundTint="@color/colorWhite"
+                    app:elevation="6dp" />
 
-            <android.support.design.widget.FloatingActionButton
-                android:id="@+id/fab_full"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end"
-                android:layout_marginTop="10dp"
-                android:src="@drawable/ic_fab_full"
-                android:visibility="invisible"
-                app:backgroundTint="@color/colorWhite"
-                app:elevation="6dp"
-                app:pressedTranslationZ="12dp" />
+                <android.support.design.widget.FloatingActionButton
+                    android:id="@+id/fab_gps"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:layout_marginTop="10dp"
+                    android:src="@drawable/ic_fab_gps"
+                    android:visibility="invisible"
+                    app:backgroundTint="@color/colorWhite"
+                    app:elevation="6dp"
+                    app:pressedTranslationZ="12dp" />
+
+                <android.support.design.widget.FloatingActionButton
+                    android:id="@+id/fab_pick"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:layout_marginTop="10dp"
+                    android:src="@drawable/ic_fab_pick"
+                    android:visibility="invisible"
+                    app:backgroundTint="@color/colorWhite"
+                    app:elevation="6dp"
+                    app:pressedTranslationZ="12dp" />
+
+                <android.support.design.widget.FloatingActionButton
+                    android:id="@+id/fab_clear"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:layout_marginTop="10dp"
+                    android:src="@drawable/ic_fab_clear"
+                    android:visibility="invisible"
+                    app:backgroundTint="@color/colorWhite"
+                    app:elevation="6dp"
+                    app:pressedTranslationZ="12dp" />
+
+                <android.support.design.widget.FloatingActionButton
+                    android:id="@+id/fab_full"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:layout_marginTop="10dp"
+                    android:src="@drawable/ic_fab_full"
+                    android:visibility="invisible"
+                    app:backgroundTint="@color/colorWhite"
+                    app:elevation="6dp"
+                    app:pressedTranslationZ="12dp" />
+            </LinearLayout>
+
         </LinearLayout>
     </RelativeLayout>
     <LinearLayout

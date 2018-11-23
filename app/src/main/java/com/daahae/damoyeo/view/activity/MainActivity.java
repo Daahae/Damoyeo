@@ -1,6 +1,5 @@
 package com.daahae.damoyeo.view.activity;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -24,14 +23,12 @@ public class MainActivity extends FragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+
+        // set LoginFlg
+        LOGIN_FLG = getIntent().getIntExtra(Constant.LOGIN, Constant.GUEST_LOGIN);
+
         Constant.context = this;
         setFragmentInitialization();
-    }
-
-    @Override
-    public void startActivityForResult(Intent intent, int requestCode) {
-        super.startActivityForResult(intent, requestCode);
-        LOGIN_FLG = requestCode;
     }
 
     @Override

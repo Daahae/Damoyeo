@@ -12,6 +12,7 @@ public class Constant {
     public static final int LOG_IN = 9001;
     public static final int LOG_OUT = 9999;
 
+    public static final String LOGIN = "Login";
     public static final int GOOGLE_LOGIN = 901;
     public static final int GUEST_LOGIN = 902;
 

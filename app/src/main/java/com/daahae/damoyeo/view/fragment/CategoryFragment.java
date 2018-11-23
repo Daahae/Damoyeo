@@ -42,6 +42,7 @@ import com.daahae.damoyeo.exception.ExceptionHandle;
 import com.daahae.damoyeo.exception.ExceptionService;
 import com.daahae.damoyeo.model.Building;
 import com.daahae.damoyeo.model.BuildingArr;
+import com.daahae.damoyeo.model.Landmark;
 import com.daahae.damoyeo.model.MidInfo;
 import com.daahae.damoyeo.model.Person;
 import com.daahae.damoyeo.presenter.CategoryPresenter;
@@ -156,7 +157,7 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
         setMarkerTimeList(markerTimeAdapter);
         listMarkerTime.setAdapter(markerTimeAdapter);
 
-        presenter.setDefaultBuilding();
+        presenter.setDefaultCategory();
         presenter.startCallback();
 
         return rootView;
@@ -512,7 +513,7 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
             startActivityForResult(intent, Constant.CATEGORY_PAGE);
         } else {
             parentView.changeView(Constant.DETAIL_PAGE);
-            RetrofitCommunication.getInstance().clickItem(buildingAdapter.getItem(position));
+            presenter.getBuildingDetailFromServer(position);
         }
     }
 
@@ -551,8 +552,8 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
                 break;
 
             case R.id.btn_department_store_category:
+                presenter.setSelectCategory(Constant.DEPARTMENT_STORE);
                 setLoading();
-                RetrofitCommunication.getInstance().setBuildingsData(Constant.DEPARTMENT_STORE);
 
                 btnDepartment.setImageResource(R.drawable.ic_department_store_orange);
                 btnShopping .setImageResource(R.drawable.ic_shopping_gray);
@@ -568,7 +569,7 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
                 txtSelectedCategory.setText(getResources().getString(R.string.category_department_store));
                 break;
             case R.id.btn_shopping_category:
-                RetrofitCommunication.getInstance().setBuildingsData(Constant.SHOPPING_MALL);
+                presenter.setSelectCategory(Constant.SHOPPING_MALL);
                 setLoading();
 
                 btnDepartment.setImageResource(R.drawable.ic_department_store_gray);
@@ -585,7 +586,7 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
                 txtSelectedCategory.setText(getResources().getString(R.string.category_shopping_mall));
                 break;
             case R.id.btn_stadium_category:
-                RetrofitCommunication.getInstance().setBuildingsData(Constant.STADIUM);
+                presenter.setSelectCategory(Constant.STADIUM);
                 setLoading();
 
                 btnDepartment.setImageResource(R.drawable.ic_department_store_gray);
@@ -602,7 +603,7 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
                 txtSelectedCategory.setText(getResources().getString(R.string.category_stadium));
                 break;
             case R.id.btn_zoo_category:
-                RetrofitCommunication.getInstance().setBuildingsData(Constant.ZOO);
+                presenter.setSelectCategory(Constant.ZOO);
                 setLoading();
 
                 btnDepartment.setImageResource(R.drawable.ic_department_store_gray);
@@ -618,7 +619,7 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
                 txtSelectedCategory.setText(getResources().getString(R.string.category_zoo));
                 break;
             case R.id.btn_museum_category:
-                RetrofitCommunication.getInstance().setBuildingsData(Constant.MUSEUM);
+                presenter.setSelectCategory(Constant.MUSEUM);
                 setLoading();
 
                 btnDepartment.setImageResource(R.drawable.ic_department_store_gray);
@@ -634,8 +635,8 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
                 txtSelectedCategory.setText(getResources().getString(R.string.category_museum));
                 break;
             case R.id.btn_theater_category:
+                presenter.setSelectCategory(Constant.MOVIE_THEATER);
                 setLoading();
-                RetrofitCommunication.getInstance().setBuildingsData(Constant.MOVIE_THEATER);
 
                 btnDepartment.setImageResource(R.drawable.ic_department_store_gray);
                 btnShopping .setImageResource(R.drawable.ic_shopping_gray);
@@ -650,8 +651,8 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
                 txtSelectedCategory.setText(getResources().getString(R.string.category_theater));
                 break;
             case R.id.btn_aquarium_store_category:
+                presenter.setSelectCategory(Constant.AQUARIUM);
                 setLoading();
-                RetrofitCommunication.getInstance().setBuildingsData(Constant.AQUARIUM);
 
                 btnDepartment.setImageResource(R.drawable.ic_department_store_gray);
                 btnShopping .setImageResource(R.drawable.ic_shopping_gray);
@@ -666,7 +667,7 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
                 txtSelectedCategory.setText(getResources().getString(R.string.category_aquarium));
                 break;
             case R.id.btn_cafe_category:
-                RetrofitCommunication.getInstance().setBuildingsData(Constant.CAFE);
+                presenter.setSelectCategory(Constant.CAFE);
                 setLoading();
 
                 btnDepartment.setImageResource(R.drawable.ic_department_store_gray);
@@ -682,8 +683,8 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
                 txtSelectedCategory.setText(getResources().getString(R.string.category_cafe));
                 break;
             case R.id.btn_drink_category:
+                presenter.setSelectCategory(Constant.DRINK);
                 setLoading();
-                RetrofitCommunication.getInstance().setBuildingsData(Constant.DRINK);
 
                 btnDepartment.setImageResource(R.drawable.ic_department_store_gray);
                 btnShopping .setImageResource(R.drawable.ic_shopping_gray);
@@ -698,8 +699,8 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
                 txtSelectedCategory.setText(getResources().getString(R.string.category_drink));
                 break;
             case R.id.btn_restaurant_store_category:
+                presenter.setSelectCategory(Constant.RESTAURANT);
                 setLoading();
-                RetrofitCommunication.getInstance().setBuildingsData(Constant.RESTAURANT);
 
                 btnDepartment.setImageResource(R.drawable.ic_department_store_gray);
                 btnShopping .setImageResource(R.drawable.ic_shopping_gray);
@@ -768,8 +769,7 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
         builder = new LatLngBounds.Builder();
 
         MarkerOptions markerOption = new MarkerOptions();
-        LatLng latLng1 = new LatLng(MidInfo.getInstance().getMidLat(), MidInfo.getInstance().getMidLng());
-        markerOption.position(latLng1);
+        markerOption.position(MidInfo.getInstance().getLatLng());
         markerOption.title(Constant.DEFAULT_MIDINFO_NAME);
         markerOption.snippet(MidInfo.getInstance().getAddress());
         markerOption.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
@@ -798,8 +798,7 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
         builder = new LatLngBounds.Builder();
 
         MarkerOptions markerOption = new MarkerOptions();
-        LatLng latLng1 = new LatLng(MidInfo.getInstance().getMidLat(), MidInfo.getInstance().getMidLng());
-        markerOption.position(latLng1);
+        markerOption.position(MidInfo.getInstance().getLatLng());
         markerOption.title(Constant.DEFAULT_MIDINFO_NAME);
         markerOption.snippet(MidInfo.getInstance().getAddress());
         markerOption.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
@@ -826,11 +825,10 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
         googleMap.clear();
         builder = new LatLngBounds.Builder();
 
-        //TODO 랜드마크 위치
         MarkerOptions markerOption = new MarkerOptions();
-        markerOption.position(Constant.LANDMARK_LOCATION);
-        markerOption.title(Constant.landmark_name);
-        markerOption.snippet(Constant.landmark_address);
+        markerOption.position(Landmark.getInstance().getLatLng());
+        markerOption.title(Landmark.getInstance().getName());
+        markerOption.snippet(Landmark.getInstance().getAddress());
         markerOption.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
         googleMap.addMarker(markerOption).showInfoWindow();
 
@@ -856,11 +854,10 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
         googleMap.clear();
         builder = new LatLngBounds.Builder();
 
-        //TODO 랜드마크 위치
         MarkerOptions markerOption = new MarkerOptions();
-        markerOption.position(Constant.LANDMARK_LOCATION);
-        markerOption.title(Constant.landmark_name);
-        markerOption.snippet(Constant.landmark_address);
+        markerOption.position(Landmark.getInstance().getLatLng());
+        markerOption.title(Landmark.getInstance().getName());
+        markerOption.snippet(Landmark.getInstance().getAddress());
         markerOption.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
         googleMap.addMarker(markerOption).showInfoWindow();
 

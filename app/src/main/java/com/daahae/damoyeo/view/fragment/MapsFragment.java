@@ -37,7 +37,9 @@ import com.daahae.damoyeo.model.Position;
 import com.daahae.damoyeo.presenter.MapsPresenter;
 import com.daahae.damoyeo.view.Constant;
 import com.daahae.damoyeo.model.FloatingActionBtn;
+import com.daahae.damoyeo.view.activity.LoginActivity;
 import com.daahae.damoyeo.view.activity.MainActivity;
+import com.daahae.damoyeo.view.activity.MyPageActivity;
 import com.daahae.damoyeo.view.function.GPSInfo;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -135,6 +137,14 @@ public class MapsFragment extends Fragment implements View.OnClickListener, OnMa
         fabtn.setFabFull((FloatingActionButton) view.findViewById(R.id.fab_full));
         fabtn.setFabFix((FloatingActionButton) view.findViewById(R.id.fab_fix));
         fabtn.setFabLogout((FloatingActionButton) view.findViewById(R.id.fab_logout));
+        fabtn.setFabMypage((FloatingActionButton) view.findViewById(R.id.fab_mypage));
+
+        // 게스트 로그인 시 마이페이지 안보임
+        if(MainActivity.LOGIN_FLG == Constant.GUEST_LOGIN) {
+            fabtn.getFabMypage().setVisibility(View.GONE);
+            // TODO 로그인 버튼 필요
+            fabtn.getFabLogout().setImageDrawable(getResources().getDrawable(R.drawable.ic_logout, null));
+        }
 
         linearBtnSearchMid = view.findViewById(R.id.linear_search_mid);
     }
@@ -154,6 +164,7 @@ public class MapsFragment extends Fragment implements View.OnClickListener, OnMa
         fabtn.getFabFull().setOnClickListener(this);
         fabtn.getFabFix().setOnClickListener(this);
         fabtn.getFabLogout().setOnClickListener(this);
+        fabtn.getFabMypage().setOnClickListener(this);
 
         linearBtnSearchMid.setOnClickListener(this);
     }
@@ -429,6 +440,9 @@ public class MapsFragment extends Fragment implements View.OnClickListener, OnMa
                 getActivity().setResult(Constant.LOG_OUT);
                 getActivity().finish();
                 break;
+            case R.id.fab_mypage:
+                Intent intent = new Intent(getActivity(), MyPageActivity.class);
+                startActivity(intent);
         }
     }
 

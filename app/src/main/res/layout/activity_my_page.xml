@@ -40,7 +40,7 @@
         android:layout_marginBottom="10dp"
         app:srcCompat="@drawable/ic_my_profile" />
     <EditText
-        android:id="@+id/txt_my_name_my_page"
+        android:id="@+id/edit_my_name_my_page"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@null"

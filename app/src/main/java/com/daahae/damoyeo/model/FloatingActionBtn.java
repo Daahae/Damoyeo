@@ -9,6 +9,7 @@ public class FloatingActionBtn {
     private FloatingActionButton fabMenu, fabGPS, fabPick, fabClear, fabFull;
     private FloatingActionButton fabFix;
     private FloatingActionButton fabLogout;
+    private FloatingActionButton fabMypage;
 
     public FloatingActionButton getFabMenu() {
         return fabMenu;
@@ -72,6 +73,14 @@ public class FloatingActionBtn {
 
     public void setFabLogout(FloatingActionButton fabLogout) {
         this.fabLogout = fabLogout;
+    }
+
+    public FloatingActionButton getFabMypage() {
+        return fabMypage;
+    }
+
+    public void setFabMypage(FloatingActionButton fabMypage) {
+        this.fabMypage = fabMypage;
     }
 
     public void anim() {

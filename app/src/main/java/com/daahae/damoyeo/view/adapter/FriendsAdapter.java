@@ -9,7 +9,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.daahae.damoyeo.R;
-import com.daahae.damoyeo.model.Building;
 import com.daahae.damoyeo.model.Person;
 import com.daahae.damoyeo.model.Position;
 
@@ -18,7 +17,7 @@ import java.util.ArrayList;
 public class FriendsAdapter extends BaseAdapter {
 
     //TODO: Person 클리스가 아닌 로그인 보내주는 정보에 맞게 클래스 생성
-    private ArrayList<Person> people;
+    private ArrayList<Person> people = new ArrayList<Person>();
 
     private ImageView imgPhoto;
     private TextView txtName, txtAddress;
