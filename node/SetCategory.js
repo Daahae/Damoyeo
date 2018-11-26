@@ -10,7 +10,7 @@ var CAFE = 30;
 var BAR = 40;
 var RESTAURANT = 50;
 
-exports.setCategory = async function(type) {
+exports.setCategory = function(type) {
     switch(type) {
         case DEPARTMENT_STORE :
             var category = "department_store";
