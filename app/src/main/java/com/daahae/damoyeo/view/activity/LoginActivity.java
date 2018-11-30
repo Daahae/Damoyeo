@@ -47,6 +47,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        initView();
+        initListener();
+
+        setGoogleLoginSetting();
+    }
+
+    private void setGoogleLoginSetting() {
         // Configure Google Sign In
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
@@ -55,13 +62,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         mAuth = FirebaseAuth.getInstance();
         googleSignInClient = GoogleSignIn.getClient(this, gso);
+    }
 
-        // auto login
-        //GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
-        //firebaseAuthWithGoogle(account);
-
-        initView();
-        initListener();
+    private void initView(){
+        btnGuestLogin = findViewById(R.id.btn_guest_login);
+        signInButton = findViewById(R.id.btn_google_login);
 
         Display display = getWindowManager().getDefaultDisplay();
         Point size = new Point();
@@ -70,38 +75,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         Constant.displayWidth = size.x;
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-    }
-
-    private void initView(){
-        btnGuestLogin = findViewById(R.id.btn_guest_login);
-        signInButton = findViewById(R.id.btn_google_login);
-    }
-
     private void initListener(){
         btnGuestLogin.setOnClickListener(this);
         signInButton.setOnClickListener(this);
-    }
-
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()){
-            case R.id.btn_google_login:
-                signIn();
-                signInButton.setClickable(false);
-                signInButton.setEnabled(false);
-                break;
-            case R.id.btn_guest_login:
-                changeView();
-                break;
-        }
-    }
-
-    private void signIn() {
-        Intent signInIntent = googleSignInClient.getSignInIntent();
-        startActivityForResult(signInIntent, Constant.LOG_IN);
     }
 
     @Override
@@ -128,7 +104,26 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }
     }
 
-    private void changeView(){
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()){
+            case R.id.btn_google_login:
+                googleSignIn();
+                signInButton.setClickable(false);
+                signInButton.setEnabled(false);
+                break;
+            case R.id.btn_guest_login:
+                guestSignIn();
+                break;
+        }
+    }
+
+    private void googleSignIn() {
+        Intent signInIntent = googleSignInClient.getSignInIntent();
+        startActivityForResult(signInIntent, Constant.LOG_IN);
+    }
+
+    private void guestSignIn(){
         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
         intent.putExtra(Constant.LOGIN, Constant.GUEST_LOGIN);
         startActivityForResult(intent, Constant.GUEST_LOGIN);

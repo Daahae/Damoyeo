@@ -27,7 +27,7 @@ public class MapsPresenter {
         dbHelper.insertResentSearch(search);
     }
 
-    public void startSendToServer() {
+    public void sendToServer() {
         Log.d("start1", new SimpleDateFormat("yyyy-MM-dd HH-mm-ss.SSS").format(System.currentTimeMillis()));
         try {
             ExceptionService.getInstance().isSetMarker(Person.getInstance().size());

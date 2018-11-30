@@ -6,7 +6,7 @@ import com.daahae.damoyeo.model.Position;
 import com.google.android.gms.maps.model.LatLng;
 
 public class Constant {
-    public static final String TAG = "googlemap_damoyeo";
+    public static final String TAG = "damoyeo_gmap";
     public static final String URL = "http://13.125.192.103/";
 
     public static final int LOG_IN = 9001;

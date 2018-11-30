@@ -409,6 +409,14 @@ public class MapsFragment extends Fragment implements View.OnClickListener, OnMa
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+
+            case R.id.fab_logout:
+                getActivity().setResult(Constant.LOG_OUT);
+                getActivity().finish();
+                break;
+            case R.id.fab_mypage:
+                Intent intent = new Intent(getActivity(), MyPageActivity.class);
+                startActivity(intent);
             case R.id.fab_menu:
                 fabtn.anim();
                 break;
@@ -434,15 +442,8 @@ public class MapsFragment extends Fragment implements View.OnClickListener, OnMa
             case R.id.linear_search_mid:
                 setAddressToPerson();
                 // 통신
-                presenter.startSendToServer();
+                presenter.sendToServer();
                 break;
-            case R.id.fab_logout:
-                getActivity().setResult(Constant.LOG_OUT);
-                getActivity().finish();
-                break;
-            case R.id.fab_mypage:
-                Intent intent = new Intent(getActivity(), MyPageActivity.class);
-                startActivity(intent);
         }
     }
 
