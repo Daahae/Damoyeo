@@ -28,7 +28,6 @@ public class Building{
     @SerializedName("buildingAddress")
     private String buildingAddress;
 
-
     @SerializedName("buildingDistance")
     private double distance;
 
