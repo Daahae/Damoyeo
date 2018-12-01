@@ -29,6 +29,7 @@ import android.widget.Toast;
 import com.daahae.damoyeo.R;
 import com.daahae.damoyeo.model.Building;
 import com.daahae.damoyeo.model.BuildingDetail;
+import com.daahae.damoyeo.model.MidInfo;
 import com.daahae.damoyeo.presenter.DetailPresenter;
 import com.daahae.damoyeo.view.Constant;
 import com.daahae.damoyeo.view.activity.MainActivity;
@@ -335,6 +336,16 @@ public class DetailFragment extends Fragment implements View.OnClickListener, On
             LatLng latLng = new LatLng(Building.getInstance().getLatitude(), Building.getInstance().getLongitude());
             setLocation(latLng);
         }
+    }
+
+    public void showMid() {
+
+        MarkerOptions markerOption = new MarkerOptions();
+        markerOption.position(MidInfo.getInstance().getLatLng());
+        markerOption.title(Constant.DEFAULT_MIDINFO_NAME);
+        markerOption.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+        currentMarker = googleMap.addMarker(markerOption);
+        currentMarker.showInfoWindow();
     }
 
     public void showBuilding() {

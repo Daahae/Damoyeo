@@ -21,6 +21,7 @@ public class DetailPresenter {
                 view.setBuildingDetail(buildingDetail);
 
                 view.setBuildingLocation();
+                view.showMid();
                 view.showBuilding();
             }
         };

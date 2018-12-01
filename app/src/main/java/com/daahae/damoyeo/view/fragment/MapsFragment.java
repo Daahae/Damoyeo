@@ -384,8 +384,10 @@ public class MapsFragment extends Fragment implements View.OnClickListener, OnMa
         if(Person.getInstance().size() > 0) {
             showAllMarkersOnState();
             showAllMarkers();
-        } else
+        } else {
             builder = new LatLngBounds.Builder();
+            setGPS();
+        }
     }
 
     @Override

@@ -8,15 +8,16 @@ public class BuildingArr {
 
     @SerializedName("buildingArr")
     private List<Building> buildingArr;
+    /*
     @SerializedName("midLat")
     private double midLat;
     @SerializedName("midLng")
     private double midLng;
-
+    */
     public List<Building> getBuildingArr() {
         return buildingArr;
     }
-
+    /*
     public double getMidLat() {
         return midLat;
     }
@@ -32,4 +33,5 @@ public class BuildingArr {
     public void setMidLng(double midLng) {
         this.midLng = midLng;
     }
+    */
 }
