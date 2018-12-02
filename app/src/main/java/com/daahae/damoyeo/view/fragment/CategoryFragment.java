@@ -114,6 +114,8 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
 
     private ImageView imgLoading;
 
+    private Button btnSortSocre, btnSortDistance;
+
     public CategoryFragment(MainActivity parentView) {
         this.parentView = parentView;
     }
@@ -197,6 +199,9 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
         txtSelectedCategory = rootView.findViewById(R.id.txt_selected_category);
         txtDefault = rootView.findViewById(R.id.txt_list_category_default);
         imgLoading = rootView.findViewById(R.id.img_loading_category);
+
+        btnSortSocre = rootView.findViewById(R.id.btn_score_sort_building);
+        btnSortDistance = rootView.findViewById(R.id.btn_distance_sort_building);
     }
 
     private void initListener(){
@@ -231,6 +236,9 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
         btnCafe .setOnClickListener(this);
         btnDrink.setOnClickListener(this);
         btnRestaurant.setOnClickListener(this);
+
+        btnSortSocre.setOnClickListener(this);
+        btnSortDistance.setOnClickListener(this);
 
     }
 
@@ -713,6 +721,13 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
                 btnDrink.setImageResource(R.drawable.ic_drink_gray);
                 btnRestaurant.setImageResource(R.drawable.ic_restaurant_orange);
                 txtSelectedCategory.setText(getResources().getString(R.string.category_restaurant));
+                break;
+
+            case R.id.btn_score_sort_building:
+                buildingAdapter.sortScore();
+                break;
+            case R.id.btn_distance_sort_building:
+                buildingAdapter.sortDistance();
                 break;
 
         }

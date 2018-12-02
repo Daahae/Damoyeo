@@ -28,6 +28,9 @@ public class Building{
     @SerializedName("buildingAddress")
     private String buildingAddress;
 
+    @SerializedName("buildingRating")
+    private double rating;
+
     @SerializedName("buildingDistance")
     private double distance;
 
@@ -37,6 +40,14 @@ public class Building{
         this.name = name;
         this.buildingAddress = buildingAddress;
         this.distance = distance;
+    }
+
+    public double getRating() {
+        return rating;
+    }
+
+    public void setRating(double rating) {
+        this.rating = rating;
     }
 
     public double getDistance() {
