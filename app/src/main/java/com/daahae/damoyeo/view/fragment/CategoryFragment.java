@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Build;
@@ -66,6 +67,8 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -834,6 +837,8 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
         googleMap.addMarker(markerOptions);
 
         builder.include(markerOptions.getPosition());
+
+        drawRoute(MidInfo.getInstance().getLatLng(), latLng);
     }
 
     public void showLandmarkAllMarkers() {
@@ -891,5 +896,12 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
         googleMap.addMarker(markerOptions);
 
         builder.include(markerOptions.getPosition());
+
+        drawRoute(Landmark.getInstance().getLatLng(), latLng);
+    }
+
+    private void drawRoute(LatLng startLatlng, LatLng endLatLng) {
+        PolylineOptions options = new PolylineOptions().add(startLatlng).add(endLatLng).width(15).color(Color.BLACK).geodesic(true);
+        googleMap.addPolyline(options);
     }
 }

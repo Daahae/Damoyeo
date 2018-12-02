@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Point;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,12 +15,17 @@ import android.widget.Toast;
 
 import com.daahae.damoyeo.R;
 import com.daahae.damoyeo.view.Constant;
+import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
@@ -35,6 +41,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     private SignInButton signInButton;
     private GoogleSignInClient googleSignInClient;
+    private GoogleApiClient googleApiClient;
 
     private FirebaseAuth mAuth;
 
@@ -62,6 +69,21 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         mAuth = FirebaseAuth.getInstance();
         googleSignInClient = GoogleSignIn.getClient(this, gso);
+
+        googleApiClient = new GoogleApiClient.Builder(this)
+                .enableAutoManage(this, new GoogleApiClient.OnConnectionFailedListener() {
+                    @Override
+                    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+                        Log.d(Constant.TAG, "Login fail");
+                    }
+                })
+                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+                .build();
+
+        // auto login
+        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
+        if(account!=null)
+            firebaseAuthWithGoogle(account);
     }
 
     private void initView(){
@@ -98,7 +120,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             }
         } else if(requestCode == Constant.GOOGLE_LOGIN) {
             if(resultCode == Constant.LOG_OUT) {
-                FirebaseAuth.getInstance().signOut();
+                //FirebaseAuth.getInstance().signOut();
+                signOut();
                 Toast.makeText(context, "로그아웃 되었습니다.", Toast.LENGTH_SHORT).show();
             }
         }
@@ -154,5 +177,31 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         signInButton.setClickable(true);
                     }
                 });
+    }
+
+    private void signOut() {
+        googleApiClient.connect();
+        googleApiClient.registerConnectionCallbacks(new GoogleApiClient.ConnectionCallbacks() {
+            @Override
+            public void onConnected(@Nullable Bundle bundle) {
+                mAuth.signOut();
+                if(googleApiClient.isConnected()) {
+                    Auth.GoogleSignInApi.signOut(googleApiClient).setResultCallback(new ResultCallback<Status>() {
+                        @Override
+                        public void onResult(@NonNull Status status) {
+                            if(status.isSuccess()) {
+                                Log.d(Constant.TAG, "User Logged out");
+                                //setResult();
+                            }
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onConnectionSuspended(int i) {
+
+            }
+        });
     }
 }
