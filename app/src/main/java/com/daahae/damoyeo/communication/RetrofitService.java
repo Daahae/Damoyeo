@@ -2,9 +2,13 @@ package com.daahae.damoyeo.communication;
 
 import com.google.gson.JsonObject;
 
+import org.json.JSONObject;
+
 import retrofit2.Call;
+import retrofit2.http.Body;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
+import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 
 public interface RetrofitService {
@@ -12,7 +16,7 @@ public interface RetrofitService {
     //@Multipart
     @FormUrlEncoded
     @POST("usersToMid")
-    Call<JsonObject> getTransportData(@Field("userArr") String users);
+    Call<JsonObject> getTransportData(@Field("userArr") String user);
 
     //@Multipart
     @FormUrlEncoded
