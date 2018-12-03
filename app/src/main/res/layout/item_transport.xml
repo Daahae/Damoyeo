@@ -2,7 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="fill_parent"
-    android:layout_height="120dp">
+    android:layout_height="120dp"
+    android:background="@color/colorWhite">
 
     <ImageView
         android:id="@+id/img_profile_photo_transport_item"
@@ -60,7 +61,7 @@
         android:layout_alignParentStart="true"
         android:layout_marginBottom="30dp"
         android:background="@color/colorGray"
-        android:orientation="horizontal" >
+        android:orientation="horizontal">
 
     </LinearLayout>
 

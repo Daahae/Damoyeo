@@ -901,7 +901,7 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
     }
 
     private void drawRoute(LatLng startLatlng, LatLng endLatLng) {
-        PolylineOptions options = new PolylineOptions().add(startLatlng).add(endLatLng).width(15).color(Color.BLACK).geodesic(true);
+        PolylineOptions options = new PolylineOptions().add(startLatlng).add(endLatLng).width(10).color(Color.GRAY).geodesic(true);
         googleMap.addPolyline(options);
     }
 }
