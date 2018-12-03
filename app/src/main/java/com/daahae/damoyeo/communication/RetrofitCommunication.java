@@ -20,10 +20,16 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
+import retrofit2.Call;
 import retrofit2.Callback;
+import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.HEAD;
@@ -98,10 +104,30 @@ public class RetrofitCommunication {
         String strMessage = makeForm(persons);
         Log.v("메시지",strMessage);
 
+        JSONObject obj = new JSONObject();
+        try {
+            JSONArray jArray = new JSONArray();//배열이 필요할때
+            for (int i = 0; i < persons.size(); i++)//배열
+            {
+                JSONObject sObject = new JSONObject();//배열 내에 들어갈 json
+                sObject.put("latitude", persons.get(i).getAddressPosition().getX());
+                sObject.put("longitude", persons.get(i).getAddressPosition().getY());
+                jArray.put(sObject);
+            }
+            obj.put("userArr", jArray);//배열을 넣음
+
+            System.out.println(obj.toString());
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        Log.v("좌표",obj.toString());
+
         final retrofit2.Call<JsonObject> comment = retrofitService.getTransportData(strMessage);
+        //Call<JsonObject> comment = retrofitService.getTransportData(obj.toString());
         comment.enqueue(new Callback<JsonObject>() {
             @Override
-            public void onResponse(@NonNull retrofit2.Call<JsonObject> call, @NonNull retrofit2.Response<JsonObject> response) {
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                 if (response.isSuccessful()) {
                     Log.v("알림", response.toString());
                     Log.v("전체", response.body().toString());
@@ -145,13 +171,13 @@ public class RetrofitCommunication {
     }
 
     private String makeForm(ArrayList<Person> persons){
-        String strMessage="[";
+        String strMessage="{\"userArr\":[";
         for(int i=0;i<persons.size();i++){
             strMessage += persons.get(i).getAddressPosition().toString();
             if(i!=persons.size()-1)
                 strMessage += ",";
         }
-        strMessage+="]";
+        strMessage+="]}";
         return strMessage;
     }
 
