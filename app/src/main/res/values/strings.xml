@@ -24,4 +24,5 @@
     <string name="category_cafe">카페</string>
     <string name="category_drink">술집</string>
     <string name="category_restaurant">식당</string>
+    <string name="category_etc">기타</string>
 </resources>

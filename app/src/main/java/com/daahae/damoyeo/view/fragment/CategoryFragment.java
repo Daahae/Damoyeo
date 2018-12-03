@@ -110,7 +110,7 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
     private boolean isMid = false;
 
     private ImageButton btnDownSlidingDrawer;
-    private ImageButton btnDepartment, btnShopping, btnStadium, btnZoo, btnMuseum, btnTheater, btnAquarium, btnCafe, btnDrink, btnRestaurant;
+    private ImageButton btnDepartment, btnShopping, btnStadium, btnZoo, btnMuseum, btnTheater, btnAquarium, btnCafe, btnDrink, btnRestaurant, btnEtc;
 
     private TextView txtDefault;
     private TextView txtSelectedCategory;
@@ -198,6 +198,7 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
         btnCafe = rootView.findViewById(R.id.btn_cafe_category);
         btnDrink = rootView.findViewById(R.id.btn_drink_category);
         btnRestaurant = rootView.findViewById(R.id.btn_restaurant_store_category);
+        btnEtc = rootView.findViewById(R.id.btn_etc_category);
 
         txtSelectedCategory = rootView.findViewById(R.id.txt_selected_category);
         txtDefault = rootView.findViewById(R.id.txt_list_category_default);
@@ -239,6 +240,7 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
         btnCafe .setOnClickListener(this);
         btnDrink.setOnClickListener(this);
         btnRestaurant.setOnClickListener(this);
+        btnEtc.setOnClickListener(this);
 
         btnSortSocre.setOnClickListener(this);
         btnSortDistance.setOnClickListener(this);
@@ -576,6 +578,7 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
                 btnCafe.setImageResource(R.drawable.ic_cafe_gray);
                 btnDrink.setImageResource(R.drawable.ic_drink_gray);
                 btnRestaurant.setImageResource(R.drawable.ic_restaurant_gray);
+                btnEtc.setImageResource(R.drawable.btn_etc_gray);
 
                 txtSelectedCategory.setText(getResources().getString(R.string.category_department_store));
                 break;
@@ -593,6 +596,7 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
                 btnCafe.setImageResource(R.drawable.ic_cafe_gray);
                 btnDrink.setImageResource(R.drawable.ic_drink_gray);
                 btnRestaurant.setImageResource(R.drawable.ic_restaurant_gray);
+                btnEtc.setImageResource(R.drawable.btn_etc_gray);
 
                 txtSelectedCategory.setText(getResources().getString(R.string.category_shopping_mall));
                 break;
@@ -610,6 +614,7 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
                 btnCafe.setImageResource(R.drawable.ic_cafe_gray);
                 btnDrink.setImageResource(R.drawable.ic_drink_gray);
                 btnRestaurant.setImageResource(R.drawable.ic_restaurant_gray);
+                btnEtc.setImageResource(R.drawable.btn_etc_gray);
 
                 txtSelectedCategory.setText(getResources().getString(R.string.category_stadium));
                 break;
@@ -627,6 +632,7 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
                 btnCafe.setImageResource(R.drawable.ic_cafe_gray);
                 btnDrink.setImageResource(R.drawable.ic_drink_gray);
                 btnRestaurant.setImageResource(R.drawable.ic_restaurant_gray);
+                btnEtc.setImageResource(R.drawable.btn_etc_gray);
                 txtSelectedCategory.setText(getResources().getString(R.string.category_zoo));
                 break;
             case R.id.btn_museum_category:
@@ -643,6 +649,7 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
                 btnCafe.setImageResource(R.drawable.ic_cafe_gray);
                 btnDrink.setImageResource(R.drawable.ic_drink_gray);
                 btnRestaurant.setImageResource(R.drawable.ic_restaurant_gray);
+                btnEtc.setImageResource(R.drawable.btn_etc_gray);
                 txtSelectedCategory.setText(getResources().getString(R.string.category_museum));
                 break;
             case R.id.btn_theater_category:
@@ -659,6 +666,7 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
                 btnCafe.setImageResource(R.drawable.ic_cafe_gray);
                 btnDrink.setImageResource(R.drawable.ic_drink_gray);
                 btnRestaurant.setImageResource(R.drawable.ic_restaurant_gray);
+                btnEtc.setImageResource(R.drawable.btn_etc_gray);
                 txtSelectedCategory.setText(getResources().getString(R.string.category_theater));
                 break;
             case R.id.btn_aquarium_store_category:
@@ -675,6 +683,7 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
                 btnCafe.setImageResource(R.drawable.ic_cafe_gray);
                 btnDrink.setImageResource(R.drawable.ic_drink_gray);
                 btnRestaurant.setImageResource(R.drawable.ic_restaurant_gray);
+                btnEtc.setImageResource(R.drawable.btn_etc_gray);
                 txtSelectedCategory.setText(getResources().getString(R.string.category_aquarium));
                 break;
             case R.id.btn_cafe_category:
@@ -691,6 +700,7 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
                 btnCafe.setImageResource(R.drawable.ic_cafe_orange);
                 btnDrink.setImageResource(R.drawable.ic_drink_gray);
                 btnRestaurant.setImageResource(R.drawable.ic_restaurant_gray);
+                btnEtc.setImageResource(R.drawable.btn_etc_gray);
                 txtSelectedCategory.setText(getResources().getString(R.string.category_cafe));
                 break;
             case R.id.btn_drink_category:
@@ -707,6 +717,7 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
                 btnCafe.setImageResource(R.drawable.ic_cafe_gray);
                 btnDrink.setImageResource(R.drawable.ic_drink_orange);
                 btnRestaurant.setImageResource(R.drawable.ic_restaurant_gray);
+                btnEtc.setImageResource(R.drawable.btn_etc_gray);
                 txtSelectedCategory.setText(getResources().getString(R.string.category_drink));
                 break;
             case R.id.btn_restaurant_store_category:
@@ -723,8 +734,27 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
                 btnCafe.setImageResource(R.drawable.ic_cafe_gray);
                 btnDrink.setImageResource(R.drawable.ic_drink_gray);
                 btnRestaurant.setImageResource(R.drawable.ic_restaurant_orange);
+                btnEtc.setImageResource(R.drawable.btn_etc_gray);
                 txtSelectedCategory.setText(getResources().getString(R.string.category_restaurant));
                 break;
+            case R.id.btn_etc_category:
+                presenter.setSelectCategory(Constant.ETC);
+                setLoading();
+
+                btnDepartment.setImageResource(R.drawable.ic_department_store_gray);
+                btnShopping .setImageResource(R.drawable.ic_shopping_gray);
+                btnStadium.setImageResource(R.drawable.ic_stadium_gray);
+                btnZoo.setImageResource(R.drawable.ic_zoo_gray);
+                btnMuseum.setImageResource(R.drawable.ic_museum_gray);
+                btnTheater.setImageResource(R.drawable.ic_theater_gray);
+                btnAquarium.setImageResource(R.drawable.ic_aquarium_gray);
+                btnCafe.setImageResource(R.drawable.ic_cafe_gray);
+                btnDrink.setImageResource(R.drawable.ic_drink_gray);
+                btnRestaurant.setImageResource(R.drawable.ic_restaurant_gray);
+                btnEtc.setImageResource(R.drawable.btn_etc_orange);
+                txtSelectedCategory.setText(getResources().getString(R.string.category_etc));
+                break;
+
 
             case R.id.btn_score_sort_building:
                 buildingAdapter.sortScore();

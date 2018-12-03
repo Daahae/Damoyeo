@@ -50,7 +50,7 @@ public class ExceptionService {
             throw new ExceptionHandle("빌딩 type 정보가 없습니다");
         } else if(requestType != Constant.DEPARTMENT_STORE  && requestType != Constant.SHOPPING_MALL && requestType != Constant.STADIUM
                 && requestType != Constant.ZOO && requestType != Constant.MUSEUM && requestType != Constant.MOVIE_THEATER
-                && requestType != Constant.AQUARIUM && requestType != Constant.CAFE && requestType != Constant.DRINK && requestType != Constant.RESTAURANT){
+                && requestType != Constant.AQUARIUM && requestType != Constant.CAFE && requestType != Constant.DRINK && requestType != Constant.RESTAURANT && requestType != Constant.ETC){
             throw new ExceptionHandle("잘못된 빌딩 type 입니다");
         }
 
