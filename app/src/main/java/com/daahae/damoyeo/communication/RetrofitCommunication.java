@@ -26,7 +26,9 @@ import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
+import okhttp3.OkHttpClient;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -87,9 +89,16 @@ public class RetrofitCommunication {
     }
 
     private void connectServer(){
+        OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                .connectTimeout(1, TimeUnit.MINUTES)
+                .readTimeout(200, TimeUnit.SECONDS)
+                .writeTimeout(200, TimeUnit.SECONDS)
+                .build();
+
         retrofit = new Retrofit
                 .Builder()
                 .baseUrl(Constant.URL)
+                .client(okHttpClient)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
     }
@@ -274,6 +283,8 @@ public class RetrofitCommunication {
     public void setBuildingsData(int buildingType){
         UserRequest request = new UserRequest();
         request.setType(buildingType);
+        request.setMidLat(MidInfo.getInstance().getLatLng().latitude);
+        request.setMidLng(MidInfo.getInstance().getLatLng().longitude);
         sendBuildingInfo(request);
     }
 }
