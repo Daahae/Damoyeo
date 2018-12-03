@@ -40,6 +40,8 @@ public class CategoryPresenter {
                 view.initMarkerTime(totalTimes);
                 view.setMarkerTimeList(view.getMarkerTimeAdapter());
                 view.getListMarkerTime().setAdapter(view.getMarkerTimeAdapter());
+                view.showAllMarkers();
+                view.setCameraState(view.getRelativeMap());
             }
         };
         RetrofitCommunication.getInstance().setUserData(userCallBack);

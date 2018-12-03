@@ -139,6 +139,10 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
         return buildingAdapter;
     }
 
+    public RelativeLayout getRelativeMap() {
+        return relativeMap;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -459,9 +463,6 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
         }
         CameraUpdate point = CameraUpdateFactory.newLatLngZoom(Constant.DEFAULT_LOCATION, 15.0f);
         googleMap.moveCamera(point);
-
-        showAllMarkers();
-        setCameraState(relativeMap);
     }
 
     @Override
