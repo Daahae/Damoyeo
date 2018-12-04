@@ -39,6 +39,7 @@ public class CategoryPresenter {
     }
 
     public void startCallback() {
+        if(Constant.existPerson) return;
         lording.onPreExecute();
 
         RetrofitCommunication.UserCallBack userCallBack = new RetrofitCommunication.UserCallBack() {
@@ -50,6 +51,7 @@ public class CategoryPresenter {
                 view.getListMarkerTime().setAdapter(view.getMarkerTimeAdapter());
                 view.showAllMarkers();
                 view.setCameraState(view.getRelativeMap());
+                Constant.existPerson = true;
             }
 
             @Override
