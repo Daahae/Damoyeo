@@ -34,7 +34,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-import retrofit2.http.HEAD;
 
 public class RetrofitCommunication {
 
@@ -142,38 +141,34 @@ public class RetrofitCommunication {
                     Log.v("알림", response.toString());
                     Log.v("전체", response.body().toString());
                     JsonObject json = response.body();
-                    if(response.body().toString().equals(Constant.ALGORITHM_ERROR)){
-                        if (userCallBack != null) userCallBack.disconnectServer();
-                        Log.e("algorithm","알고리즘 오류");
-                    }else {
-                        transportList = new Gson().fromJson(json, TransportInfoList.class);
-                        try {
-                            ExceptionService.getInstance().isExistTransportInformation(transportList);
-                        } catch (ExceptionHandle e) {
-                            e.printStackTrace();
-                            if (userCallBack != null) userCallBack.userDataPath(null);
-                        }
-                        if (transportList != null) {
-                            Log.v("총 시간 개수", String.valueOf(transportList.getUserArr().size()));
-                            TransportInfoList.getInstance().setUserArr(transportList.getUserArr());
-                            if (!transportList.getUserArr().get(0).equals("Wrong Input")) {
-                                // set MidInfo
-                                LatLng latLng = new LatLng(transportList.getMidInfo().getMidLat(), transportList.getMidInfo().getMidLng());
-                                MidInfo midInfo = new MidInfo(latLng, transportList.getMidInfo().getAddress());
-                                MidInfo.setMidInfo(midInfo);
-                                // set Landmark
-                                LatLng lmlatlng = new LatLng(transportList.getLandmark().getLatitude(), transportList.getLandmark().getLongitude());
-                                Landmark landmark = new Landmark(lmlatlng, transportList.getLandmark().getName(), transportList.getLandmark().getAddress());
-                                Landmark.setLandMark(landmark);
-                                //* set TransportInfo
-                                for (TransportInfoList.Data data : transportList.getUserArr())
-                                    totalTimes.add(String.valueOf(data.getTotalTime()));
-                            }
-                            if (userCallBack != null) userCallBack.userDataPath(totalTimes);
-
-                            Log.d("end1", new SimpleDateFormat("yyyy-MM-dd HH-mm-ss.SSS").format(System.currentTimeMillis()));
-                        }
+                    transportList = new Gson().fromJson(json, TransportInfoList.class);
+                    try{
+                        ExceptionService.getInstance().isExistTransportInformation(transportList);
+                    } catch (ExceptionHandle e){
+                        e.printStackTrace();
+                        if (userCallBack != null) userCallBack.userDataPath(null);
                     }
+                    if(transportList != null) {
+                        Log.v("총 시간 개수", String.valueOf(transportList.getUserArr().size()));
+                        TransportInfoList.getInstance().setUserArr(transportList.getUserArr());
+                        if (!transportList.getUserArr().get(0).equals("Wrong Input")) {
+                            // set MidInfo
+                            LatLng latLng = new LatLng(transportList.getMidInfo().getMidLat(), transportList.getMidInfo().getMidLng());
+                            MidInfo midInfo = new MidInfo(latLng, transportList.getMidInfo().getAddress());
+                            MidInfo.setMidInfo(midInfo);
+                            // set Landmark
+                            LatLng lmlatlng = new LatLng(transportList.getLandmark().getLatitude(), transportList.getLandmark().getLongitude());
+                            Landmark landmark = new Landmark(lmlatlng, transportList.getLandmark().getName(), transportList.getLandmark().getAddress());
+                            Landmark.setLandMark(landmark);
+                            //* set TransportInfo
+                            for (TransportInfoList.Data data:transportList.getUserArr())
+                                totalTimes.add(String.valueOf(data.getTotalTime()));
+                        }
+                        if (userCallBack != null) userCallBack.userDataPath(totalTimes);
+
+                        Log.d("end1", new SimpleDateFormat("yyyy-MM-dd HH-mm-ss.SSS").format(System.currentTimeMillis()));
+                    }
+
                 }
             }
 

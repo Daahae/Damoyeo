@@ -63,7 +63,6 @@ public class MainActivity extends FragmentActivity {
 
         switch (nextPageNumber){
             case Constant.MAPS_PAGE:
-                Constant.existPerson = false;
                 setViewFragment(new MapsFragment(this));
                 break;
 
