@@ -1,17 +1,31 @@
 package com.daahae.damoyeo.presenter;
 
+import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.daahae.damoyeo.R;
 import com.daahae.damoyeo.communication.RetrofitCommunication;
 import com.daahae.damoyeo.model.BuildingArr;
+import com.daahae.damoyeo.model.TransportInfoList;
 import com.daahae.damoyeo.view.Constant;
+import com.daahae.damoyeo.view.activity.MainActivity;
 import com.daahae.damoyeo.view.fragment.CategoryFragment;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+
+import okhttp3.internal.Util;
 
 public class CategoryPresenter {
 
@@ -44,12 +58,14 @@ public class CategoryPresenter {
         RetrofitCommunication.UserCallBack userCallBack = new RetrofitCommunication.UserCallBack() {
             @Override
             public void userDataPath(ArrayList<String> totalTimes) {
-                lording.onPostExecute(null);
                 view.initMarkerTime(totalTimes);
                 view.setMarkerTimeList(view.getMarkerTimeAdapter());
                 view.getListMarkerTime().setAdapter(view.getMarkerTimeAdapter());
                 view.showAllMarkers();
                 view.setCameraState(view.getRelativeMap());
+                lording.onPostExecute(null);
+
+                Log.v("에러 메시지", TransportInfoList.getInstance().getUserArr().get(1).getError());
             }
 
             @Override
