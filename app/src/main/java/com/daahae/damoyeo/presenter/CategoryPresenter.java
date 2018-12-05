@@ -58,8 +58,6 @@ public class CategoryPresenter {
             public void disconnectServer() {
                 view.getParentView().changeView(Constant.MAPS_PAGE); // 뒤로가기
                 Toast.makeText(Constant.context,"중간지점 탐색에 실패했습니다",Toast.LENGTH_SHORT).show();
-                lording.onPostExecute(null);
-
             }
         };
         RetrofitCommunication.getInstance().setUserData(userCallBack);
