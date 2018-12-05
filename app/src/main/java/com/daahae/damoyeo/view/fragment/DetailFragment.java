@@ -52,7 +52,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 @SuppressLint("ValidFragment")
-public class DetailFragment extends Fragment implements View.OnClickListener, OnMapReadyCallback, GoogleMap.OnMapLoadedCallback, GoogleApiClient.ConnectionCallbacks,
+public class DetailFragment extends Fragment implements View.OnClickListener, OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener {
 
     private DetailPresenter presenter;
@@ -301,10 +301,6 @@ public class DetailFragment extends Fragment implements View.OnClickListener, On
     }
 
     @Override
-    public void onMapLoaded() {
-    }
-
-    @Override
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.btn_back_building_transport:
@@ -348,8 +344,8 @@ public class DetailFragment extends Fragment implements View.OnClickListener, On
         markerOption.position(MidInfo.getInstance().getLatLng());
         markerOption.title(Constant.DEFAULT_MIDINFO_NAME);
         markerOption.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
-        if(googleMap != null)
-            googleMap.addMarker(markerOption);
+        currentMarker = googleMap.addMarker(markerOption);
+        currentMarker.showInfoWindow();
     }
 
     public void showBuilding() {
@@ -359,10 +355,8 @@ public class DetailFragment extends Fragment implements View.OnClickListener, On
         markerOption.position(latLng);
         markerOption.title(Building.getInstance().getName());
         markerOption.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
-        if(googleMap != null) {
-            currentMarker = googleMap.addMarker(markerOption);
-            currentMarker.showInfoWindow();
-        }
+        currentMarker = googleMap.addMarker(markerOption);
+        currentMarker.showInfoWindow();
     }
 
     public void showCurrentMarker() {

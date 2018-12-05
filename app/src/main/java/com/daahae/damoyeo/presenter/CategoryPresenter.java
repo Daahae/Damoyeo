@@ -17,20 +17,21 @@ import java.util.ArrayList;
 public class CategoryPresenter {
 
     private CategoryFragment view;
-    private CheckTypesTask loading;
+    private CheckTypesTask lording;
 
     public CategoryPresenter(CategoryFragment view) {
         this.view = view;
-        loading = new CheckTypesTask();
-        loading.execute();
+        lording = new CheckTypesTask();
+        lording.execute();
+    }
+
+    public void setDefaultCategory() {
+        Log.d("start2", new SimpleDateFormat("yyyy-MM-dd HH-mm-ss.SSS").format(System.currentTimeMillis()));
     }
 
     public void setSelectCategory(int category) {
         Log.d("start2", new SimpleDateFormat("yyyy-MM-dd HH-mm-ss.SSS").format(System.currentTimeMillis()));
-        if(!view.isMid())
-            RetrofitCommunication.getInstance().setBuildingsData(category);
-        else
-            RetrofitCommunication.getInstance().setBuildingsDataInLandmark(category);
+        RetrofitCommunication.getInstance().setBuildingsData(category);
     }
 
     public void getBuildingDetailFromServer(int index) {
@@ -39,12 +40,12 @@ public class CategoryPresenter {
 
     public void startCallback() {
         if(Constant.existPerson) return;
-        loading.onPreExecute();
+        lording.onPreExecute();
 
         RetrofitCommunication.UserCallBack userCallBack = new RetrofitCommunication.UserCallBack() {
             @Override
             public void userDataPath(ArrayList<String> totalTimes) {
-                loading.onPostExecute(null);
+                lording.onPostExecute(null);
                 view.initMarkerTime(totalTimes);
                 view.setMarkerTimeList(view.getMarkerTimeAdapter());
                 view.getListMarkerTime().setAdapter(view.getMarkerTimeAdapter());
@@ -55,9 +56,10 @@ public class CategoryPresenter {
 
             @Override
             public void disconnectServer() {
-                loading.onPostExecute(null);
                 view.getParentView().changeView(Constant.MAPS_PAGE); // 뒤로가기
                 Toast.makeText(Constant.context,"중간지점 탐색에 실패했습니다",Toast.LENGTH_SHORT).show();
+                lording.onPostExecute(null);
+
             }
         };
         RetrofitCommunication.getInstance().setUserData(userCallBack);

@@ -123,10 +123,6 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
         this.parentView = parentView;
     }
 
-    public boolean isMid() {
-        return isMid;
-    }
-
     public ListView getListMarkerTime() {
         return listMarkerTime;
     }
@@ -170,6 +166,7 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
         setMarkerTimeList(markerTimeAdapter);
         listMarkerTime.setAdapter(markerTimeAdapter);
 
+        presenter.setDefaultCategory();
         presenter.startCallback();
 
         return rootView;
@@ -878,7 +875,7 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
 
         builder.include(markerOptions.getPosition());
 
-        // drawRoute(MidInfo.getInstance().getLatLng(), latLng);
+        drawRoute(MidInfo.getInstance().getLatLng(), latLng);
     }
 
     public void showLandmarkAllMarkers() {
@@ -937,7 +934,7 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
 
         builder.include(markerOptions.getPosition());
 
-        // drawRoute(Landmark.getInstance().getLatLng(), latLng);
+        drawRoute(Landmark.getInstance().getLatLng(), latLng);
     }
 
     private void drawRoute(LatLng startLatlng, LatLng endLatLng) {
