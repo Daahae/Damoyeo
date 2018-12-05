@@ -156,20 +156,19 @@ public class RetrofitCommunication {
                         if (transportList != null) {
                             Log.v("총 시간 개수", String.valueOf(transportList.getUserArr().size()));
                             TransportInfoList.getInstance().setUserArr(transportList.getUserArr());
-                            // set MidInfo
-                            LatLng latLng = new LatLng(transportList.getMidInfo().getMidLat(), transportList.getMidInfo().getMidLng());
-                            MidInfo midInfo = new MidInfo(latLng, transportList.getMidInfo().getAddress());
-                            MidInfo.setMidInfo(midInfo);
-                            // set Landmark
-                            if (transportList.getLandmark() != null) {
+                            if (!transportList.getUserArr().get(0).equals("Wrong Input")) {
+                                // set MidInfo
+                                LatLng latLng = new LatLng(transportList.getMidInfo().getMidLat(), transportList.getMidInfo().getMidLng());
+                                MidInfo midInfo = new MidInfo(latLng, transportList.getMidInfo().getAddress());
+                                MidInfo.setMidInfo(midInfo);
+                                // set Landmark
                                 LatLng lmlatlng = new LatLng(transportList.getLandmark().getLatitude(), transportList.getLandmark().getLongitude());
                                 Landmark landmark = new Landmark(lmlatlng, transportList.getLandmark().getName(), transportList.getLandmark().getAddress());
                                 Landmark.setLandMark(landmark);
+                                //* set TransportInfo
+                                for (TransportInfoList.Data data : transportList.getUserArr())
+                                    totalTimes.add(String.valueOf(data.getTotalTime()));
                             }
-                            //* set TransportInfo
-                            for (TransportInfoList.Data data : transportList.getUserArr())
-                                totalTimes.add(String.valueOf(data.getTotalTime()));
-
                             if (userCallBack != null) userCallBack.userDataPath(totalTimes);
 
                             Log.d("end1", new SimpleDateFormat("yyyy-MM-dd HH-mm-ss.SSS").format(System.currentTimeMillis()));

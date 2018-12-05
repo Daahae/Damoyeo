@@ -38,7 +38,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.daahae.damoyeo.R;
-import com.daahae.damoyeo.communication.RetrofitCommunication;
 import com.daahae.damoyeo.exception.ExceptionHandle;
 import com.daahae.damoyeo.exception.ExceptionService;
 import com.daahae.damoyeo.model.Building;
@@ -46,7 +45,6 @@ import com.daahae.damoyeo.model.BuildingArr;
 import com.daahae.damoyeo.model.Landmark;
 import com.daahae.damoyeo.model.MidInfo;
 import com.daahae.damoyeo.model.Person;
-import com.daahae.damoyeo.model.TransportInfoList;
 import com.daahae.damoyeo.presenter.CategoryPresenter;
 import com.daahae.damoyeo.view.Constant;
 import com.daahae.damoyeo.view.activity.MainActivity;
@@ -478,7 +476,6 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
 
     @Override
     public void onDrawerOpened() {
-        RetrofitCommunication.getInstance().setBuildingsData(Constant.DEPARTMENT_STORE);
         linearHandleMenu.setVisibility(View.GONE);
         linearMarkerTime.setVisibility(View.GONE);
     }
@@ -554,18 +551,16 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
                 }
                 break;
             case R.id.fab_mid:
-                if(TransportInfoList.getInstance().getLandmark()!=null) {
-                    if (isMid) {
-                        showAllMarkers();
-                        setCameraState(relativeMap);
-                        fabMid.setImageResource(R.drawable.btn_selected_landmark_orange);
-                        isMid = false;
-                    } else {
-                        showLandmarkAllMarkers();
-                        setCameraState(relativeMap);
-                        fabMid.setImageResource(R.drawable.btn_selected_mid_orange);
-                        isMid = true;
-                    }
+                if(isMid){
+                    showAllMarkers();
+                    setCameraState(relativeMap);
+                    fabMid.setImageResource(R.drawable.btn_selected_landmark_orange);
+                    isMid = false;
+                } else {
+                    showLandmarkAllMarkers();
+                    setCameraState(relativeMap);
+                    fabMid.setImageResource(R.drawable.btn_selected_mid_orange);
+                    isMid = true;
                 }
                 break;
 

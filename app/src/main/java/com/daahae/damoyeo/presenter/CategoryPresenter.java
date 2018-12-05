@@ -3,7 +3,6 @@ package com.daahae.damoyeo.presenter;
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.daahae.damoyeo.R;
 import com.daahae.damoyeo.communication.RetrofitCommunication;
@@ -27,6 +26,7 @@ public class CategoryPresenter {
 
     public void setDefaultCategory() {
         Log.d("start2", new SimpleDateFormat("yyyy-MM-dd HH-mm-ss.SSS").format(System.currentTimeMillis()));
+        RetrofitCommunication.getInstance().setBuildingsData(Constant.DEPARTMENT_STORE);
     }
 
     public void setSelectCategory(int category) {
@@ -57,7 +57,6 @@ public class CategoryPresenter {
             @Override
             public void disconnectServer() {
                 view.getParentView().changeView(Constant.MAPS_PAGE); // 뒤로가기
-                Toast.makeText(Constant.context,"중간지점 탐색에 실패했습니다",Toast.LENGTH_SHORT).show();
             }
         };
         RetrofitCommunication.getInstance().setUserData(userCallBack);
@@ -95,7 +94,7 @@ public class CategoryPresenter {
             try {
                 for (int i = 0; i < 5; i++) {
                     asyncDialog.setProgress(i*30);
-                    Thread.sleep(30000);
+                    Thread.sleep(3000);
                 }
 
             } catch (InterruptedException e) {
