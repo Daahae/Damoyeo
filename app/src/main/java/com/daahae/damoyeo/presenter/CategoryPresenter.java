@@ -27,7 +27,7 @@ public class CategoryPresenter {
 
     public void setSelectCategory(int category) {
         Log.d("start2", new SimpleDateFormat("yyyy-MM-dd HH-mm-ss.SSS").format(System.currentTimeMillis()));
-        if(!view.isMid())
+        if(!CategoryFragment.isMid)
             RetrofitCommunication.getInstance().setBuildingsData(category);
         else
             RetrofitCommunication.getInstance().setBuildingsDataInLandmark(category);

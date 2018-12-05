@@ -46,7 +46,6 @@ import com.daahae.damoyeo.model.BuildingArr;
 import com.daahae.damoyeo.model.Landmark;
 import com.daahae.damoyeo.model.MidInfo;
 import com.daahae.damoyeo.model.Person;
-import com.daahae.damoyeo.model.TransportInfoList;
 import com.daahae.damoyeo.presenter.CategoryPresenter;
 import com.daahae.damoyeo.view.Constant;
 import com.daahae.damoyeo.view.activity.MainActivity;
@@ -107,7 +106,7 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
     private ListView listCategory;
 
     private FloatingActionButton fabMid;
-    private boolean isMid = false;
+    public static boolean isMid = false;
 
     private ImageButton btnDownSlidingDrawer;
     private ImageButton btnDepartment, btnShopping, btnStadium, btnZoo, btnMuseum, btnTheater, btnAquarium, btnCafe, btnDrink, btnRestaurant, btnEtc;
@@ -121,10 +120,6 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
 
     public CategoryFragment(MainActivity parentView) {
         this.parentView = parentView;
-    }
-
-    public boolean isMid() {
-        return isMid;
     }
 
     public ListView getListMarkerTime() {
@@ -471,6 +466,11 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
         }
         CameraUpdate point = CameraUpdateFactory.newLatLngZoom(Constant.DEFAULT_LOCATION, 15.0f);
         googleMap.moveCamera(point);
+
+        if(Constant.existPerson) {
+            showAllMarkers();
+            setCameraState(getRelativeMap());
+        }
     }
 
     @Override

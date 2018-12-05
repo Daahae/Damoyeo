@@ -34,6 +34,7 @@ public class Constant {
     public static final double distance = 0;
 
     public static final String DEFAULT_MIDINFO_NAME = "중간지점";
+    public static final String DEFAULT_LANDMARK_NAME= "랜드마크";
 
     public static final double landmark_latitude = 37.56318972577066;
     public static final double landmark_longitude = 126.98734413832425;

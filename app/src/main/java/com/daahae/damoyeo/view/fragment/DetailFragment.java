@@ -29,6 +29,7 @@ import android.widget.Toast;
 import com.daahae.damoyeo.R;
 import com.daahae.damoyeo.model.Building;
 import com.daahae.damoyeo.model.BuildingDetail;
+import com.daahae.damoyeo.model.Landmark;
 import com.daahae.damoyeo.model.MidInfo;
 import com.daahae.damoyeo.presenter.DetailPresenter;
 import com.daahae.damoyeo.view.Constant;
@@ -52,7 +53,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 @SuppressLint("ValidFragment")
-public class DetailFragment extends Fragment implements View.OnClickListener, OnMapReadyCallback, GoogleMap.OnMapLoadedCallback, GoogleApiClient.ConnectionCallbacks,
+public class DetailFragment extends Fragment implements View.OnClickListener, OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener {
 
     private DetailPresenter presenter;
@@ -299,17 +300,9 @@ public class DetailFragment extends Fragment implements View.OnClickListener, On
                 buildGoogleApiClient();
         }
 
-        Log.v("중간지점",MidInfo.getInstance().getLatLng().toString());
-        Log.v("장소지점",Building.getInstance().getLatitude() +", "+Building.getInstance().getLongitude()+"");
-
         setBuildingLocation();
-
         showMid();
         showBuilding();
-    }
-
-    @Override
-    public void onMapLoaded() {
     }
 
     @Override
@@ -353,11 +346,15 @@ public class DetailFragment extends Fragment implements View.OnClickListener, On
     public void showMid() {
 
         MarkerOptions markerOption = new MarkerOptions();
-        markerOption.position(MidInfo.getInstance().getLatLng());
-        markerOption.title(Constant.DEFAULT_MIDINFO_NAME);
+        if(!CategoryFragment.isMid) {
+            markerOption.position(MidInfo.getInstance().getLatLng());
+            markerOption.title(Constant.DEFAULT_MIDINFO_NAME);
+        } else {
+            markerOption.position(Landmark.getInstance().getLatLng());
+            markerOption.title(Constant.DEFAULT_LANDMARK_NAME);
+        }
         markerOption.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
-        if(googleMap != null)
-            googleMap.addMarker(markerOption);
+        googleMap.addMarker(markerOption);
     }
 
     public void showBuilding() {
@@ -367,17 +364,15 @@ public class DetailFragment extends Fragment implements View.OnClickListener, On
         markerOption.position(latLng);
         markerOption.title(Building.getInstance().getName());
         markerOption.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
-        if(googleMap != null) {
-            currentMarker = googleMap.addMarker(markerOption);
-            currentMarker.showInfoWindow();
-        }
+        currentMarker = googleMap.addMarker(markerOption);
+        currentMarker.showInfoWindow();
     }
 
     public void showCurrentMarker() {
 
         CameraUpdate point = CameraUpdateFactory.newLatLngZoom(Constant.DEFAULT_LOCATION, 15.0f);
         if(currentMarker != null)
-         point = CameraUpdateFactory.newLatLngZoom(currentMarker.getPosition(), 15.0f);
+            point = CameraUpdateFactory.newLatLngZoom(currentMarker.getPosition(), 15.0f);
         if ( Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
             googleMap.animateCamera(point);
         else
