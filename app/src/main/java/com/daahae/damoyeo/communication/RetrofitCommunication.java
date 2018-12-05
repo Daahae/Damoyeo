@@ -9,9 +9,11 @@ import com.daahae.damoyeo.model.Building;
 import com.daahae.damoyeo.model.BuildingArr;
 import com.daahae.damoyeo.model.BuildingDetail;
 import com.daahae.damoyeo.model.BuildingRequest;
+import com.daahae.damoyeo.model.Data;
 import com.daahae.damoyeo.model.Landmark;
 import com.daahae.damoyeo.model.MidInfo;
 import com.daahae.damoyeo.model.Position;
+import com.daahae.damoyeo.model.TransportLandmarkInfoList;
 import com.daahae.damoyeo.model.UserRequest;
 import com.daahae.damoyeo.model.Person;
 import com.daahae.damoyeo.model.TransportInfoList;
@@ -45,6 +47,7 @@ public class RetrofitCommunication {
     private TransportInfoList transportList;
     private BuildingArr buildingList;
     private BuildingDetail buildingDetail;
+    private TransportLandmarkInfoList transportLandmarkInfoList;
 
     private UserCallBack userCallBack;
     private BuildingCallBack buildingCallBack;
@@ -72,7 +75,7 @@ public class RetrofitCommunication {
 
 
     public interface UserLandmarkBack {
-        void userLandmarkDataPath(boolean hasData);
+        void userLandmarkDataPath(ArrayList<String> totalTimes);
         void disconnectServer();
     }
 
@@ -123,6 +126,7 @@ public class RetrofitCommunication {
         }
         String strMessage = makeForm(persons);
         Log.v("메시지",strMessage);
+        totalTimes = new ArrayList<>();
 
         final retrofit2.Call<JsonObject> comment = retrofitService.getMidTransportData(strMessage);
         comment.enqueue(new Callback<JsonObject>() {
@@ -157,7 +161,7 @@ public class RetrofitCommunication {
                                 Landmark.setLandMark(landmark);
                             }
                             //* set TransportInfo
-                            for (TransportInfoList.Data data : transportList.getUserArr())
+                            for (Data data : transportList.getUserArr())
                                 totalTimes.add(String.valueOf(data.getTotalTime()));
 
                             if (userCallBack != null) userCallBack.userDataPath(totalTimes);
@@ -174,17 +178,6 @@ public class RetrofitCommunication {
                 Log.e("retrofit","통신 실패");
             }
         });
-    }
-
-    private String makeForm(ArrayList<Person> persons){
-        String strMessage="{\"userArr\":[";
-        for(int i=0;i<persons.size();i++){
-            strMessage += persons.get(i).getAddressPosition().toString();
-            if(i!=persons.size()-1)
-                strMessage += ",";
-        }
-        strMessage+="]}";
-        return strMessage;
     }
 
     private void sendBuildingInfo(UserRequest request){
@@ -276,6 +269,7 @@ public class RetrofitCommunication {
         }
         String strMessage = makeLandMarkForm(persons);
         Log.v("메시지",strMessage);
+        totalTimes = new ArrayList<>();
 
         final retrofit2.Call<JsonObject> comment = retrofitService.getLandMarkTransportData(strMessage);
         comment.enqueue(new Callback<JsonObject>() {
@@ -289,31 +283,22 @@ public class RetrofitCommunication {
                         if (userLandmarkBack != null) userLandmarkBack.disconnectServer();
                         Log.e("algorithm","알고리즘 오류");
                     }else {
-                        transportList = new Gson().fromJson(json, TransportInfoList.class);
+                        transportLandmarkInfoList = new Gson().fromJson(json, TransportLandmarkInfoList.class);
                         try {
-                            ExceptionService.getInstance().isExistTransportInformation(transportList);
+                            ExceptionService.getInstance().isExistTransportLandmarkInformation(transportLandmarkInfoList);
                         } catch (ExceptionHandle e) {
                             e.printStackTrace();
-                            if (userLandmarkBack != null) userLandmarkBack.userLandmarkDataPath(false);
+                            if (userLandmarkBack != null) userLandmarkBack.userLandmarkDataPath(null);
                         }
-                        if (transportList != null) {
-                            Log.v("총 시간 개수", String.valueOf(transportList.getUserArr().size()));
-                            TransportInfoList.getInstance().setUserArr(transportList.getUserArr());
-                            // set MidInfo
-                            LatLng latLng = new LatLng(transportList.getMidInfo().getMidLat(), transportList.getMidInfo().getMidLng());
-                            MidInfo midInfo = new MidInfo(latLng, transportList.getMidInfo().getAddress());
-                            MidInfo.setMidInfo(midInfo);
-                            // set Landmark
-                            if (transportList.getLandmark() != null) {
-                                LatLng lmlatlng = new LatLng(transportList.getLandmark().getLatitude(), transportList.getLandmark().getLongitude());
-                                Landmark landmark = new Landmark(lmlatlng, transportList.getLandmark().getName(), transportList.getLandmark().getAddress());
-                                Landmark.setLandMark(landmark);
-                            }
+                        if (transportLandmarkInfoList != null) {
+                            Log.v("총 시간 개수", String.valueOf(transportLandmarkInfoList.getUserArr().size()));
+                            TransportLandmarkInfoList.getInstance().setUserArr(transportLandmarkInfoList.getUserArr());
+
                             //* set TransportInfo
-                            for (TransportInfoList.Data data : transportList.getUserArr())
+                            for (Data data : transportLandmarkInfoList.getUserArr())
                                 totalTimes.add(String.valueOf(data.getTotalTime()));
 
-                            if (userLandmarkBack != null) userLandmarkBack.userLandmarkDataPath(true);
+                            if (userLandmarkBack != null) userLandmarkBack.userLandmarkDataPath(totalTimes);
 
                             Log.d("end1", new SimpleDateFormat("yyyy-MM-dd HH-mm-ss.SSS").format(System.currentTimeMillis()));
                         }
@@ -329,6 +314,17 @@ public class RetrofitCommunication {
         });
     }
 
+    private String makeForm(ArrayList<Person> persons){
+        String strMessage="{\"userArr\":[";
+        for(int i=0;i<persons.size();i++){
+            strMessage += persons.get(i).getAddressPosition().toString();
+            if(i!=persons.size()-1)
+                strMessage += ",";
+        }
+        strMessage+="]}";
+        return strMessage;
+    }
+
     private String makeLandMarkForm(ArrayList<Person> persons){
         String strMessage="{\"userArr\":[";
         for(int i=0;i<persons.size();i++){
@@ -337,7 +333,7 @@ public class RetrofitCommunication {
                 strMessage += ",";
         }
         strMessage +=
-                "], \"midLat\":"+Landmark.getInstance().getLatLng().latitude+", \"midLng\":"+Landmark.getInstance().getLatLng().longitude+"}";
+                "],\"midLat\":"+Landmark.getInstance().getLatLng().latitude+",\"midLng\":"+Landmark.getInstance().getLatLng().longitude+"}";
         return strMessage;
     }
 
@@ -345,6 +341,10 @@ public class RetrofitCommunication {
     public void sendMarkerTimeMessage(){
         sendPersonLocation(Person.getInstance());
         Log.v(Constant.TAG, "전송");
+    }
+
+    public void setBuildingsDataInLandmark(){
+        sendPersonLocationAndLandMark(Person.getInstance());
     }
 
     public void clickItem(Building building){

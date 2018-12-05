@@ -6,6 +6,7 @@ import com.daahae.damoyeo.model.BuildingDetail;
 import com.daahae.damoyeo.model.BuildingRequest;
 import com.daahae.damoyeo.model.Position;
 import com.daahae.damoyeo.model.TransportInfoList;
+import com.daahae.damoyeo.model.TransportLandmarkInfoList;
 import com.daahae.damoyeo.model.UserRequest;
 import com.daahae.damoyeo.view.Constant;
 
@@ -43,6 +44,15 @@ public class ExceptionService {
             throw new ExceptionHandle("받아온 사용자의 정보가 없습니다");
         }
     }
+    public void isExistTransportLandmarkInformation(TransportLandmarkInfoList transportInfoList) throws ExceptionHandle{
+        if(transportInfoList == null){
+            throw new ExceptionHandle("서버에서 사용자 정보를 받아오지 못했습니다");
+        }
+        else if (transportInfoList.getUserArr().size() <= 0) {
+            throw new ExceptionHandle("받아온 사용자의 정보가 없습니다");
+        }
+    }
+
 
     public void isCorrectUserRequest(UserRequest request) throws ExceptionHandle{
         int requestType = request.getType();

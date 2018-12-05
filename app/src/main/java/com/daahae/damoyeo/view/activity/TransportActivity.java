@@ -11,13 +11,16 @@ import android.widget.ListView;
 import com.daahae.damoyeo.R;
 import com.daahae.damoyeo.model.Person;
 import com.daahae.damoyeo.model.TransportInfoList;
+import com.daahae.damoyeo.model.TransportLandmarkInfoList;
 import com.daahae.damoyeo.view.adapter.TransportAdapter;
+import com.daahae.damoyeo.view.fragment.CategoryFragment;
 
 public class TransportActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemClickListener {
 
     private ListView listTransport;
 
     private ImageButton btnBack;
+    private TransportAdapter transportAdapter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -31,7 +34,12 @@ public class TransportActivity extends AppCompatActivity implements View.OnClick
     private void initView() {
         listTransport = findViewById(R.id.list_transport_detail);
         btnBack = findViewById(R.id.btn_back_transport);
-        TransportAdapter transportAdapter = new TransportAdapter(TransportInfoList.getInstance().getUserArr(), Person.getInstance(),this);
+
+        if(!CategoryFragment.isMid) {
+            transportAdapter = new TransportAdapter(TransportInfoList.getInstance().getUserArr(), Person.getInstance(), this);
+        } else {
+            transportAdapter = new TransportAdapter(TransportLandmarkInfoList.getInstance().getUserArr(), Person.getInstance(), this);
+        }
         listTransport.setAdapter(transportAdapter);
     }
 

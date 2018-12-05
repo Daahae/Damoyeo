@@ -32,8 +32,11 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.daahae.damoyeo.R;
+import com.daahae.damoyeo.communication.RetrofitCommunication;
+import com.daahae.damoyeo.model.BuildingArr;
 import com.daahae.damoyeo.model.Person;
 import com.daahae.damoyeo.model.Position;
+import com.daahae.damoyeo.model.TransportInfoList;
 import com.daahae.damoyeo.presenter.MapsPresenter;
 import com.daahae.damoyeo.view.Constant;
 import com.daahae.damoyeo.model.FloatingActionBtn;
