@@ -2,7 +2,6 @@ package com.daahae.damoyeo.view.fragment;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -10,7 +9,6 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationManager;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -119,7 +117,7 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
 
     private ImageView imgLoading;
 
-    private Button btnSortScore, btnSortDistance;
+    private Button btnSortSocre, btnSortDistance;
 
     public CategoryFragment(MainActivity parentView) {
         this.parentView = parentView;
@@ -210,7 +208,7 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
         txtDefault = rootView.findViewById(R.id.txt_list_category_default);
         imgLoading = rootView.findViewById(R.id.img_loading_category);
 
-        btnSortScore = rootView.findViewById(R.id.btn_score_sort_building);
+        btnSortSocre = rootView.findViewById(R.id.btn_score_sort_building);
         btnSortDistance = rootView.findViewById(R.id.btn_distance_sort_building);
     }
 
@@ -248,11 +246,10 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
         btnRestaurant.setOnClickListener(this);
         btnEtc.setOnClickListener(this);
 
-        btnSortScore.setOnClickListener(this);
+        btnSortSocre.setOnClickListener(this);
         btnSortDistance.setOnClickListener(this);
 
     }
-
 
     private void setLoadingAnimation(){
         Animation anim = AnimationUtils.loadAnimation(getContext(), R.anim.loading);
@@ -359,10 +356,6 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
 
         return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) ||
                 locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-    }
-
-    public MainActivity getParentView() {
-        return parentView;
     }
 
     @Override

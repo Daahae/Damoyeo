@@ -58,7 +58,6 @@ public class RetrofitCommunication {
 
     public interface UserCallBack {
         void userDataPath(ArrayList<String> totalTimes);
-        void disconnectServer();
     }
 
     public interface BuildingCallBack {
@@ -91,9 +90,9 @@ public class RetrofitCommunication {
 
     private void connectServer(){
         OkHttpClient okHttpClient = new OkHttpClient.Builder()
-                .connectTimeout(30, TimeUnit.SECONDS)
-                .readTimeout(30, TimeUnit.SECONDS)
-                .writeTimeout(30, TimeUnit.SECONDS)
+                .connectTimeout(1, TimeUnit.MINUTES)
+                .readTimeout(200, TimeUnit.SECONDS)
+                .writeTimeout(200, TimeUnit.SECONDS)
                 .build();
 
         retrofit = new Retrofit
@@ -175,7 +174,6 @@ public class RetrofitCommunication {
 
             @Override
             public void onFailure(@NonNull retrofit2.Call<JsonObject> call, @NonNull Throwable t) {
-                if (userCallBack != null) userCallBack.disconnectServer();
                 Log.e("retrofit","통신 실패");
             }
         });

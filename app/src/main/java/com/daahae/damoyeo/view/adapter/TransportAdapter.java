@@ -79,32 +79,12 @@ public class TransportAdapter extends BaseAdapter {
         TransportInfoList.Data myItem = (TransportInfoList.Data) mItems.get(position);
         Person person = people.get(position);
 
-        if(mItems.get(position).getTotalTime()==0) {//700m이내 일 경우
-            setBuildingListText(null, person.getName(), formAddress(person.getAddress()), "", "");
-            addDefaultText();
-        }
-        else {
-            String strViewTime = getViewTime(getTime(), myItem.getTotalTime());
+        String strViewTime = getViewTime(getTime(), myItem.getTotalTime());
 
-            setBuildingListText(null, person.getName(), formAddress(person.getAddress()), formTakenTime(myItem.getTotalTime()), strViewTime);
+        setBuildingListText(null,person.getName(),formAddress(person.getAddress()),formTakenTime(myItem.getTotalTime()),strViewTime);
 
-            createViewBar(myItem);
-
-        }
+        createViewBar(myItem);
         return convertView;
-    }
-
-    private void addDefaultText(){
-        TextView txt = new TextView(context);
-        txt.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
-        txt.setBackgroundResource(R.color.colorWhite);
-        txt.setTextColor(context.getResources().getColor(R.color.colorGray));
-        txt.setGravity(Gravity.CENTER);
-        txt.setTextSize(12);
-        txt.setText("목적지가 700m이내 입니다");
-        linearTransportBar.addView(txt);
-
-        linearTransportBar.setBackgroundResource(R.color.colorWhite);
     }
 
     private String getViewTime(Calendar calendar, int totalTime){
