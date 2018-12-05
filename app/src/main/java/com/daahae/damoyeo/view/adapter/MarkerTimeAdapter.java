@@ -64,7 +64,10 @@ public class MarkerTimeAdapter extends BaseAdapter{
 
         myItem = (MarkerTime) mItems.get(position);
 
-        setMarkerListText(txtMarkerName,txtMarkerTime,myItem.getName(),formTakenTime(myItem.getTotalTime()));
+        if(Integer.parseInt(myItem.getTotalTime())==0)
+            setMarkerListText(txtMarkerName,txtMarkerTime,myItem.getName(),"700m이내");
+        else
+            setMarkerListText(txtMarkerName,txtMarkerTime,myItem.getName(),formTakenTime(myItem.getTotalTime()));
 
         return convertView;
     }

@@ -20,6 +20,8 @@ public class TransportInfoList {
     @SerializedName("midInfo")
     private MidInfo midInfo;
 
+    private ArrayList<String> error;
+
     public List<Data> getUserArr() {
         return userArr;
     }
@@ -55,6 +57,8 @@ public class TransportInfoList {
         private int timeByBus;
         @SerializedName("timeByWalk")
         private int timeByWalk;
+        @SerializedName("error")
+        private String error;
 
         public ArrayList<Transport> getTransportInfo() {
             return transportInfo;
@@ -76,5 +80,8 @@ public class TransportInfoList {
             return timeByWalk;
         }
 
+        public String getError() {
+            return error;
+        }
     }
 }
