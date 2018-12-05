@@ -107,7 +107,7 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
     private ListView listCategory;
 
     private FloatingActionButton fabMid;
-    private boolean isMid = false;
+    public static boolean isMid = false;
 
     private ImageButton btnDownSlidingDrawer;
     private ImageButton btnDepartment, btnShopping, btnStadium, btnZoo, btnMuseum, btnTheater, btnAquarium, btnCafe, btnDrink, btnRestaurant, btnEtc;
@@ -546,6 +546,7 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
             case R.id.btn_back_category:
                 totalTimes.clear();
                 parentView.changeView(Constant.MAPS_PAGE);
+                Constant.existLandmarkTransport = false;
                 break;
             case R.id.btn_all_marker_list:
                 if(!isMid) {
@@ -558,11 +559,17 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
                 break;
             case R.id.fab_mid:
                 if (isMid) {
+                    presenter.setMidInfoTransport();
                     showAllMarkers();
                     setCameraState(relativeMap);
                     fabMid.setImageResource(R.drawable.btn_selected_landmark_orange);
                     isMid = false;
                 } else {
+                    if(!Constant.existLandmarkTransport){
+                        presenter.clickLandmark();
+                        Constant.existLandmarkTransport = true;
+                    }
+                    else presenter.setLandmarkTransport();
                     showLandmarkAllMarkers();
                     setCameraState(relativeMap);
                     fabMid.setImageResource(R.drawable.btn_selected_mid_orange);
@@ -778,15 +785,17 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
 
     public void initMarkerTime(ArrayList<String> totalTimes){
         this.totalTimes = totalTimes;
+        Log.v("시간",this.totalTimes.toString());
     }
 
     public void setMarkerTimeList(MarkerTimeAdapter markerTimeAdapter) {
 
         markerTimeAdapter.resetList();
-        //TODO: Exception 시간 없을때,
         if(totalTimes!=null){
-            for(int i=0; i < totalTimes.size();i++)
+            for(int i=0; i < totalTimes.size();i++) {
+                Log.v("시간", totalTimes.get(i));
                 markerTimeAdapter.add(Person.getInstance().get(i).getName(), totalTimes.get(i));
+            }
         }
     }
 

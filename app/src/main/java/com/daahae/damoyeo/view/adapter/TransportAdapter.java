@@ -13,9 +13,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.daahae.damoyeo.R;
+import com.daahae.damoyeo.model.Data;
 import com.daahae.damoyeo.model.Person;
 import com.daahae.damoyeo.model.Transport;
 import com.daahae.damoyeo.model.TransportInfoList;
+import com.daahae.damoyeo.model.TransportLandmarkInfoList;
 import com.daahae.damoyeo.view.Constant;
 
 import java.util.ArrayList;
@@ -27,11 +29,12 @@ public class TransportAdapter extends BaseAdapter {
 
     private ImageView imgProfile;
     private TextView txtName,txtAddress,txtTotalTime,txtViewTime;
-    private List<TransportInfoList.Data> mItems;
+    private List<Data> mItems;
     private ArrayList<Person> people;
     private LinearLayout linearTransportBar, linearTransportItem;
     private Context context;
-    public TransportAdapter(List<TransportInfoList.Data> list, ArrayList<Person> people,Context context){
+
+    public TransportAdapter(List<Data> list, ArrayList<Person> people,Context context){
         mItems = list;
         this.people = people;
         this.context = context;
@@ -50,7 +53,7 @@ public class TransportAdapter extends BaseAdapter {
     }
 
     @Override
-    public TransportInfoList.Data getItem(int position) {
+    public Data getItem(int position) {
         return mItems.get(position);
     }
 
@@ -60,7 +63,7 @@ public class TransportAdapter extends BaseAdapter {
     }
 
 
-    public void add(TransportInfoList.Data data){
+    public void add(Data data){
         mItems.add(data);
     }
 
@@ -76,7 +79,7 @@ public class TransportAdapter extends BaseAdapter {
 
         initGetView(convertView);
 
-        TransportInfoList.Data myItem = (TransportInfoList.Data) mItems.get(position);
+        Data myItem = (Data) mItems.get(position);
         Person person = people.get(position);
 
         if(mItems.get(position).getTotalTime()==0) {//700m이내 일 경우
@@ -194,7 +197,7 @@ public class TransportAdapter extends BaseAdapter {
         linearTransportItem = convertView.findViewById(R.id.linear_transport_way_transport_item);
     }
 
-    private void createViewBar(TransportInfoList.Data myItem){
+    private void createViewBar(Data myItem){
 
         int totalLength = Constant.displayWidth;
         int size = myItem.getTransportInfo().size();

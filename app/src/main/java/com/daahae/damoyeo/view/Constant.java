@@ -73,6 +73,7 @@ public class Constant {
     public static Context context;
 
     public static boolean existPerson = false;
+    public static boolean existLandmarkTransport = false;
     public static boolean existTransport= false;
     public static boolean existBuilding = false;
 }

@@ -8,6 +8,9 @@ import android.widget.Toast;
 import com.daahae.damoyeo.R;
 import com.daahae.damoyeo.communication.RetrofitCommunication;
 import com.daahae.damoyeo.model.BuildingArr;
+import com.daahae.damoyeo.model.Transport;
+import com.daahae.damoyeo.model.TransportInfoList;
+import com.daahae.damoyeo.model.TransportLandmarkInfoList;
 import com.daahae.damoyeo.view.Constant;
 import com.daahae.damoyeo.view.fragment.CategoryFragment;
 
@@ -35,6 +38,48 @@ public class CategoryPresenter {
 
     public void getBuildingDetailFromServer(int index) {
         RetrofitCommunication.getInstance().clickItem(view.getBuildingAdapter().getItem(index));
+    }
+
+    public void setLandmarkTransport(){
+        ArrayList<String> totalTimes = new ArrayList<>();
+        for(int i = 0; i< TransportLandmarkInfoList.getInstance().getUserArr().size(); i++){
+            totalTimes.add(String.valueOf(TransportLandmarkInfoList.getInstance().getUserArr().get(i).getTotalTime()));
+        }
+        view.initMarkerTime(totalTimes);
+        view.setMarkerTimeList(view.getMarkerTimeAdapter());
+        view.getListMarkerTime().setAdapter(view.getMarkerTimeAdapter());
+    }
+
+    public void setMidInfoTransport(){
+        ArrayList<String> totalTimes = new ArrayList<>();
+        for(int i=0;i<TransportInfoList.getInstance().getUserArr().size();i++){
+            totalTimes.add(String.valueOf(TransportInfoList.getInstance().getUserArr().get(i).getTotalTime()));
+        }
+        view.initMarkerTime(totalTimes);
+        view.setMarkerTimeList(view.getMarkerTimeAdapter());
+        view.getListMarkerTime().setAdapter(view.getMarkerTimeAdapter());
+    }
+
+    public void clickLandmark(){
+
+        RetrofitCommunication.getInstance().setBuildingsDataInLandmark();
+
+        RetrofitCommunication.UserLandmarkBack userLandmarkBack = new RetrofitCommunication.UserLandmarkBack() {
+            @Override
+            public void userLandmarkDataPath(ArrayList<String> totalTimes) {
+                Log.v("랜드마크", TransportInfoList.getInstance().toString());
+                view.initMarkerTime(totalTimes);
+                Log.v("전체 시간", totalTimes.toString());
+                view.setMarkerTimeList(view.getMarkerTimeAdapter());
+                view.getListMarkerTime().setAdapter(view.getMarkerTimeAdapter());
+            }
+            @Override
+            public void disconnectServer() {
+                Toast.makeText(Constant.context,"랜드마크 탐색에 실패했습니다",Toast.LENGTH_SHORT).show();
+
+            }
+        };
+        RetrofitCommunication.getInstance().setUserLandmarkData(userLandmarkBack);
     }
 
     public void startCallback() {
@@ -72,6 +117,7 @@ public class CategoryPresenter {
         };
         RetrofitCommunication.getInstance().setBuildingData(buildingCallBack);
     }
+
 
     private class CheckTypesTask extends AsyncTask<Void, Void, Void> {
 
