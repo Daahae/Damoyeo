@@ -554,18 +554,16 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
                 }
                 break;
             case R.id.fab_mid:
-                if(TransportInfoList.getInstance().getLandmark()!=null) {
-                    if (isMid) {
-                        showAllMarkers();
-                        setCameraState(relativeMap);
-                        fabMid.setImageResource(R.drawable.btn_selected_landmark_orange);
-                        isMid = false;
-                    } else {
-                        showLandmarkAllMarkers();
-                        setCameraState(relativeMap);
-                        fabMid.setImageResource(R.drawable.btn_selected_mid_orange);
-                        isMid = true;
-                    }
+                if (isMid) {
+                    showAllMarkers();
+                    setCameraState(relativeMap);
+                    fabMid.setImageResource(R.drawable.btn_selected_landmark_orange);
+                    isMid = false;
+                } else {
+                    showLandmarkAllMarkers();
+                    setCameraState(relativeMap);
+                    fabMid.setImageResource(R.drawable.btn_selected_mid_orange);
+                    isMid = true;
                 }
                 break;
 
