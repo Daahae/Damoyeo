@@ -16,7 +16,7 @@ public interface RetrofitService {
     //@Multipart
     @FormUrlEncoded
     @POST("usersToMid")
-    Call<JsonObject> getTransportData(@Field("userArr") String user);
+    Call<JsonObject> getMidTransportData(@Field("userArr") String user);
 
     //@Multipart
     @FormUrlEncoded
@@ -27,6 +27,11 @@ public interface RetrofitService {
     @FormUrlEncoded
     @POST("midDetailCategory")
     Call<JsonObject> getBuildingDetail(@Field("buildingRequest") String name);
+
+    //@Multipart
+    @FormUrlEncoded
+    @POST("midTransportInfo")
+    Call<JsonObject> getLandMarkTransportData(@Field("userArr") String user);
 
 
 

@@ -49,6 +49,7 @@ public class RetrofitCommunication {
     private UserCallBack userCallBack;
     private BuildingCallBack buildingCallBack;
     private BuildingDetailCallBack buildingDetailCallBack;
+    private UserLandmarkBack userLandmarkBack;
 
     private static RetrofitCommunication instance = new RetrofitCommunication();
 
@@ -69,6 +70,12 @@ public class RetrofitCommunication {
         void buildingDetailDataPath(BuildingDetail buildingDetail);
     }
 
+
+    public interface UserLandmarkBack {
+        void userLandmarkDataPath(boolean hasData);
+        void disconnectServer();
+    }
+
     private RetrofitCommunication(){
         connectServer();
         init();
@@ -82,6 +89,9 @@ public class RetrofitCommunication {
     }
     public void setBuildingDetailData(BuildingDetailCallBack buildingDetailCallBack){
         this.buildingDetailCallBack = buildingDetailCallBack;
+    }
+    public void setUserLandmarkData(UserLandmarkBack userLandmarkBack){
+        this.userLandmarkBack = userLandmarkBack;
     }
 
     private void init() {
@@ -114,27 +124,7 @@ public class RetrofitCommunication {
         String strMessage = makeForm(persons);
         Log.v("메시지",strMessage);
 
-        JSONObject obj = new JSONObject();
-        try {
-            JSONArray jArray = new JSONArray();//배열이 필요할때
-            for (int i = 0; i < persons.size(); i++)//배열
-            {
-                JSONObject sObject = new JSONObject();//배열 내에 들어갈 json
-                sObject.put("latitude", persons.get(i).getAddressPosition().getX());
-                sObject.put("longitude", persons.get(i).getAddressPosition().getY());
-                jArray.put(sObject);
-            }
-            obj.put("userArr", jArray);//배열을 넣음
-
-            System.out.println(obj.toString());
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        Log.v("좌표",obj.toString());
-
-        final retrofit2.Call<JsonObject> comment = retrofitService.getTransportData(strMessage);
-        //Call<JsonObject> comment = retrofitService.getTransportData(obj.toString());
+        final retrofit2.Call<JsonObject> comment = retrofitService.getMidTransportData(strMessage);
         comment.enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
@@ -239,6 +229,7 @@ public class RetrofitCommunication {
         });
     }
 
+
     private void sendBuildingDetail(BuildingRequest request){
         try {
             ExceptionService.getInstance().isCorrectBuildingRequest(request);
@@ -274,6 +265,82 @@ public class RetrofitCommunication {
             }
         });
     }
+
+
+    private void sendPersonLocationAndLandMark(ArrayList<Person> persons){
+        try{
+            ExceptionService.getInstance().isExistPerson(persons.size());
+        }catch (ExceptionHandle e){
+            e.printStackTrace();
+            return;
+        }
+        String strMessage = makeLandMarkForm(persons);
+        Log.v("메시지",strMessage);
+
+        final retrofit2.Call<JsonObject> comment = retrofitService.getLandMarkTransportData(strMessage);
+        comment.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                if (response.isSuccessful()) {
+                    Log.v("알림", response.toString());
+                    Log.v("전체", response.body().toString());
+                    JsonObject json = response.body();
+                    if(response.body().toString().equals(Constant.ALGORITHM_ERROR)){
+                        if (userLandmarkBack != null) userLandmarkBack.disconnectServer();
+                        Log.e("algorithm","알고리즘 오류");
+                    }else {
+                        transportList = new Gson().fromJson(json, TransportInfoList.class);
+                        try {
+                            ExceptionService.getInstance().isExistTransportInformation(transportList);
+                        } catch (ExceptionHandle e) {
+                            e.printStackTrace();
+                            if (userLandmarkBack != null) userLandmarkBack.userLandmarkDataPath(false);
+                        }
+                        if (transportList != null) {
+                            Log.v("총 시간 개수", String.valueOf(transportList.getUserArr().size()));
+                            TransportInfoList.getInstance().setUserArr(transportList.getUserArr());
+                            // set MidInfo
+                            LatLng latLng = new LatLng(transportList.getMidInfo().getMidLat(), transportList.getMidInfo().getMidLng());
+                            MidInfo midInfo = new MidInfo(latLng, transportList.getMidInfo().getAddress());
+                            MidInfo.setMidInfo(midInfo);
+                            // set Landmark
+                            if (transportList.getLandmark() != null) {
+                                LatLng lmlatlng = new LatLng(transportList.getLandmark().getLatitude(), transportList.getLandmark().getLongitude());
+                                Landmark landmark = new Landmark(lmlatlng, transportList.getLandmark().getName(), transportList.getLandmark().getAddress());
+                                Landmark.setLandMark(landmark);
+                            }
+                            //* set TransportInfo
+                            for (TransportInfoList.Data data : transportList.getUserArr())
+                                totalTimes.add(String.valueOf(data.getTotalTime()));
+
+                            if (userLandmarkBack != null) userLandmarkBack.userLandmarkDataPath(true);
+
+                            Log.d("end1", new SimpleDateFormat("yyyy-MM-dd HH-mm-ss.SSS").format(System.currentTimeMillis()));
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull retrofit2.Call<JsonObject> call, @NonNull Throwable t) {
+                if (userCallBack != null) userCallBack.disconnectServer();
+                Log.e("retrofit","통신 실패");
+            }
+        });
+    }
+
+    private String makeLandMarkForm(ArrayList<Person> persons){
+        String strMessage="{\"userArr\":[";
+        for(int i=0;i<persons.size();i++){
+            strMessage += persons.get(i).getAddressPosition().toString();
+            if(i!=persons.size()-1)
+                strMessage += ",";
+        }
+        strMessage +=
+                "], \"midLat\":"+Landmark.getInstance().getLatLng().latitude+", \"midLng\":"+Landmark.getInstance().getLatLng().longitude+"}";
+        return strMessage;
+    }
+
 
     public void sendMarkerTimeMessage(){
         sendPersonLocation(Person.getInstance());

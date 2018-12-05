@@ -20,9 +20,6 @@ public class DetailPresenter {
                 view.setBuildingInfo();
                 view.setBuildingDetail(buildingDetail);
 
-                view.setBuildingLocation();
-                view.showMid();
-                view.showBuilding();
             }
         };
         RetrofitCommunication.getInstance().setBuildingDetailData(buildingDetailCallBack);

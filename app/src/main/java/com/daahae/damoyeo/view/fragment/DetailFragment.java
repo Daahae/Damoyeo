@@ -298,6 +298,14 @@ public class DetailFragment extends Fragment implements View.OnClickListener, On
             if ( googleApiClient == null)
                 buildGoogleApiClient();
         }
+
+        Log.v("중간지점",MidInfo.getInstance().getLatLng().toString());
+        Log.v("장소지점",Building.getInstance().getLatitude() +", "+Building.getInstance().getLongitude()+"");
+
+        setBuildingLocation();
+
+        showMid();
+        showBuilding();
     }
 
     @Override
