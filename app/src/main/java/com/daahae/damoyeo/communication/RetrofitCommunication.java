@@ -239,7 +239,6 @@ public class RetrofitCommunication {
         });
     }
 
-
     private void sendBuildingDetail(BuildingRequest request){
         try {
             ExceptionService.getInstance().isCorrectBuildingRequest(request);
@@ -292,6 +291,14 @@ public class RetrofitCommunication {
         request.setType(buildingType);
         request.setMidLat(MidInfo.getInstance().getLatLng().latitude);
         request.setMidLng(MidInfo.getInstance().getLatLng().longitude);
+        sendBuildingInfo(request);
+    }
+
+    public void setBuildingsDataInLandmark(int buildingType){
+        UserRequest request = new UserRequest();
+        request.setType(buildingType);
+        request.setMidLat(Landmark.getInstance().getLatLng().latitude);
+        request.setMidLng(Landmark.getInstance().getLatLng().longitude);
         sendBuildingInfo(request);
     }
 }
