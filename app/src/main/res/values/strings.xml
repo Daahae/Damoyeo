@@ -1,3 +1,28 @@
 <resources>
-    <string name="app_name">damoyeo</string>
+    <string name="app_name">다모여</string>
+    <string name="title_activity_maps">Map</string>
+
+    <string name="guest">guest</string>
+
+    <string name="tv_search">중간지점 탐색</string>
+
+    <string name="msg_default">마커를 움직이세요</string>
+    <string name="msg_add">출발지를 지정하려면 +버튼을 누르세요</string>
+    <string name="msg_savemarker">"님의 마커가 추가되었습니다."</string>
+    <string name="msg_removemarker">"님의 마커가 삭제되었습니다."</string>
+    <string name="msg_checkmarker">올바르지 않은 마커가 선택되었습니다.</string>
+    <string name="msg_cannotshow">저장된 마커가 없습니다.</string>
+    <string name="msg_gps_disable">GPS 기능을 활성화 해주세요</string>
+
+    <string name="category_department_store">백화점</string>
+    <string name="category_shopping_mall">쇼핑몰</string>
+    <string name="category_stadium">경기장</string>
+    <string name="category_zoo">동물원</string>
+    <string name="category_museum">박물관</string>
+    <string name="category_theater">영화관</string>
+    <string name="category_aquarium">아쿠아리움</string>
+    <string name="category_cafe">카페</string>
+    <string name="category_drink">술집</string>
+    <string name="category_restaurant">식당</string>
+    <string name="category_etc">기타</string>
 </resources>

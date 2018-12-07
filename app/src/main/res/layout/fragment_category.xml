@@ -1,0 +1,346 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorWhite"
+        android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="65dp"
+                android:background="@color/appMainColor"
+                android:orientation="horizontal">
+
+                <ImageButton
+                    android:id="@+id/btn_back_category"
+                    android:layout_width="55dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="5dp"
+                    android:background="@color/appMainColor"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/btn_back_white" />
+
+                <ImageView
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="133dp"
+                    android:gravity="center"
+                    android:src="@drawable/ic_main" />
+            </RelativeLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="65dp"
+        android:layout_marginBottom="70dp">
+
+        <RelativeLayout
+            android:id="@+id/relative_map"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+            <com.google.android.gms.maps.MapView
+                android:id="@+id/map_category"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:name="com.google.android.gms.maps.MapFragment"/>
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/fab_mid"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:visibility="visible"
+                android:layout_marginTop="8dp"
+                android:layout_marginStart="8dp"
+                android:src="@drawable/ic_randmark"
+                app:backgroundTint="@color/colorWhite"
+                app:elevation="6dp"/>
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/linear_marker_time"
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="end"
+            android:orientation="vertical">
+
+            <Button
+                android:id="@+id/btn_all_marker_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/colorWhite"
+
+                android:text="전체보기" />
+
+            <ListView
+                android:id="@+id/list_marker_time"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="end" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <SlidingDrawer
+        android:id="@+id/slide"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:allowSingleTap="false"
+        android:animateOnClick="true"
+        android:bottomOffset="5dp"
+        android:content="@+id/content"
+        android:handle="@+id/handle"
+        android:orientation="vertical"
+        android:topOffset="200dp"
+        >
+
+        <LinearLayout
+            android:id="@+id/handle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="@color/colorWhite">
+
+            <LinearLayout
+                android:id="@+id/linear_handle_menu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/colorWhite"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@null"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="30dp"
+                        android:background="@drawable/top_round_white_box"
+                        android:src="@drawable/ic_arrow_up" />
+
+                    <TextView
+                        android:id="@+id/txt_selected_category"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:background="@color/colorWhite"
+                        android:gravity="center"
+                        android:textColor="@color/appMainColor"
+                        android:textSize="20sp" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#FFFFFFFF"
+            android:orientation="vertical">
+
+
+            <ImageButton
+                android:id="@+id/btn_down_sliding_drawer_category"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:background="@drawable/top_round_white_box"
+                android:src="@drawable/ic_arrow_down"/>
+
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:id="@+id/linear_category_menu"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:background="@color/colorWhite"
+                    android:orientation="horizontal">
+
+
+                    <ImageButton
+                        android:id="@+id/btn_department_store_category"
+                        android:layout_width="65dp"
+                        android:layout_height="65dp"
+                        android:layout_margin="10dp"
+                        android:background="@null"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/ic_department_store_orange" />
+
+                    <ImageButton
+                        android:id="@+id/btn_shopping_category"
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:layout_margin="10dp"
+                        android:background="@null"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/ic_shopping_gray" />
+
+                    <ImageButton
+                        android:id="@+id/btn_stadium_category"
+                        android:layout_width="62dp"
+                        android:layout_height="62dp"
+                        android:layout_margin="10dp"
+                        android:background="@null"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/ic_stadium_gray" />
+
+                    <ImageButton
+                        android:id="@+id/btn_zoo_category"
+                        android:layout_width="62dp"
+                        android:layout_height="62dp"
+                        android:layout_margin="10dp"
+                        android:background="@null"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/ic_zoo_gray" />
+
+                    <ImageButton
+                        android:id="@+id/btn_museum_category"
+                        android:layout_width="65dp"
+                        android:layout_height="65dp"
+                        android:layout_margin="10dp"
+                        android:background="@null"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/ic_museum_gray" />
+
+                    <ImageButton
+                        android:id="@+id/btn_theater_category"
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:layout_margin="10dp"
+                        android:background="@null"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/ic_theater_gray" />
+
+                    <ImageButton
+                        android:id="@+id/btn_aquarium_store_category"
+                        android:layout_width="70dp"
+                        android:layout_height="70dp"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginBottom="10dp"
+                        android:layout_marginRight="10dp"
+                        android:layout_marginLeft="10dp"
+                        android:background="@null"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/ic_aquarium_gray" />
+
+                    <ImageButton
+                        android:id="@+id/btn_cafe_category"
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:layout_margin="10dp"
+                        android:background="@null"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/ic_cafe_gray" />
+
+                    <ImageButton
+                        android:id="@+id/btn_drink_category"
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:layout_margin="10dp"
+                        android:background="@null"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/ic_drink_gray" />
+
+                    <ImageButton
+                        android:id="@+id/btn_restaurant_store_category"
+                        android:layout_width="70dp"
+                        android:layout_height="70dp"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginBottom="10dp"
+                        android:layout_marginRight="10dp"
+                        android:layout_marginLeft="10dp"
+                        android:background="@null"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/ic_restaurant_gray" />
+
+
+                    <ImageButton
+                        android:id="@+id/btn_etc_category"
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:layout_margin="10dp"
+                        android:background="@null"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/btn_etc_gray" />
+
+                </LinearLayout>
+            </HorizontalScrollView>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/colorGray" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/btn_score_sort_building"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="3dp"
+                    android:textSize="12sp"
+                    android:text="별점순"
+                    android:background="@color/colorWhite"/>
+
+                <Button
+                    android:id="@+id/btn_distance_sort_building"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="3dp"
+                    android:textSize="12sp"
+                    android:text="거리순"
+                    android:background="@color/colorWhite"/>
+            </LinearLayout>
+
+            <ListView
+                android:visibility="gone"
+                android:id="@+id/list_category"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textFilterEnabled="true">
+
+            </ListView>
+            <TextView
+                android:visibility="gone"
+                android:id="@+id/txt_list_category_default"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:textColor="@color/colorGray"
+                android:textSize="16sp"
+                android:text="추천할 가게가 근처에 없습니다."/>
+
+            <ImageView
+                android:id="@+id/img_loading_category"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:scaleType="centerInside"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:src="@drawable/ic_login_logo" />
+        </LinearLayout>
+    </SlidingDrawer>
+
+</RelativeLayout>

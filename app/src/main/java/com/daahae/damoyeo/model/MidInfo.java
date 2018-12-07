@@ -1,21 +1,60 @@
 package com.daahae.damoyeo.model;
 
-public class MidInfo{
-    private Position pos;
-    private String address;
-    // 구이름(Zone) 찾아내라!
+import com.daahae.damoyeo.view.Constant;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.gson.annotations.SerializedName;
 
-    public MidInfo(Position pos, String address) {
-        this.pos = pos;
+public class MidInfo{
+
+    private static MidInfo instance = new MidInfo(Constant.DEFAULT_LOCATION,Constant.address);
+
+    public static synchronized MidInfo getInstance() { return instance; }
+
+    public static void setMidInfo(MidInfo midInfo) {
+        instance = midInfo;
+    }
+
+    private LatLng latLng;
+    private Position pos;
+    @SerializedName("midLat")
+    private double midLat;
+    @SerializedName("midLng")
+    private double midLng;
+    @SerializedName("address")
+    private String address;
+
+    public MidInfo(LatLng latLng, String address) {
+        this.latLng = latLng;
         this.address = address;
+    }
+
+    public MidInfo(double midLat, double midLng, String address) {
+        this.midLat = midLat;
+        this.midLng = midLng;
+        this.address = address;
+    }
+
+    public LatLng getLatLng() {
+        return latLng;
+    }
+
+    public double getMidLat() {
+        return midLat;
     }
 
     public Position getPos() {
         return pos;
     }
+    public void setMidLat(double midLat) {
+        this.midLat = midLat;
+    }
 
-    public void setPos(Position pos) {
-        this.pos = pos;
+    public double getMidLng() {
+        return midLng;
+    }
+
+    public void setMidLng(double midLng) {
+        this.midLng = midLng;
     }
 
     public String getAddress() {

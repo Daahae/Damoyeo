@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "3230588147",
+    "firebase_url": "https://daamoyeo.firebaseio.com",
+    "project_id": "daamoyeo",
+    "storage_bucket": "daamoyeo.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:3230588147:android:38f0c004d838eacc",
+        "android_client_info": {
+          "package_name": "com.daahae.damoyeo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "3230588147-c326lbqdd5a7u5dlp2q7c6becovg3pmc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.daahae.damoyeo",
+            "certificate_hash": "63837d4bce0686fb944e63dbe5a1e28919d577fe"
+          }
+        },
+        {
+          "client_id": "3230588147-nejicu2eb1o30ht1ernlugo8ru1jt18f.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCwlKYzUCXMOwV0V0eMTd9Fj2PmuvJ4L4A"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "3230588147-nejicu2eb1o30ht1ernlugo8ru1jt18f.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

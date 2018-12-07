@@ -1,38 +1,65 @@
 package com.daahae.damoyeo.model;
 
-public class Building{
-    private Position pos;
-    private String address;
-    private int type;
-    private Position buildingPos;
-    private String name;
-    private String buildingAddress;
-    private String tel;
+import com.daahae.damoyeo.view.Constant;
+import com.google.gson.annotations.SerializedName;
 
-    public Building(Position pos, String address, int type, Position buildingPos, String name, String buildingAddress, String tel) {
-        this.pos = pos;
-        this.address = address;
-        this.type = type;
-        this.buildingPos = buildingPos;
+public class Building{
+
+    // DetailBuilding
+    private static Building instance = new Building(Constant.landmark_latitude, Constant.landmark_longitude, Constant.landmark_name, Constant.landmark_address, Constant.distance);
+
+    public static synchronized Building getInstance() {
+        return instance;
+    }
+
+    public static void setInstance(Building instance) {
+        Building.instance = instance;
+    }
+
+    @SerializedName("buildingLat")
+    private double latitude;
+
+    @SerializedName("buildingLng")
+    private double longitude;
+
+    @SerializedName("buildingName")
+    private String name;
+
+    @SerializedName("buildingAddress")
+    private String buildingAddress;
+
+    @SerializedName("buildingRating")
+    private double rating;
+
+    @SerializedName("buildingDistance")
+    private double distance;
+
+    public Building(double latitude, double longitude, String name, String buildingAddress, double distance) {
+        this.latitude = latitude;
+        this.longitude = longitude;
         this.name = name;
         this.buildingAddress = buildingAddress;
-        this.tel = tel;
+        this.distance = distance;
     }
 
-    public int getType() {
-        return type;
+    public double getRating() {
+        return rating;
     }
 
-    public void setType(int type) {
-        this.type = type;
+    public void setRating(double rating) {
+        this.rating = rating;
     }
 
-    public Position getBuildingPos() {
-        return buildingPos;
+    public double getDistance() {
+        return distance;
     }
 
-    public void setBuildingPos(Position buildingPos) {
-        this.buildingPos = buildingPos;
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
     }
 
     public String getName() {
@@ -47,15 +74,14 @@ public class Building{
         return buildingAddress;
     }
 
-    public void setBuildingAddress(String buildingAddress) {
-        this.buildingAddress = buildingAddress;
-    }
-
-    public String getTel() {
-        return tel;
-    }
-
-    public void setTel(String tel) {
-        this.tel = tel;
+    @Override
+    public String toString() {
+        return "Building{" +
+                "latitude=" + latitude +
+                ", longitude=" + longitude +
+                ", name='" + name + '\'' +
+                ", buildingAddress='" + buildingAddress + '\'' +
+                ", distance=" + distance +
+                '}';
     }
 }
