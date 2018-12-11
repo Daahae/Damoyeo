@@ -141,17 +141,20 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }
     }
 
+    // 구글 로그인
     private void googleSignIn() {
         Intent signInIntent = googleSignInClient.getSignInIntent();
         startActivityForResult(signInIntent, Constant.LOG_IN);
     }
 
+    // 게스트 로그인
     private void guestSignIn(){
         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
         intent.putExtra(Constant.LOGIN, Constant.GUEST_LOGIN);
         startActivityForResult(intent, Constant.GUEST_LOGIN);
     }
 
+    // 파이어베이스와 로그인 인증정보 동기화
     private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
         Log.d(Constant.TAG, "firebaseAuthWithGoogle:" + acct.getId());
 
@@ -179,6 +182,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 });
     }
 
+    // 로그아웃
     private void signOut() {
         googleApiClient.connect();
         googleApiClient.registerConnectionCallbacks(new GoogleApiClient.ConnectionCallbacks() {

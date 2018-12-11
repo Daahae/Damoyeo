@@ -346,10 +346,13 @@ public class DetailFragment extends Fragment implements View.OnClickListener, On
     public void showMid() {
 
         MarkerOptions markerOption = new MarkerOptions();
+        // 이전페이지에서 중간지점 주변장소를 선택했다면
         if(!CategoryFragment.isMid) {
             markerOption.position(MidInfo.getInstance().getLatLng());
             markerOption.title(Constant.DEFAULT_MIDINFO_NAME);
-        } else {
+        }
+        // 랜드마크 주변 장소를 선택했다면
+        else {
             markerOption.position(Landmark.getInstance().getLatLng());
             markerOption.title(Constant.DEFAULT_LANDMARK_NAME);
         }
@@ -357,6 +360,7 @@ public class DetailFragment extends Fragment implements View.OnClickListener, On
         googleMap.addMarker(markerOption);
     }
 
+    // 이전페이지에서 선택한 장소를 표시
     public void showBuilding() {
 
         MarkerOptions markerOption = new MarkerOptions();

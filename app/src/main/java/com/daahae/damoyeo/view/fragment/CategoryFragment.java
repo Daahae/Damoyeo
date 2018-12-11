@@ -831,6 +831,7 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
             googleMap.moveCamera(point);
     }
 
+    // 중간지점과 사용자 전체 마커 표시
     public void showAllMarkers() {
         googleMap.clear();
         builder = new LatLngBounds.Builder();
@@ -860,7 +861,9 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
         }
     }
 
+    // 중간지점과 선택된 사용자 마커 표시
     public void showEachMarker(int index) {
+
         googleMap.clear();
         builder = new LatLngBounds.Builder();
 
@@ -890,6 +893,7 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
         // drawRoute(MidInfo.getInstance().getLatLng(), latLng);
     }
 
+    // 랜드마크와 사용자 전체 마커 표시
     public void showLandmarkAllMarkers() {
         googleMap.clear();
         builder = new LatLngBounds.Builder();
@@ -919,6 +923,7 @@ public class CategoryFragment extends Fragment implements View.OnClickListener, 
         }
     }
 
+    // 랜드마크와 선택된 사용자 마커 표시
     public void showLandmarkEachMarker(int index) {
         googleMap.clear();
         builder = new LatLngBounds.Builder();

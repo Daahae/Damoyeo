@@ -171,6 +171,7 @@ public class MapsFragment extends Fragment implements View.OnClickListener, OnMa
         linearBtnSearchMid.setOnClickListener(this);
     }
 
+    // 구글 자동완성
     private void setPlaceAutoComplete() {
 
         SupportPlaceAutocompleteFragment autocompleteFragment = new SupportPlaceAutocompleteFragment();
@@ -451,6 +452,7 @@ public class MapsFragment extends Fragment implements View.OnClickListener, OnMa
         }
     }
 
+    // 사용자리스트(마커리스트) 좌표 - 주소 변환
     private void setAddressToPerson() {
         ArrayList<Person> personList = Person.getInstance();
         for (Person p:personList) {
@@ -490,6 +492,7 @@ public class MapsFragment extends Fragment implements View.OnClickListener, OnMa
         return address;
     }
 
+    // GPS를 통한 마커 추가
     private void setGPS() {
         if (gps.isGetLocation()) {
             double latitude = gps.getLatitude();
@@ -501,17 +504,20 @@ public class MapsFragment extends Fragment implements View.OnClickListener, OnMa
             Toast.makeText(getActivity(),  getResources().getString(R.string.msg_gps_disable), Toast.LENGTH_SHORT).show();
     }
 
+    // 지도에 직접 지정을 통한 마커 추가
     private void pickMarker() {
         LatLng latLng = googleMap.getCameraPosition().target;
         setCurrentMarker(false, latLng, getResources().getString(R.string.msg_default), null);
     }
 
+    // 마커설정 초기화
     private void setMarkerClear() {
         currentMarker = null;
         clickedMarker = null;
         fabtn.getFabFix().setImageDrawable(getResources().getDrawable(R.drawable.ic_fab_plus, null));
     }
 
+    // 구글맵 설정 초기화
     private void setGoogleMapClear() {
         googleMap.clear();
         markerList.clear();
@@ -526,6 +532,7 @@ public class MapsFragment extends Fragment implements View.OnClickListener, OnMa
         builder = new LatLngBounds.Builder();
     }
 
+    // 각 마커에 대한 저장 또는 삭제
     private void fixMarker() {
         if(clickedMarker != null) {
             if(markerList.contains(clickedMarker))
@@ -543,6 +550,7 @@ public class MapsFragment extends Fragment implements View.OnClickListener, OnMa
         }
     }
 
+    // 마커 추가
     private void saveMarker(Marker marker) {
         ArrayList<Person> personList = Person.getInstance();
         int id = personList.size() + 1;
@@ -560,6 +568,7 @@ public class MapsFragment extends Fragment implements View.OnClickListener, OnMa
         Toast.makeText(getActivity(), person.getName() + getResources().getString(R.string.msg_savemarker), Toast.LENGTH_SHORT).show();
     }
 
+    // 마커 삭제
     private void removeMarker() {
         int targetIndex = markerList.indexOf(clickedMarker);
         markerList.remove(targetIndex);
@@ -569,7 +578,9 @@ public class MapsFragment extends Fragment implements View.OnClickListener, OnMa
         clickedMarker.remove();
     }
 
+    // 마커 전체보기
     private void showAllMarkers() {
+
         if(markerList.size() > 0) {
             LatLngBounds bounds = builder.build();
             int width = getResources().getDisplayMetrics().widthPixels;
@@ -583,6 +594,7 @@ public class MapsFragment extends Fragment implements View.OnClickListener, OnMa
         }
     }
 
+    // 인스턴트 마커 표시
     private void setCurrentMarker(boolean flag, LatLng latLng, String markerTitle, String markerSnippet) {
 
         if ( currentMarker != null ) currentMarker.remove();
@@ -621,7 +633,9 @@ public class MapsFragment extends Fragment implements View.OnClickListener, OnMa
             googleMap.moveCamera(CameraUpdateFactory.newLatLng(Constant.DEFAULT_LOCATION));
     }
 
+    // 다음페이지로부터 뒤로가기 실행시 초기화된 메인페이지에 저장된 마커리스트 동기화
     public void showAllMarkersOnState() {
+
         googleMap.clear();
         builder = new LatLngBounds.Builder();
         markerList.clear();
